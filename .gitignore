@@ -1,0 +1,5 @@
+.env
+cache/
+data/
+.DS_Store
+Thumbs.db
