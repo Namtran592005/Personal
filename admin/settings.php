@@ -143,15 +143,15 @@ $page = 'settings';
                     foreach ($toggles as $key => $desc):
                         $on = ($settings[$key] ?? '1') === '1';
                     ?>
-                    <label class="toggle-row">
+                    <div class="toggle-row">
                         <div>
                             <div class="lbl"><?= $desc[0] ?></div>
                             <div class="desc"><?= $desc[1] ?></div>
                         </div>
-                        <div class="switch <?= $on ? 'on' : '' ?>" onclick="this.classList.toggle('on');this.querySelector('input').click()">
-                            <input type="checkbox" name="<?= $key ?>" value="1" <?= $on ? 'checked' : '' ?> onchange="this.closest('.switch').classList.toggle('on',this.checked)" />
-                        </div>
-                    </label>
+                        <label class="switch <?= $on ? 'on' : '' ?>">
+                            <input type="checkbox" name="<?= $key ?>" value="1" <?= $on ? 'checked' : '' ?> onchange="this.parentElement.classList.toggle('on',this.checked)" />
+                        </label>
+                    </div>
                     <?php endforeach; ?>
                 </div>
                 <div class="btn-group" style="margin-top:20px">
