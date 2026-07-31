@@ -1,0 +1,14 @@
+# Environment & secrets
+.env
+
+# Runtime data
+data/
+cache/
+
+# OS noise
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Logs
+*.log
