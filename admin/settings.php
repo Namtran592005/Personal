@@ -18,7 +18,7 @@ $msg = null;
 if (isset($_GET['export'])) {
     if (!validateCsrfToken($_GET['_csrf'] ?? null)) { http_response_code(403); exit; }
     $data = [];
-    $tables = ['profile','skills','projects','experiences','messages','faqs','pricing_plans','analytics','settings'];
+    $tables = ['profile','skills','projects','experiences','messages','faqs','pricing_plans','analytics','settings','pages'];
     foreach ($tables as $t) {
         try { $data[$t] = $pdo->query("SELECT * FROM \"$t\"")->fetchAll(); } catch (PDOException $e) { $data[$t] = []; }
     }
@@ -33,7 +33,7 @@ $csrfOk = validateCsrfToken($_POST['_csrf'] ?? null);
 // Toggle settings
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     if (!$csrfOk) { $msg = 'Invalid request.'; } else {
-    $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','enable_analytics','enable_contact_form'];
+    $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','enable_analytics','enable_contact_form','show_back_top','show_call_fab'];
     foreach ($keys as $k) {
         $v = isset($_POST[$k]) ? '1' : '0';
         $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)")->execute([$k, $v]);
@@ -141,6 +141,8 @@ $page = 'settings';
                         'show_contact' => ['Contact Section', 'Show contact info and form'],
                         'enable_analytics' => ['Analytics Tracking', 'Record visitor data'],
                         'enable_contact_form' => ['Contact Form', 'Allow visitors to send messages'],
+                        'show_back_top' => ['Back-to-Top Button', 'Show the floating back-to-top button'],
+                        'show_call_fab' => ['Call Button', 'Show the floating call button (needs a phone number)'],
                     ];
                     foreach ($toggles as $key => $desc):
                         $on = ($settings[$key] ?? '1') === '1';

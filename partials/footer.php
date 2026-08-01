@@ -1,29 +1,48 @@
+    <?php if (($settings['show_call_fab'] ?? '1') === '1' && !empty($profile['phone'])): ?>
+    <a class="call-fab" href="tel:<?= h(preg_replace('/[^\d+]/', '', $profile['phone'])) ?>" aria-label="Gọi liên hệ"><i class="ph ph-phone-call"></i></a>
+    <?php endif; ?>
+    <?php if (($settings['show_back_top'] ?? '1') === '1'): ?>
     <button class="back-top-fab" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><i class="ph ph-caret-up"></i></button>
+    <?php endif; ?>
+    <div id="toast" aria-live="polite"></div>
     <footer>
         <div class="footer-content">
-            <p>&copy; <?= date('Y') ?> <?= h($profile['name'] ?? 'Nam Trần') ?>. All rights reserved.</p>
+            <p>&copy; <?= date('Y') ?> <?= h($profile['name'] ?? 'Nam Trần') ?>. Bảo lưu mọi quyền.</p>
             <div class="footer-right">
+                <a href="<?= BASE_PATH ?>/privacy.php" class="footer-link">Chính Sách Quyền Riêng Tư</a>
+                <a href="<?= BASE_PATH ?>/terms.php" class="footer-link">Điều Khoản Sử Dụng</a>
+                <a href="<?= BASE_PATH ?>/sitemap.php" class="footer-link">Bản đồ trang web</a>
                 <a href="<?= BASE_PATH ?>/admin/login.php" class="footer-admin">Admin</a>
             </div>
         </div>
     </footer>
 
     <script>
+        function showToast(text, ok) {
+            const t = document.getElementById('toast');
+            if (!t) return;
+            t.textContent = text;
+            t.className = ok ? 'ok' : 'err';
+            void t.offsetWidth;
+            t.classList.add('show');
+            clearTimeout(t._timer);
+            t._timer = setTimeout(function() { t.classList.remove('show'); }, 3000);
+        }
+
         document.getElementById('contactForm')?.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const msg = document.getElementById('contactMsg');
             const btn = this.querySelector('button');
             const data = new FormData(this);
-            btn.disabled = true; btn.textContent = 'Sending...';
+            btn.disabled = true; btn.textContent = 'Đang gửi...';
             try {
                 const r = await fetch('<?= BASE_PATH ?>/includes/contact-handler.php', { method: 'POST', body: data });
                 const j = await r.json();
-                msg.innerHTML = '<div class="form-msg ' + (j.ok ? 'ok' : 'err') + '">' + j.msg + '</div>';
-                if (j.ok) { this.reset(); setTimeout(() => { msg.innerHTML = ''; }, 3000); }
+                showToast(j.msg, j.ok);
+                if (j.ok) this.reset();
             } catch(e) {
-                msg.innerHTML = '<div class="form-msg err">Failed to send. Please try again.</div>';
+                showToast('Gửi thất bại. Vui lòng thử lại.', false);
             }
-            btn.disabled = false; btn.textContent = 'Send Message';
+            btn.disabled = false; btn.textContent = 'Gửi tin nhắn';
         });
 
         const nav = document.getElementById('nav');

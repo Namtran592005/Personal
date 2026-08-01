@@ -192,10 +192,37 @@ if ($dbAvailable) {
         value TEXT NOT NULL DEFAULT ''
     )");
 
+    $pdo->exec("CREATE TABLE IF NOT EXISTS login_attempts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ip TEXT NOT NULL,
+        attempted_at TEXT DEFAULT (datetime('now'))
+    )");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS pages (
+        key TEXT PRIMARY KEY NOT NULL,
+        title TEXT NOT NULL DEFAULT '',
+        content TEXT NOT NULL DEFAULT '',
+        updated_at TEXT DEFAULT (datetime('now'))
+    )");
+    $legalDefaults = require __DIR__ . '/legal_defaults.php';
+    $pageTitles = ['privacy' => 'Chính Sách Quyền Riêng Tư', 'terms' => 'Điều Khoản Sử Dụng'];
+    foreach ($legalDefaults as $k => $content) {
+        $pdo->prepare("INSERT OR IGNORE INTO pages (key, title, content, updated_at) VALUES (?, ?, ?, datetime('now'))")
+            ->execute([$k, $pageTitles[$k] ?? $k, $content]);
+        $row = $pdo->prepare("SELECT content FROM pages WHERE key = ?");
+        $row->execute([$k]);
+        $old = $row->fetchColumn();
+        if ($old !== false && $old !== $content && strpos($old, '<') !== false) {
+            $pdo->prepare("UPDATE pages SET content = ?, updated_at = datetime('now') WHERE key = ?")
+                ->execute([$content, $k]);
+        }
+    }
+
     // Auto-seed
     $defaults = [
         'show_skills' => '1', 'show_projects' => '1', 'show_pricing' => '1', 'show_faq' => '1',
         'show_contact' => '1', 'enable_analytics' => '1', 'enable_contact_form' => '1', 'github_username' => 'namtran592005',
+        'show_back_top' => '1', 'show_call_fab' => '1',
     ];
     foreach ($defaults as $k => $v) {
         $pdo->prepare("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)")->execute([$k, $v]);

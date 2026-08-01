@@ -75,7 +75,7 @@ $page = 'analytics';
             <div class="stat-card"><div class="val"><?= $activeWeek ?></div><div class="lbl">Active This Week</div></div>
         </div>
 
-        <div style="margin-bottom:24px">
+        <div style="margin-bottom:24px;width:100%;max-width:100%">
             <canvas id="chartDaily" height="100"></canvas>
         </div>
 

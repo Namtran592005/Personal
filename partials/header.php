@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" href="<?= BASE_PATH ?>/assets/favicon.png" />
     <link rel="sitemap" type="application/xml" href="<?= BASE_PATH ?>/sitemap.xml" />
     <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/icons/phosphor/style.css" />
-    <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/site.css">
+    <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/site.css?v=<?= filemtime(__DIR__ . '/../assets/site.css') ?>">
     <script>
     (function() {
         var saved = localStorage.getItem('darkMode');

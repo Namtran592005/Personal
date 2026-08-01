@@ -154,7 +154,6 @@ ul {
 #skills::before,
 #projects::before,
 #faq::before,
-#contact::before,
 #skills::after,
 #projects::after,
 #faq::after,
@@ -168,8 +167,7 @@ ul {
 /* unique line-art shapes (replacing the aurora washes) */
 #skills::before,
 #projects::before,
-#faq::before,
-#contact::before {
+#faq::before {
   width: 380px;
   height: 380px;
   border-radius: 50%;
@@ -212,15 +210,60 @@ ul {
     transparent 1px 16px
   );
 }
-/* checkerboard */
-#contact::before {
+/* line-art heart */
+.deco-heart {
+  position: absolute;
   bottom: -140px;
   left: -120px;
-  background: repeating-conic-gradient(
-    rgba(125, 125, 131, 0.2) 0% 25%,
-    transparent 0% 50%
-  );
-  background-size: 44px 44px;
+  width: 440px;
+  height: 440px;
+  pointer-events: none;
+  z-index: 0;
+  transform: rotate(45deg);
+}
+.deco-heart svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.deco-heart svg path {
+  fill: none;
+  stroke: rgba(255, 107, 157, 0.4);
+  stroke-width: 0.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* line-art question mark */
+.deco-q {
+  position: absolute;
+  top: 30px;
+  right: -20px;
+  width: 560px;
+  height: 560px;
+  pointer-events: none;
+  z-index: 0;
+  transform: rotate(-18deg);
+}
+@media (max-width: 768px) {
+  .deco-q {
+    top: 10px;
+    right: -40px;
+    width: 360px;
+    height: 360px;
+  }
+}
+.deco-q svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.deco-q svg path,
+.deco-q svg circle {
+  fill: none;
+  stroke: rgba(255, 201, 77, 0.5);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* thin concentric rings */
@@ -421,12 +464,12 @@ html.dark #faq::before {
     transparent 1px 16px
   );
 }
-html.dark #contact::before {
-  background: repeating-conic-gradient(
-    rgba(255, 255, 255, 0.16) 0% 25%,
-    transparent 0% 50%
-  );
-  background-size: 44px 44px;
+html.dark .deco-heart svg path {
+  stroke: rgba(255, 138, 179, 0.55);
+}
+html.dark .deco-q svg path,
+html.dark .deco-q svg circle {
+  stroke: rgba(255, 214, 102, 0.65);
 }
 html.dark #skills::after {
   background: repeating-radial-gradient(
@@ -515,7 +558,7 @@ html.dark .section-header h2::after {
   transition: transform 0.2s;
 }
 .shuffle-switch input:checked + .shuffle-slider {
-  background: #1d1d1f;
+  background: #34c759;
 }
 .shuffle-switch input:checked + .shuffle-slider::after {
   transform: translateX(18px);
@@ -557,9 +600,9 @@ nav {
   padding: 0 24px;
 }
 nav.scrolled {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 .nav-container {
@@ -673,23 +716,26 @@ html.dark .nav-toggle:hover {
   .nav-links {
     position: fixed;
     top: 0;
-    right: -100%;
+    right: 0;
     width: 280px;
     height: 100dvh;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.5));
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
     flex-direction: column;
     justify-content: center;
     gap: 28px;
-    transition: right 0.35s ease;
+    clip-path: inset(0 0 0 100%);
+    will-change: backdrop-filter, clip-path;
+    transition:
+      clip-path 0.4s cubic-bezier(0.32, 0.72, 0, 1);
     box-shadow: -8px 0 32px rgba(0, 0, 0, 0.1);
     border-left: 1px solid rgba(255, 255, 255, 0.5);
     padding: 40px;
     z-index: 1001;
   }
   .nav-links.open {
-    right: 0;
+    clip-path: inset(0);
   }
   .nav-links a {
     font-size: 18px;
@@ -699,7 +745,7 @@ html.dark .nav-toggle:hover {
     z-index: 1002;
   }
   html.dark .nav-links {
-    background: rgba(28, 28, 30, 0.6);
+    background: linear-gradient(160deg, rgba(28, 28, 30, 0.7), rgba(28, 28, 30, 0.5));
     border-left: 1px solid rgba(255, 255, 255, 0.12);
   }
   html.dark .nav-links a {
@@ -721,6 +767,22 @@ html.dark .nav-toggle:hover {
   position: relative;
   scroll-margin-top: 72px;
   overflow: hidden;
+  border-bottom: 1px solid #e8e8ed;
+}
+#hero::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(245, 245, 247, 0.6) 50%,
+    transparent
+  );
+  pointer-events: none;
 }
 .hero-video {
   position: absolute;
@@ -1039,7 +1101,9 @@ html.dark .btn-outline:hover {
 .project-card {
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid #e8e8ed;
   border-radius: 6px;
   overflow: hidden;
@@ -1373,6 +1437,19 @@ html.dark .pricing-card.popular .badge {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overflow: hidden;
+  max-height: 170px;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.35s ease,
+    visibility 0.5s;
+}
+.contact-form #contactFields.collapsed {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
 }
 .contact-form input,
 .contact-form textarea {
@@ -1408,11 +1485,15 @@ html.dark .pricing-card.popular .badge {
   align-self: flex-start;
   padding: 14px 32px;
   font-size: 15px;
+  font-weight: 600;
   border-radius: 10px;
 }
 @media (max-width: 480px) {
   .contact-form .fg-group {
     grid-template-columns: 1fr;
+  }
+  .contact-form #contactFields {
+    max-height: 220px;
   }
 }
 
@@ -1512,10 +1593,112 @@ html.dark footer::before {
   font-size: 12px;
   font-weight: 500;
   color: #a1a1a6;
+  text-decoration: none;
   transition: color 0.2s;
 }
 .footer-admin:hover {
   color: #1d1d1f;
+}
+.footer-link {
+  font-size: 12px;
+  font-weight: 500;
+  color: #a1a1a6;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-link:hover {
+  color: #1d1d1f;
+}
+html.dark .footer-link:hover {
+  color: #f5f5f7;
+}
+
+/* Legal pages (privacy / terms) */
+.legal-section {
+  padding: 150px 0 100px;
+}
+.legal {
+  max-width: 760px;
+  margin: 0 auto;
+}
+.legal .intro {
+  font-size: 16px;
+  color: #86868b;
+  line-height: 1.7;
+  margin-bottom: 48px;
+}
+.legal h3 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 44px 0 14px;
+  color: #1d1d1f;
+}
+.legal h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 24px 0 8px;
+  color: #1d1d1f;
+}
+.legal p,
+.legal li {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #515154;
+  margin-bottom: 10px;
+}
+.legal ul {
+  padding-left: 22px;
+  margin: 0 0 12px;
+}
+.legal li {
+  margin-bottom: 6px;
+}
+.legal .updated {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #a1a1a6;
+}
+.sitemap-list {
+  list-style: none;
+  padding-left: 0;
+}
+.sitemap-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 12px;
+  margin-bottom: 10px;
+}
+.sitemap-list a {
+  color: #0a84ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+.sitemap-list a:hover {
+  text-decoration: underline;
+}
+.sitemap-list span {
+  color: #86868b;
+  font-size: 13px;
+}
+html.dark .sitemap-list a {
+  color: #5eb0ff;
+}
+html.dark .sitemap-list span {
+  color: #86868b;
+}
+html.dark .legal h3,
+html.dark .legal h4 {
+  color: #f5f5f7;
+}
+html.dark .legal p,
+html.dark .legal li {
+  color: #c7c7cc;
+}
+html.dark .legal .intro {
+  color: #a1a1a6;
 }
 .back-top-fab {
   position: fixed;
@@ -1542,6 +1725,33 @@ html.dark footer::before {
     opacity 0.3s,
     transform 0.3s;
 }
+.call-fab {
+  position: fixed;
+  bottom: 76px;
+  right: 20px;
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #1d1d1f;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  font-size: 20px;
+  transition:
+    transform 0.3s,
+    background 0.3s;
+}
+.call-fab:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
 .back-top-fab.show {
   opacity: 1;
   pointer-events: auto;
@@ -1562,6 +1772,15 @@ html.dark .back-top-fab {
 html.dark .back-top-fab:hover {
   background: rgba(255, 255, 255, 0.15);
 }
+html.dark .call-fab {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f5f5f7;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+html.dark .call-fab:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
 @media (max-width: 640px) {
   .footer-content {
     flex-direction: column;
@@ -1569,8 +1788,9 @@ html.dark .back-top-fab:hover {
     text-align: center;
   }
   .footer-right {
-    flex-direction: column;
-    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 20px;
   }
 }
 
@@ -1672,21 +1892,49 @@ html.dark .back-top-fab:hover {
   letter-spacing: -0.02em;
   margin-bottom: 20px;
 }
-.form-msg {
-  padding: 12px 16px;
-  border-radius: 6px;
+#toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-16px);
+  z-index: 2000;
+  max-width: min(90vw, 460px);
+  padding: 14px 26px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
   font-size: 14px;
+  font-weight: 500;
+  color: #1d1d1f;
+  text-align: center;
   line-height: 1.5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
-.form-msg.ok {
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #c8e6c9;
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
-.form-msg.err {
-  background: #fbe9e7;
+#toast.ok {
+  color: #1d7f3c;
+}
+#toast.err {
   color: #c62828;
-  border: 1px solid #ffccbc;
+}
+html.dark #toast {
+  background: rgba(28, 28, 30, 0.6);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #f5f5f7;
+}
+html.dark #toast.ok {
+  color: #7ddc9a;
+}
+html.dark #toast.err {
+  color: #ff8a8a;
 }
 @media (max-width: 768px) {
   .contact-grid {
@@ -1730,7 +1978,9 @@ html.dark .section-alt {
     );
 }
 html.dark nav.scrolled {
-  background: rgba(29, 29, 31, 0.85);
+  background: rgba(28, 28, 30, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom-color: rgba(255, 255, 255, 0.06);
 }
 html.dark .nav-links a {
@@ -1759,10 +2009,15 @@ html.dark .btn-outline:hover {
   background: #2d2d2f;
 }
 html.dark .skill-card,
-html.dark .project-card,
 html.dark .stat-item {
   background: #2d2d2f;
   border-color: #3d3d3f;
+}
+html.dark .project-card {
+  background: rgba(28, 28, 30, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 html.dark .skill-card i,
 html.dark .stat-item .number {
@@ -1912,5 +2167,30 @@ nav:not(.scrolled) .nav-toggle:hover {
   }
   html.dark nav:not(.scrolled) .nav-links.open a::after {
     background: #f5f5f7;
+  }
+}
+/* Mobile: scrolled bar keeps liquid glass — but drop its backdrop-filter
+   while the drawer (.nav-links) is open, otherwise the ancestor's
+   backdrop-filter disables the descendant's glass effect. */
+@media (max-width: 768px) {
+  nav.scrolled:not(:has(.nav-links.open)) {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 255, 255, 0.55);
+  }
+  html.dark nav.scrolled:not(:has(.nav-links.open)) {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(28, 28, 30, 0.55);
+  }
+  nav.scrolled:has(.nav-links.open) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.92);
+  }
+  html.dark nav.scrolled:has(.nav-links.open) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(28, 28, 30, 0.92);
   }
 }

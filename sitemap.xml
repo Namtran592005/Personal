@@ -1,8 +1,32 @@
 <?php
 header('Content-Type: application/xml; charset=UTF-8');
-$base = rtrim((!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/Personal', '/');
-echo '<?xml version="1.0" encoding="UTF-8"?>';
+require __DIR__ . '/includes/config.php';
+
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$base = rtrim($scheme . '://' . $host . BASE_PATH, '/');
+
+$entries = [
+    ['loc' => '/',               'lastmod' => date('Y-m-d'), 'priority' => '1.0', 'changefreq' => 'weekly'],
+    ['loc' => '/#skills',        'priority' => '0.6', 'changefreq' => 'monthly'],
+    ['loc' => '/#projects',      'priority' => '0.8', 'changefreq' => 'weekly'],
+    ['loc' => '/#pricing',       'priority' => '0.6', 'changefreq' => 'monthly'],
+    ['loc' => '/#faq',           'priority' => '0.5', 'changefreq' => 'monthly'],
+    ['loc' => '/#contact',       'priority' => '0.6', 'changefreq' => 'monthly'],
+    ['loc' => '/sitemap.php',    'priority' => '0.5', 'changefreq' => 'yearly'],
+    ['loc' => '/privacy.php',    'priority' => '0.3', 'changefreq' => 'yearly'],
+    ['loc' => '/terms.php',      'priority' => '0.3', 'changefreq' => 'yearly'],
+    ['loc' => '/check.php',      'priority' => '0.3', 'changefreq' => 'monthly'],
+];
+echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url><loc><?= $base ?>/</loc><priority>1.0</priority></url>
+<?php foreach ($entries as $e): ?>
+    <url>
+        <loc><?= htmlspecialchars($base . $e['loc'], ENT_XML1, 'UTF-8') ?></loc>
+        <?php if (!empty($e['lastmod'])): ?><lastmod><?= $e['lastmod'] ?></lastmod><?php endif; ?>
+        <priority><?= $e['priority'] ?></priority>
+        <changefreq><?= $e['changefreq'] ?></changefreq>
+    </url>
+<?php endforeach; ?>
 </urlset>

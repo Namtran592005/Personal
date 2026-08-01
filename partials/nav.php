@@ -1,6 +1,9 @@
     <nav id="nav">
         <div class="nav-container">
             <div class="nav-links" id="navLinks">
+                <?php if (($navHomeOnly ?? false) === true): ?>
+                <a href="<?= BASE_PATH ?>/index.php">Trang chủ</a>
+                <?php else: ?>
                 <?php if (($settings['show_skills'] ?? '1') === '1' && count($skills) > 0): ?>
                 <a href="#skills">Skills</a>
                 <?php endif; ?>
@@ -15,6 +18,7 @@
                 <?php endif; ?>
                 <?php if (($settings['show_contact'] ?? '1') === '1'): ?>
                 <a href="#contact">Contact</a>
+                <?php endif; ?>
                 <?php endif; ?>
             </div>
             <button class="dark-toggle" onclick="toggleDark()" aria-label="Toggle dark mode">

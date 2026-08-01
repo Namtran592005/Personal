@@ -8,12 +8,12 @@ header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['ok' => false, 'msg' => 'Method not allowed.']);
+    echo json_encode(['ok' => false, 'msg' => 'Phương thức không được phép.']);
     exit;
 }
 
 if (($settings['enable_contact_form'] ?? '1') !== '1') {
-    echo json_encode(['ok' => false, 'msg' => 'Contact form is disabled.']);
+    echo json_encode(['ok' => false, 'msg' => 'Form liên hệ đang bị tắt.']);
     exit;
 }
 
@@ -21,7 +21,7 @@ $isAnonymous = !empty($_POST['anonymous']);
 $message = trim($_POST['message'] ?? '');
 
 if (empty($message)) {
-    echo json_encode(['ok' => false, 'msg' => 'Message is required.']);
+    echo json_encode(['ok' => false, 'msg' => 'Vui lòng nhập nội dung tin nhắn.']);
     exit;
 }
 
@@ -34,11 +34,11 @@ if ($isAnonymous) {
     $email = trim($_POST['email'] ?? '');
     $subject = trim($_POST['subject'] ?? '');
     if (empty($name) || empty($email)) {
-        echo json_encode(['ok' => false, 'msg' => 'Name and email are required.']);
+        echo json_encode(['ok' => false, 'msg' => 'Vui lòng nhập tên và email.']);
         exit;
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo json_encode(['ok' => false, 'msg' => 'Invalid email address.']);
+        echo json_encode(['ok' => false, 'msg' => 'Email không hợp lệ.']);
         exit;
     }
 }
@@ -81,4 +81,4 @@ if ($profileEmail) {
     }
 }
 
-echo json_encode(['ok' => true, 'msg' => 'Message sent successfully!']);
+echo json_encode(['ok' => true, 'msg' => 'Gửi tin nhắn thành công!']);

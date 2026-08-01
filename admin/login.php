@@ -14,17 +14,24 @@ if (!$dbAvailable) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-    $password = $_POST['password'] ?? '';
-    if (empty($password)) {
-        $error = 'Please enter your password.';
-    } elseif (login($password)) {
-        header('Location: ' . BASE_PATH . '/admin/dashboard.php');
-        exit;
+    if (!validateCsrfToken($_POST['_csrf'] ?? '')) {
+        $error = 'Invalid request. Please try again.';
     } else {
-        $error = 'Invalid password.';
-        if (!$dbAvailable) $error = 'DB unavailable.';
-        else {
-            $error = 'Invalid password.';
+        $lock = loginLockMinutes();
+        if ($lock > 0) {
+            $error = "Too many failed attempts. Try again in $lock minute" . ($lock > 1 ? 's' : '') . '.';
+        } else {
+            $password = $_POST['password'] ?? '';
+            if (empty($password)) {
+                $error = 'Please enter your password.';
+            } elseif (login($password)) {
+                clearLoginAttempts();
+                header('Location: ' . BASE_PATH . '/admin/dashboard.php');
+                exit;
+            } else {
+                recordLoginAttempt();
+                $error = 'Invalid password.';
+            }
         }
     }
 }
@@ -37,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     <title>Sign in — Admin</title>
     <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/icons/phosphor/style.css" />
     <link rel="stylesheet" href="<?= BASE_PATH ?>/admin-assets/admin.css" />
-    <style>html,body{margin:0;padding:0;background:#0a0a0c;scrollbar-width:none;-ms-overflow-style:none}html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}.login-wrap{scrollbar-width:none;-ms-overflow-style:none}.login-wrap::-webkit-scrollbar{display:none}</style>
+    <style>html,body{margin:0;padding:0;background:#0a0a0c;scrollbar-width:none;-ms-overflow-style:none}html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}.login-wrap{scrollbar-width:none;-ms-overflow-style:none}.login-wrap::-webkit-scrollbar{display:none}.back-home{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:18px;padding:10px;color:rgba(255,255,255,0.55);font-size:13px;font-weight:500;text-decoration:none;border-radius:8px;transition:color 0.2s,background 0.2s}.back-home:hover{color:#f5f5f7;background:rgba(255,255,255,0.06)}</style>
 </head>
 <body>
     <div class="login-wrap">
@@ -53,12 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         <div class="alert alert-no"><?= h($error) ?></div>
         <?php endif; ?>
         <form method="POST">
+            <input type="hidden" name="_csrf" value="<?= generateCsrfToken() ?>">
             <div class="fg">
                 <label class="fg-label">Password</label>
-                <input class="fg-input" type="password" name="password" required />
+                <input class="fg-input" type="password" name="password" required autocomplete="current-password" />
             </div>
             <button type="submit" name="login" class="btn btn-pri">Sign In</button>
         </form>
+        <a href="<?= BASE_PATH ?>/index.php" class="back-home"><i class="ph ph-house-line"></i> Back to Home</a>
     </div>
 </div>
 <script>
