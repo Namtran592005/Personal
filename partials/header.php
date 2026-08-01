@@ -39,6 +39,26 @@
         i.src = '<?= BASE_PATH ?>/includes/track.php?path=' + encodeURIComponent(p)
             + '&sw=' + screen.width + '&sh=' + screen.height
             + '&lang=' + encodeURIComponent(navigator.language || '');
+
+        // Time-on-page: count only while the tab is visible, report on leave.
+        var t0 = Date.now();
+        var acc = 0;
+        var last = t0;
+        function mark() {
+            var now = Date.now();
+            if (!document.hidden) acc += now - last;
+            last = now;
+        }
+        document.addEventListener('visibilitychange', mark);
+        window.addEventListener('pagehide', function() {
+            mark();
+            var s = Math.round(acc / 1000);
+            if (s > 0) {
+                try {
+                    navigator.sendBeacon('<?= BASE_PATH ?>/includes/track.php?duration=' + Math.min(s, 3600));
+                } catch (e) {}
+            }
+        });
     })();
     </script>
     <?php endif; ?>

@@ -183,9 +183,16 @@ if ($dbAvailable) {
         city TEXT DEFAULT '',
         visits INTEGER DEFAULT 1,
         pages TEXT DEFAULT '',
+        time_spent INTEGER DEFAULT 0,
         first_seen TEXT DEFAULT (datetime('now')),
         last_seen TEXT DEFAULT (datetime('now'))
     )");
+
+    // Migration: add time_spent if it doesn't exist yet (older databases)
+    $cols = $pdo->query("PRAGMA table_info(analytics)")->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array('time_spent', $cols, true)) {
+        $pdo->exec("ALTER TABLE analytics ADD COLUMN time_spent INTEGER DEFAULT 0");
+    }
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS settings (
         key TEXT PRIMARY KEY NOT NULL,

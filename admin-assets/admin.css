@@ -878,19 +878,24 @@ canvas#chartDaily {
     content: "Visits";
   }
   .tbl-analytics td:nth-child(3)::before {
-    content: "First";
+    content: "Time";
   }
   .tbl-analytics td:nth-child(4)::before {
-    content: "Last";
+    content: "First";
   }
   .tbl-analytics td:nth-child(5)::before {
-    content: "Pages";
+    content: "Last";
   }
   .tbl-analytics td:nth-child(6)::before {
+    content: "Pages";
+  }
+  .tbl-analytics td:nth-child(7)::before {
     content: "Browser";
   }
-
-  /* 2-col browsers/languages tables → simple rows */
+  .page-hint {
+    cursor: help;
+    border-bottom: 1px dotted rgba(0, 0, 0, 0.35);
+  }
   .form-card .tbl:not(.tbl-analytics) tbody tr {
     display: flex;
     justify-content: space-between;

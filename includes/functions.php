@@ -20,6 +20,16 @@ function truncate(?string $text, int $limit = 120): string {
     return mb_strlen($text) > $limit ? mb_substr($text, 0, $limit) . '...' : $text;
 }
 
+function formatDuration(int $seconds): string {
+    if ($seconds < 60) return $seconds . 's';
+    $h = intdiv($seconds, 3600);
+    $m = intdiv($seconds % 3600, 60);
+    $s = $seconds % 60;
+    if ($h > 0) return sprintf('%dh %dm', $h, $m);
+    if ($s > 0) return sprintf('%dm %ds', $m, $s);
+    return $m . 'm';
+}
+
 function safe(string $key, ?array $arr = null, string $default = ''): string {
     $source = $arr ?? $_POST;
     return h($source[$key] ?? $default);

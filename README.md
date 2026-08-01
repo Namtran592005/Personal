@@ -12,6 +12,7 @@ Bản `v2` là thiết kế lại hoàn toàn từ `master`, kèm quản trị n
 - **Dark mode** mặc định, đồng bộ qua `localStorage`, nút toggle trên toàn site (kể cả trang lỗi/check)
 - **Cuộn mượt** (`scroll-behavior: smooth`) toàn bộ trang công khai, không áp dụng cho admin
 - **Admin quản trị** đầy đủ: hồ sơ, kỹ năng, dự án, FAQ, **bảng giá**, tin nhắn liên hệ, thống kê truy cập
+- **Thống kê truy cập** đầy đủ: lượt xem, trình duyệt, ngôn ngữ, **thời gian xem trang** (tổng & trung bình/khách, đo bằng `visibilitychange` + `sendBeacon`, chỉ tính khi tab hiển thị)
 - **Bảng giá dịch vụ** CRUD linh hoạt: giá, gói "phổ biến", badge, tính năng, ẩn/hiện, thứ tự
 - **Form liên hệ** gửi mail SMTP (Gmail App Password) + lưu vào DB, chế độ **gửi ẩn danh** thu gọn, thông báo **toast glass**
 - **Bảo mật đăng nhập**: khóa 5 lần sai trong 15 phút theo IP + token CSRF; trang đăng nhập admin nền **liquid glass** (blur + saturate) trên video nền

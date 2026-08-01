@@ -18,6 +18,7 @@ Khi bạn truy cập website, hệ thống tự động ghi nhận một số th
 - Trang giới thiệu (referrer) dẫn bạn đến website.
 - Kích thước màn hình và ngôn ngữ trình duyệt.
 - Trang đã truy cập và số lần truy cập.
+- Thời gian xem trang (chỉ tính khi tab trình duyệt đang hiển thị, gửi về khi bạn rời trang).
 - Thông tin vị trí địa lý ước tính (quốc gia, thành phố) dựa trên địa chỉ IP.
 Các dữ liệu này được lưu trữ tại cơ sở dữ liệu cục bộ (SQLite) trên máy chủ lưu trữ website và không được dùng để nhận diện danh tính chính xác của bạn ngoài mục đích thống kê.
 

@@ -11,9 +11,18 @@ $sh = (int)($_GET['sh'] ?? 0);
 $lang = $_GET['lang'] ?? '';
 $country = $_GET['country'] ?? '';
 $city = $_GET['city'] ?? '';
+$duration = max(0, min(3600, (int)($_GET['duration'] ?? 0)));
 
 if ($dbAvailable && $ip && ($settings['enable_analytics'] ?? '1') === '1') {
     try {
+        if ($duration > 0) {
+            // Time-on-page beacon (sent from the client on page leave)
+            $pdo->prepare("UPDATE analytics SET time_spent = time_spent + ?, last_seen = datetime('now') WHERE ip = ?")
+                ->execute([$duration, $ip]);
+            header('Content-Type: text/plain');
+            echo 'ok';
+            exit;
+        }
         $stmt = $pdo->prepare("SELECT id, visits, pages FROM analytics WHERE ip = ?");
         $stmt->execute([$ip]);
         $existing = $stmt->fetch();

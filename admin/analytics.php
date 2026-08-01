@@ -14,7 +14,7 @@ if ($dbAvailable) {
 
 $thisYear = date('Y');
 
-$totalVisitors = 0; $totalVisits = 0; $todayVisits = 0; $activeWeek = 0;
+$totalVisitors = 0; $totalVisits = 0; $todayVisits = 0; $activeWeek = 0; $totalSeconds = 0;
 $daily = []; $browsers = []; $langs = [];
 $visitors = [];
 
@@ -24,6 +24,7 @@ if ($dbAvailable) {
         $totalVisits = $pdo->query("SELECT COALESCE(SUM(visits), 0) FROM analytics")->fetchColumn();
         $todayVisits = $pdo->query("SELECT COALESCE(SUM(visits), 0) FROM analytics WHERE date(last_seen) = date('now')")->fetchColumn();
         $activeWeek = $pdo->query("SELECT COUNT(*) FROM analytics WHERE last_seen >= datetime('now', '-7 days')")->fetchColumn();
+        $totalSeconds = (int)$pdo->query("SELECT COALESCE(SUM(time_spent), 0) FROM analytics")->fetchColumn();
 
         $daily = $pdo->query("SELECT date(last_seen) as d, COUNT(*) as c FROM analytics WHERE strftime('%Y', last_seen) = '$thisYear' GROUP BY d ORDER BY d ASC")->fetchAll();
 
@@ -75,6 +76,12 @@ $page = 'analytics';
             <div class="stat-card"><div class="val"><?= $activeWeek ?></div><div class="lbl">Active This Week</div></div>
         </div>
 
+        <div class="stats">
+            <div class="stat-card"><div class="val"><?= formatDuration($totalSeconds) ?></div><div class="lbl">Total Time Spent</div></div>
+            <div class="stat-card"><div class="val"><?= $totalVisitors > 0 ? formatDuration((int)round($totalSeconds / $totalVisitors)) : '—' ?></div><div class="lbl">Avg / Visitor</div></div>
+            <div class="stat-card"><div class="val"><?= $totalVisits > 0 ? formatDuration((int)round($totalSeconds / $totalVisits)) : '—' ?></div><div class="lbl">Avg / Visit</div></div>
+        </div>
+
         <div style="margin-bottom:24px;width:100%;max-width:100%">
             <canvas id="chartDaily" height="100"></canvas>
         </div>
@@ -114,19 +121,27 @@ $page = 'analytics';
             <div class="form-title">Visitors</div>
             <div class="tbl tbl-analytics">
                 <table>
-                    <thead><tr><th>IP</th><th>Visits</th><th>First Seen</th><th>Last Seen</th><th>Pages</th><th>Browser</th></tr></thead>
+                    <thead><tr><th>IP</th><th>Visits</th><th>Time</th><th>First Seen</th><th>Last Seen</th><th>Pages</th><th>Browser</th></tr></thead>
                     <tbody>
                         <?php foreach ($visitors as $row): ?>
                         <tr>
                             <td class="txt-sm"><?= h($row['ip']) ?></td>
                             <td><strong><?= (int)$row['visits'] ?></strong></td>
+                            <td class="txt-sm txt-muted"><?= formatDuration((int)$row['time_spent']) ?></td>
                             <td class="txt-sm txt-muted"><?= date('M j, Y', strtotime($row['first_seen'])) ?></td>
                             <td class="txt-sm txt-muted"><?= date('M j, g:i A', strtotime($row['last_seen'])) ?></td>
-                            <td class="txt-sm txt-muted"><?= h($row['pages'] ?: '—') ?></td>
+                            <td class="txt-sm txt-muted"><?php
+                                $pageList = $row['pages'] ? explode(',', $row['pages']) : [];
+                                if (count($pageList)) {
+                                    echo h(count($pageList) . 'x ') . '<span class="page-hint" title="' . h($row['pages']) . '">' . h($pageList[0]) . '</span>';
+                                } else {
+                                    echo '—';
+                                }
+                            ?></td>
                             <td class="txt-sm txt-muted"><?= h(truncate($row['user_agent'], 30)) ?></td>
                         </tr>
                         <?php endforeach; ?>
-                        <?php if (!count($visitors)): ?><tr><td colspan="6" class="empty">No visitors yet.</td></tr><?php endif; ?>
+                        <?php if (!count($visitors)): ?><tr><td colspan="7" class="empty">No visitors yet.</td></tr><?php endif; ?>
                     </tbody>
                 </table>
             </div>
