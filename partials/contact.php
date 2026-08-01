@@ -18,12 +18,12 @@
         </div>
         <div class="container">
             <div class="section-header fade-in">
-                <p class="label">Contact</p>
-                <h2>Liên hệ</h2>
+                <p class="label"><?= t('sec_contact_label') ?></p>
+                <h2><?= t('sec_contact_title') ?></h2>
             </div>
             <div class="contact-grid">
                 <div class="contact-info fade-in">
-                    <p class="contact-intro">Liên hệ qua các kênh bên dưới hoặc gửi tin nhắn trực tiếp.</p>
+                    <p class="contact-intro"><?= t('contact_intro') ?></p>
                     <div class="contact-links">
                         <div class="contact-item">
                             <i class="ph ph-envelope"></i>
@@ -58,24 +58,24 @@
                     </div>
                 </div>
                 <div class="contact-form-wrap fade-in">
-                    <h3>Gửi tin nhắn</h3>
+                    <h3><?= t('send_message') ?></h3>
                     <form class="contact-form" id="contactForm">
                         <div class="anon-toggle">
                             <label class="anon-switch">
                                 <input type="checkbox" name="anonymous" id="anonCheck" onchange="toggleAnon()">
                                 <span class="anon-slider"></span>
-                                <span class="anon-label">Gửi ẩn danh</span>
+                                <span class="anon-label"><?= t('send_anon') ?></span>
                             </label>
                         </div>
                         <div id="contactFields">
                             <div class="fg-group">
-                                <input type="text" name="name" placeholder="Tên của bạn" required />
-                                <input type="email" name="email" placeholder="Email của bạn" required />
+                                <input type="text" name="name" placeholder="<?= h(t('name_ph')) ?>" required />
+                                <input type="email" name="email" placeholder="<?= h(t('email_ph')) ?>" required />
                             </div>
-                            <input type="text" name="subject" placeholder="Chủ đề (không bắt buộc)" />
+                            <input type="text" name="subject" placeholder="<?= h(t('subject_ph')) ?>" />
                         </div>
-                        <textarea name="message" placeholder="Nội dung tin nhắn..." required></textarea>
-                        <button type="submit" class="btn btn-primary">Gửi tin nhắn</button>
+                        <textarea name="message" placeholder="<?= h(t('message_ph')) ?>" required></textarea>
+                        <button type="submit" class="btn btn-primary"><?= t('send_btn') ?></button>
                     </form>
                 </div>
                 <style>

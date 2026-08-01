@@ -1,5 +1,5 @@
     <?php if (($settings['show_call_fab'] ?? '1') === '1' && !empty($profile['phone'])): ?>
-    <a class="call-fab" href="tel:<?= h(preg_replace('/[^\d+]/', '', $profile['phone'])) ?>" aria-label="Gọi liên hệ"><i class="ph ph-phone-call"></i></a>
+    <a class="call-fab" href="tel:<?= h(preg_replace('/[^\d+]/', '', $profile['phone'])) ?>" aria-label="<?= h(t('call_fab_aria')) ?>"><i class="ph ph-phone-call"></i></a>
     <?php endif; ?>
     <?php if (($settings['show_back_top'] ?? '1') === '1'): ?>
     <button class="back-top-fab" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><i class="ph ph-caret-up"></i></button>
@@ -7,17 +7,23 @@
     <div id="toast" aria-live="polite"></div>
     <footer>
         <div class="footer-content">
-            <p>&copy; <?= date('Y') ?> <?= h($profile['name'] ?? 'Nam Trần') ?>. Bảo lưu mọi quyền.</p>
+            <p>&copy; <?= date('Y') ?> <?= h($profile['name'] ?? 'Nam Trần') ?>. <?= t('footer_rights') ?></p>
             <div class="footer-right">
-                <a href="<?= BASE_PATH ?>/privacy.php" class="footer-link">Chính Sách Quyền Riêng Tư</a>
-                <a href="<?= BASE_PATH ?>/terms.php" class="footer-link">Điều Khoản Sử Dụng</a>
-                <a href="<?= BASE_PATH ?>/sitemap.php" class="footer-link">Bản đồ trang web</a>
-                <a href="<?= BASE_PATH ?>/admin/login.php" class="footer-admin">Admin</a>
+                <a href="<?= BASE_PATH ?>/privacy.php" class="footer-link"><?= t('footer_privacy') ?></a>
+                <a href="<?= BASE_PATH ?>/terms.php" class="footer-link"><?= t('footer_terms') ?></a>
+                <a href="<?= BASE_PATH ?>/sitemap.php" class="footer-link"><?= t('footer_sitemap') ?></a>
+                <a href="<?= BASE_PATH ?>/admin/login.php" class="footer-admin"><?= t('footer_admin') ?></a>
             </div>
         </div>
     </footer>
 
     <script>
+        var LANG_UI = {
+            sending: <?= json_encode(t('sending')) ?>,
+            sendBtn: <?= json_encode(t('send_btn')) ?>,
+            sendSuccess: <?= json_encode(t('send_success')) ?>,
+            sendFail: <?= json_encode(t('send_fail')) ?>
+        };
         function showToast(text, ok) {
             const t = document.getElementById('toast');
             if (!t) return;
@@ -33,16 +39,16 @@
             e.preventDefault();
             const btn = this.querySelector('button');
             const data = new FormData(this);
-            btn.disabled = true; btn.textContent = 'Đang gửi...';
+            btn.disabled = true; btn.textContent = LANG_UI.sending;
             try {
                 const r = await fetch('<?= BASE_PATH ?>/includes/contact-handler.php', { method: 'POST', body: data });
                 const j = await r.json();
-                showToast(j.msg, j.ok);
+                showToast(j.ok ? LANG_UI.sendSuccess : LANG_UI.sendFail, j.ok);
                 if (j.ok) this.reset();
             } catch(e) {
-                showToast('Gửi thất bại. Vui lòng thử lại.', false);
+                showToast(LANG_UI.sendFail, false);
             }
-            btn.disabled = false; btn.textContent = 'Gửi tin nhắn';
+            btn.disabled = false; btn.textContent = LANG_UI.sendBtn;
         });
 
         const nav = document.getElementById('nav');

@@ -4,6 +4,11 @@ require_once __DIR__ . '/includes/functions.php';
 $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
 $base = substr(__DIR__, strlen(rtrim($docRoot, '/')));
 define('BASE_PATH', $base === '' || $base === false || $base === '.' ? '' : $base);
+
+// Lightweight i18n (standalone diagnostic page — works even when the DB is down).
+$lang = $_GET['lang'] ?? ($_COOKIE['lang'] ?? 'vi');
+$lang = $lang === 'en' ? 'en' : 'vi';
+
 $checks = [];
 $allOk = true;
 
@@ -207,15 +212,15 @@ $failCount = $total - $okCount;
             <div class="logo"><i class="ph ph-pulse"></i></div>
             <div>
                 <h1>System Check</h1>
-                <p class="sub">Kiểm tra môi trường và cấu hình</p>
+                <p class="sub"><?= $lang === 'en' ? 'Environment & configuration check' : 'Kiểm tra môi trường và cấu hình' ?></p>
             </div>
         </div>
 
         <div class="summary <?= $allOk ? 'ok' : 'fail' ?>">
             <div class="s-icon"><i class="ph <?= $allOk ? 'ph-shield-check' : 'ph-warning-circle' ?>"></i></div>
             <div>
-                <div class="s-title"><?= $allOk ? 'Tất cả hệ thống hoạt động tốt' : 'Có vấn đề cần xử lý' ?></div>
-                <div class="s-desc"><?= $okCount ?> / <?= $total ?> kiểm tra thành công<?= $failCount > 0 ? " — $failCount thất bại" : '' ?></div>
+                <div class="s-title"><?= $allOk ? ($lang === 'en' ? 'All systems operational' : 'Tất cả hệ thống hoạt động tốt') : ($lang === 'en' ? 'Issues need attention' : 'Có vấn đề cần xử lý') ?></div>
+                <div class="s-desc"><?= $okCount ?> / <?= $total ?> <?= $lang === 'en' ? 'checks passed' : 'kiểm tra thành công' ?><?= $failCount > 0 ? " — $failCount " . ($lang === 'en' ? 'failed' : 'thất bại') : '' ?></div>
             </div>
         </div>
 
@@ -233,8 +238,8 @@ $failCount = $total - $okCount;
         </div>
 
         <div class="actions">
-            <a class="btn btn-pri" href="<?= BASE_PATH ?>/admin/login.php"><i class="ph ph-user-circle"></i> Quản trị</a>
-            <a class="btn btn-out" href="<?= BASE_PATH ?>/index.php"><i class="ph ph-house-line"></i> Về trang chủ</a>
+            <a class="btn btn-pri" href="<?= BASE_PATH ?>/admin/login.php"><i class="ph ph-user-circle"></i> <?= $lang === 'en' ? 'Admin' : 'Quản trị' ?></a>
+            <a class="btn btn-out" href="<?= BASE_PATH ?>/index.php"><i class="ph ph-house-line"></i> <?= $lang === 'en' ? 'Back to Home' : 'Về trang chủ' ?></a>
         </div>
         <p class="foot">Nam Trần — Personal Website</p>
     </div>

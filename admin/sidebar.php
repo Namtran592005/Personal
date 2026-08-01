@@ -44,6 +44,9 @@
             <a href="<?= BASE_PATH ?>/admin/password.php" class="<?= $page === 'password' ? 'active' : '' ?>">
                 <i class="ph ph-lock-key"></i> <span>Change Password</span>
             </a>
+            <a href="<?= BASE_PATH ?>/admin/security.php" class="<?= $page === 'security' ? 'active' : '' ?>">
+                <i class="ph ph-shield-check"></i> <span>Security</span>
+            </a>
         </nav>
         <div class="sidebar-foot">
             <span class="user-name"><?= h($profile['name'] ?? 'Admin') ?></span>

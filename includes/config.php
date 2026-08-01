@@ -74,3 +74,15 @@ if ($dbAvailable) {
     $stmt = $pdo->query("SELECT key, value FROM settings");
     while ($row = $stmt->fetch()) $settings[$row['key']] = $row['value'];
 }
+
+require_once __DIR__ . '/lang.php';
+
+// Global rate limiting (runs on every request, incl. track.php beacon).
+// Exempt the admin if already logged in to avoid locking out the owner,
+// and skip entirely in CLI (tools/lint.php, tools/smoke.php).
+require_once __DIR__ . '/rate-limit.php';
+if (PHP_SAPI !== 'cli' && !isset($_SESSION['user_id']) && rateLimitCheck()) {
+    http_response_code(429);
+    header('Retry-After: ' . RATE_LIMIT_WINDOW);
+    exit('Too Many Requests');
+}

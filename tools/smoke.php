@@ -48,6 +48,18 @@ if ($dbAvailable) {
     $pcols = $pdo->query("PRAGMA table_info(profile)")->fetchAll(PDO::FETCH_COLUMN, 1);
     check('profile.avatar column', in_array('avatar', $pcols, true));
 
+    // 2FA columns on users (DB_VERSION >= 4)
+    $ucols = $pdo->query("PRAGMA table_info(users)")->fetchAll(PDO::FETCH_COLUMN, 1);
+    check('users.totp_secret column', in_array('totp_secret', $ucols, true));
+    check('users.totp_enabled column', in_array('totp_enabled', $ucols, true));
+
+    // rate_limits table (DB_VERSION >= 4)
+    $have2 = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='rate_limits'")->fetchColumn();
+    check('rate_limits table', (bool)$have2);
+
+    // default_lang setting seeded
+    check('default_lang setting', isset($settings['default_lang']), $settings['default_lang'] ?? 'missing');
+
     // Core helpers exist
     check('Helper: renderLegalText', function_exists('renderLegalText'));
     check('Helper: formatDuration', function_exists('formatDuration'));
@@ -56,6 +68,14 @@ if ($dbAvailable) {
     // Auth helpers
     check('Auth: login()', function_exists('login'));
     check('Auth: loginLockMinutes()', function_exists('loginLockMinutes'));
+    check('Auth: completeLogin()', function_exists('completeLogin'));
+
+    // Security helpers
+    check('Rate limit: rateLimitCheck()', function_exists('rateLimitCheck'));
+    check('TOTP: verifyTotp()', function_exists('verifyTotp'));
+    check('TOTP: generateTotpSecret()', function_exists('generateTotpSecret'));
+    check('Lang: t()', function_exists('t'));
+    check('Lang: currentLang()', function_exists('currentLang'));
 }
 
 // --- Optional live HTTP smoke ---

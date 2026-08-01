@@ -21,7 +21,11 @@ Bản `v2` là thiết kế lại hoàn toàn từ `master`, kèm quản trị n
 - **Bảng giá dịch vụ** CRUD linh hoạt: giá, gói "phổ biến", badge, tính năng, ẩn/hiện, thứ tự
 - **Form liên hệ** gửi mail SMTP (Gmail App Password) + lưu vào DB, chế độ **gửi ẩn danh** thu gọn, thông báo **toast glass**
 - **Bảo mật đăng nhập**: khóa 5 lần sai trong 15 phút theo IP + token CSRF, **đổi mật khẩu** ngay trong Admin → Change Password; trang đăng nhập admin nền **liquid glass** (blur + saturate) trên video nền
+- **2FA (TOTP)** qua Google Authenticator / Authy / 1Password — bật/tắt ngay trong Admin → Security, đăng nhập 2 bước (mật khẩu → mã 6 chữ số)
+- **Bảo mật phiên**: tự đăng xuất sau 30 phút không hoạt động, phiên gắn với IP + trình duyệt (fingerprint), regenerate session id khi đăng nhập
+- **Giới hạn tần suất toàn cục**: chặn tự động (HTTP 429) khi một IP vượt 100 request/60 giây, miễn trừ admin đã đăng nhập
 - **Trang pháp lý** viết bằng **plain-text có cú pháp nhẹ** (`##`, `###`, `-`, `**đậm**`, `[link](url)`) — hiển thị đẹp như HTML nhưng dễ chỉnh trong Admin → Pages, hỗ trợ placeholder `{name}`/`{email}`
+- **Đa ngôn ngữ** Việt / English cho toàn bộ trang công khai — chuyển ngôn ngữ bằng nút **VI | EN** trên nav (lưu vào cookie `lang` 365 ngày), nội dung trang pháp lý có bản riêng cho từng ngôn ngữ, chọn ngôn ngữ mặc định trong Admin → Settings
 - **Nút gọi nhanh** FAB glass (icon điện thoại) — bấm tự gọi số từ profile
 - **Nút trở lên đầu trang** và **nút gọi** đều bật/tắt được trong Admin → Settings
 - **Trang trí line-art**: trái tim hồng có chữ "love you" (phần liên hệ), dấu chấm hỏi vàng (phần FAQ)
@@ -60,7 +64,7 @@ cp .env.example .env
 
 - Đăng nhập: `http://your-site/admin/login.php`
 - Mật khẩu lấy từ `ADMIN_PASSWORD` trong `.env`
-- Bảo mật: khóa tạm thời sau 5 lần đăng nhập sai trong 15 phút (theo IP) + token CSRF
+- Bảo mật: khóa tạm thời sau 5 lần đăng nhập sai trong 15 phút (theo IP) + token CSRF; **2FA (TOTP)** tùy chọn qua Admin → Security; phiên hết hạn sau 30 phút không hoạt động
 - Các trang chính:
   - `admin/dashboard.php` — thống kê
   - `admin/profile.php` — hồ sơ cá nhân
@@ -71,8 +75,9 @@ cp .env.example .env
   - `admin/faqs.php` — câu hỏi thường gặp
   - `admin/messages.php` — tin nhắn liên hệ (phân trang + lọc/tìm kiếm)
   - `admin/analytics.php` — thống kê truy cập (biểu đồ line theo ngày, bảng Visitors phân trang)
-  - `admin/pages.php` — chỉnh sửa nội dung trang Chính sách & Điều khoản
-  - `admin/settings.php` — cấu hình + Export JSON + Reset
+  - `admin/pages.php` — chỉnh sửa nội dung trang Chính sách & Điều khoản (VI + EN)
+  - `admin/security.php` — 2FA (TOTP) & cấu hình phiên
+  - `admin/settings.php` — cấu hình + ngôn ngữ mặc định + Export JSON + Reset
   - `admin/password.php` — đổi mật khẩu admin
 
 ## Cấu trúc thư mục

@@ -39,6 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
         $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)")->execute([$k, $v]);
         $settings[$k] = $v;
     }
+    $lang = ($_POST['default_lang'] ?? 'vi') === 'en' ? 'en' : 'vi';
+    $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('default_lang', ?)")->execute([$lang]);
+    $settings['default_lang'] = $lang;
     $msg = 'Settings saved.';
     }
 }
@@ -161,6 +164,13 @@ $page = 'settings';
                         </label>
                     </div>
                     <?php endforeach; ?>
+                </div>
+                <div class="fg" style="margin-top:18px">
+                    <label class="fg-label">Default Language</label>
+                    <select class="fg-input" name="default_lang" style="max-width:200px">
+                        <option value="vi" <?= ($settings['default_lang'] ?? 'vi') === 'vi' ? 'selected' : '' ?>>Tiếng Việt</option>
+                        <option value="en" <?= ($settings['default_lang'] ?? 'vi') === 'en' ? 'selected' : '' ?>>English</option>
+                    </select>
                 </div>
                 <div class="btn-group" style="margin-top:20px">
                     <button type="submit" name="save_settings" class="btn btn-pri">Save Settings</button>

@@ -17,12 +17,13 @@ $faqs = [];
 
 $legalDefaults = require __DIR__ . '/includes/legal_defaults.php';
 
-$legalContent = $legalDefaults['privacy'] ?? '';
+$legalKey = $LANG === 'en' ? 'privacy_en' : 'privacy';
+$legalContent = $legalDefaults[$legalKey] ?? $legalDefaults['privacy'] ?? '';
 $legalUpdated = date('d/m/Y');
 if ($dbAvailable) {
     try {
-        $st = $pdo->prepare("SELECT content, updated_at FROM pages WHERE key = 'privacy'");
-        $st->execute();
+        $st = $pdo->prepare("SELECT content, updated_at FROM pages WHERE key = ?");
+        $st->execute([$legalKey]);
         $row = $st->fetch();
         if ($row) {
             if (!empty($row['content'])) $legalContent = $row['content'];
@@ -33,7 +34,7 @@ if ($dbAvailable) {
 $legalHtml = renderLegalText($legalContent);
 $legalHtml = str_replace(['{name}', '{email}'], [h($profile['name'] ?? 'Nam Trần'), h($profile['email'] ?? '')], $legalHtml);
 
-$pageTitle = 'Chính Sách Quyền Riêng Tư — ' . ($profile['name'] ?? 'Nam Trần');
+$pageTitle = t('privacy_title') . ' — ' . ($profile['name'] ?? 'Nam Trần');
 
 $navHomeOnly = true;
 
@@ -43,12 +44,12 @@ include 'partials/nav.php';
     <section class="section legal-section">
         <div class="container">
             <div class="section-header">
-                <p class="label">Privacy Policy</p>
-                <h2>Chính Sách Quyền Riêng Tư</h2>
+                <p class="label"><?= t('privacy_label') ?></p>
+                <h2><?= t('privacy_title') ?></h2>
             </div>
             <div class="legal">
                 <?= $legalHtml ?>
-                <span class="updated">Cập nhật lần cuối: <?= h($legalUpdated) ?></span>
+                <span class="updated"><?= t('legal_updated') ?> <?= h($legalUpdated) ?></span>
             </div>
         </div>
     </section>

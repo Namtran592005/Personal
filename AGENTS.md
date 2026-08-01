@@ -38,11 +38,26 @@ Mọi request bắt đầu bằng `require 'includes/config.php'`. File này:
 Chạy 1 lần khi `db_version < DB_VERSION`. Toàn bộ phải **idempotent** (chạy lại an toàn): ALTER bọc `try/catch`, seed dùng `INSERT OR IGNORE` hoặc kiểm tra `COUNT(*)`. Cuối cùng `INSERT OR REPLACE ... db_version`. Có guard `MIGRATIONS_RAN` để tránh chạy 2 lần trong 1 request.
 
 ### Auth (`includes/auth.php`)
-- `requireLogin()` — chuyển hướng về `/admin/login.php` nếu chưa đăng nhập.
+- `requireLogin()` — chuyển hướng về `/admin/login.php` nếu chưa đăng nhập, gọi `enforceSessionSecurity()`.
 - `isLoggedIn()` — kiểm tra `$_SESSION['user_id']`.
 - CSRF: `generateCsrfToken()` / `validateCsrfToken()`. **Mọi form POST admin PHẢI có hidden `_csrf` và validate**.
 - Brute force: `loginLockMinutes()` + `recordLoginAttempt()` + `clearLoginAttempts()` — khóa 5 lần sai/15 phút theo IP, chạy server-side mỗi request.
 - Login chấp nhận password từ `.env` (rehash bcrypt tự động) hoặc hash trong bảng `users`.
+- Đăng nhập 2 bước: `login($password)` chỉ verify → trả `?int`; nếu `twoFactorEnabled()` thì set `$_SESSION['2fa_user']` chuyển `admin/2fa.php`, nếu không gọi `completeLogin($userId)` (regenerate session id + set `last_activity`/`fingerprint`).
+- Session hardening: `enforceSessionSecurity()` — idle timeout `SESSION_TIMEOUT_MINUTES` (30p) + fingerprint IP/UA, hủy session khi khớp sai.
+
+### 2FA (TOTP, `includes/totp.php`)
+- Thuần PHP, RFC 6238: `generateTotpSecret()`, `totpCode()`, `verifyTotp()` (±1 step), `totpProvisioningUri()`. Bật/tắt ở `admin/security.php` (generate secret → xác nhận code → enable).
+
+### Rate limit toàn cục (`includes/rate-limit.php`)
+- Hook trong `config.php` sau khi load settings: mỗi request (trừ admin đã đăng nhập) upsert `rate_limits`, quá `RATE_LIMIT_MAX` (100) / `RATE_LIMIT_WINDOW` (60s) theo IP → HTTP 429.
+
+### i18n (`includes/lang.php` + `includes/i18n.php`)
+- Phân giải: `?lang=vi|en` → cookie `lang` → `settings.default_lang` → `vi`. Switch ở nav dùng `langUrl()`.
+- `t('key')` trả chuỗi theo `$LANG` từ `includes/i18n.php`. **KHÔNG dùng URL prefix `/en/`**.
+- Toàn bộ trang công khai (index, partials, privacy, terms, sitemap, check, error) đã i18n. Admin không i18n (trừ login/2fa/security tiếng Anh).
+- Trang pháp lý có 4 keys trong bảng `pages`: `privacy`/`terms`/`privacy_en`/`terms_en`, biên tập ở `admin/pages.php`.
+- `error.php` và `check.php` tự detect lang inline (không phụ thuộc DB).
 
 ## Cấu trúc thư mục
 

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/totp.php';
 
 function isLoggedIn(): bool {
     return isset($_SESSION['user_id']);
@@ -10,32 +11,65 @@ function requireLogin(): void {
         header('Location: ' . BASE_PATH . '/admin/login.php');
         exit;
     }
+    enforceSessionSecurity();
 }
 
-function login(string $password): bool {
+// Session hardening: idle timeout + fingerprint (IP + User-Agent) binding.
+// Destroys the session when it's been idle too long or was hijacked.
+function enforceSessionSecurity(): void {
+    if (!isLoggedIn()) return;
+
+    if (isset($_SESSION['last_activity']) && time() - $_SESSION['last_activity'] > SESSION_TIMEOUT_MINUTES * 60) {
+        session_unset();
+        session_destroy();
+        header('Location: ' . BASE_PATH . '/admin/login.php?timeout=1');
+        exit;
+    }
+    $_SESSION['last_activity'] = time();
+
+    $fp = sessionFingerprint();
+    if (isset($_SESSION['fingerprint']) && !hash_equals($_SESSION['fingerprint'], $fp)) {
+        session_unset();
+        session_destroy();
+        header('Location: ' . BASE_PATH . '/admin/login.php');
+        exit;
+    }
+    $_SESSION['fingerprint'] = $fp;
+}
+
+function sessionFingerprint(): string {
+    return hash('sha256', clientIp() . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? ''));
+}
+
+// Verify password + rehash when it matches the .env fallback. Returns user id or null.
+function login(string $password): ?int {
     global $pdo, $dbAvailable;
-    if (!$dbAvailable) return false;
+    if (!$dbAvailable) return null;
     $adminPassword = getAdminPassword();
     try {
         $stmt = $pdo->query("SELECT id, password_hash FROM users ORDER BY id LIMIT 1");
         $user = $stmt->fetch();
-        if (!$user) return false;
+        if (!$user) return null;
         if (password_verify($password, $user['password_hash'])) {
-            session_regenerate_id(true);
-            $_SESSION['user_id'] = $user['id'];
-            return true;
+            return (int)$user['id'];
         }
         if ($password === $adminPassword) {
             $hash = password_hash($adminPassword, PASSWORD_DEFAULT);
             $pdo->prepare("UPDATE users SET password_hash = ? WHERE id = ?")->execute([$hash, $user['id']]);
-            session_regenerate_id(true);
-            $_SESSION['user_id'] = $user['id'];
-            return true;
+            return (int)$user['id'];
         }
-        return false;
+        return null;
     } catch (PDOException $e) {
-        return false;
+        return null;
     }
+}
+
+// Fully establish the authenticated session (regenerates the id).
+function completeLogin(int $userId): void {
+    session_regenerate_id(true);
+    $_SESSION['user_id'] = $userId;
+    $_SESSION['last_activity'] = time();
+    $_SESSION['fingerprint'] = sessionFingerprint();
 }
 
 function generateCsrfToken(): string {
@@ -50,6 +84,7 @@ function validateCsrfToken(?string $token): bool {
 }
 
 function logout(): void {
+    session_unset();
     session_destroy();
     header('Location: ' . BASE_PATH . '/admin/login.php');
     exit;
@@ -57,6 +92,50 @@ function logout(): void {
 
 function clientIp(): string {
     return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+}
+
+// --- 2FA (TOTP) helpers ---
+
+function getUser(): ?array {
+    global $pdo, $dbAvailable;
+    if (!$dbAvailable) return null;
+    try {
+        $stmt = $pdo->query("SELECT * FROM users ORDER BY id LIMIT 1");
+        $user = $stmt->fetch();
+        return $user ?: null;
+    } catch (PDOException $e) {
+        return null;
+    }
+}
+
+function twoFactorEnabled(int $userId): bool {
+    global $pdo, $dbAvailable;
+    if (!$dbAvailable) return false;
+    try {
+        $stmt = $pdo->prepare("SELECT totp_enabled FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        return (int)$stmt->fetchColumn() === 1;
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
+function setTwoFactorSecret(int $userId, string $secret, int $enabled = 0): void {
+    global $pdo, $dbAvailable;
+    if (!$dbAvailable) return;
+    try {
+        $pdo->prepare("UPDATE users SET totp_secret = ?, totp_enabled = ? WHERE id = ?")
+            ->execute([$secret, $enabled, $userId]);
+    } catch (PDOException $e) {}
+}
+
+function disableTwoFactor(int $userId): void {
+    global $pdo, $dbAvailable;
+    if (!$dbAvailable) return;
+    try {
+        $pdo->prepare("UPDATE users SET totp_secret = '', totp_enabled = 0 WHERE id = ?")
+            ->execute([$userId]);
+    } catch (PDOException $e) {}
 }
 
 // Returns minutes remaining before the next allowed attempt (0 = not locked).

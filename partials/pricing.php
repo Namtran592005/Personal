@@ -5,8 +5,8 @@
         <div class="deco-rings lg r3" aria-hidden="true"></div>
         <div class="container">
             <div class="section-header fade-in">
-                <p class="label">Pricing</p>
-                <h2>Bảng giá dịch vụ</h2>
+                <p class="label"><?= t('sec_pricing_label') ?></p>
+                <h2><?= t('sec_pricing_title') ?></h2>
             </div>
             <div class="pricing-grid">
                 <?php foreach ($pricingPlans as $plan): ?>
@@ -22,7 +22,7 @@
                         <li><i class="ph ph-check"></i> <?= h($feature) ?></li>
                         <?php endforeach; ?>
                     </ul>
-                    <a href="#contact" class="btn <?= $plan['popular'] ? 'btn-primary' : 'btn-outline' ?>"><?= h($plan['button_text'] ?: 'Bắt đầu ngay') ?></a>
+                    <a href="#contact" class="btn <?= $plan['popular'] ? 'btn-primary' : 'btn-outline' ?>"><?= h($plan['button_text'] ?: t('get_started')) ?></a>
                 </div>
                 <?php endforeach; ?>
             </div>

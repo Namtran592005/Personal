@@ -5,14 +5,14 @@
         <div class="deco-rings lg r3" aria-hidden="true"></div>
         <div class="container">
             <div class="section-header fade-in">
-                <p class="label">Experience</p>
-                <h2>Kinh nghiệm làm việc</h2>
+                <p class="label"><?= t('sec_exp_label') ?></p>
+                <h2><?= t('sec_exp_title') ?></h2>
             </div>
             <div class="timeline">
                 <?php foreach ($experiences as $exp): ?>
                 <div class="timeline-item fade-in">
                     <div class="timeline-dot"></div>
-                    <div class="timeline-date"><?= h($exp['start_date'] ?: '?') ?> — <?= h($exp['end_date'] ?: 'Present') ?></div>
+                    <div class="timeline-date"><?= h($exp['start_date'] ?: '?') ?> — <?= h($exp['end_date'] ?: t('present')) ?></div>
                     <h4><?= h($exp['title']) ?></h4>
                     <div class="company"><?= h($exp['company']) ?><?= !empty($exp['location']) ? ' · ' . h($exp['location']) : '' ?></div>
                     <?php if (!empty($exp['description'])): ?>

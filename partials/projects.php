@@ -8,14 +8,14 @@
         <div class="deco-rings lg r3" aria-hidden="true"></div>
         <div class="container">
             <div class="section-header fade-in">
-                <p class="label">Projects</p>
-                <h2>Dự án tiêu biểu</h2>
+                <p class="label"><?= t('sec_projects_label') ?></p>
+                <h2><?= t('sec_projects_title') ?></h2>
             </div>
             <div class="shuffle-toggle">
                 <label class="shuffle-switch">
                     <input type="checkbox" id="shuffleCheck" checked>
                     <span class="shuffle-slider"></span>
-                    <span class="shuffle-label">Hiệu ứng xáo trộn</span>
+                    <span class="shuffle-label"><?= t('shuffle_effect') ?></span>
                 </label>
             </div>
             <div class="projects-grid" id="projects-grid">
@@ -38,7 +38,7 @@
                         <?php endif; ?>
                         <?php if (!empty($project['github_url'])): ?>
                         <a href="<?= h($project['github_url']) ?>" class="project-github" target="_blank" rel="noopener">
-                            <i class="ph ph-github-logo"></i> View on GitHub
+                            <i class="ph ph-github-logo"></i> <?= t('view_on_github') ?>
                         </a>
                         <?php endif; ?>
                     </div>
@@ -47,7 +47,7 @@
             </div>
             <?php if ($total > $initial): ?>
             <div class="show-more-wrap">
-                <button id="show-more-btn" class="btn btn-out" onclick="document.querySelectorAll('#projects-grid .hidden').forEach(c=>c.classList.remove('hidden'));this.remove()">Show More (<?= $total - $initial ?>)</button>
+                <button id="show-more-btn" class="btn btn-out" onclick="document.querySelectorAll('#projects-grid .hidden').forEach(c=>c.classList.remove('hidden'));this.remove()"><?= t('show_more') ?> (<?= $total - $initial ?>)</button>
             </div>
             <?php endif; ?>
         </div>

@@ -8,41 +8,33 @@ if (isLoggedIn()) {
     exit;
 }
 
-$error = null;
-if (!$dbAvailable) {
-    $error = 'Database connection unavailable.';
-}
-if (isset($_GET['timeout'])) {
-    $error = 'Session expired. Please sign in again.';
+// Must have completed the password step.
+if (empty($_SESSION['2fa_user'])) {
+    header('Location: ' . BASE_PATH . '/admin/login.php');
+    exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+$error = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify'])) {
     if (!validateCsrfToken($_POST['_csrf'] ?? '')) {
         $error = 'Invalid request. Please try again.';
     } else {
-        $lock = loginLockMinutes();
-        if ($lock > 0) {
-            $error = "Too many failed attempts. Try again in $lock minute" . ($lock > 1 ? 's' : '') . '.';
+        $userId = (int)$_SESSION['2fa_user'];
+        $user = getUser();
+        $secret = $user['totp_secret'] ?? '';
+        $code = $_POST['code'] ?? '';
+
+        if ($secret === '') {
+            $error = '2FA is not configured.';
+        } elseif (verifyTotp($secret, $code)) {
+            unset($_SESSION['2fa_user']);
+            clearLoginAttempts();
+            completeLogin($userId);
+            header('Location: ' . BASE_PATH . '/admin/dashboard.php');
+            exit;
         } else {
-            $password = $_POST['password'] ?? '';
-            if (empty($password)) {
-                $error = 'Please enter your password.';
-            } else {
-                $userId = login($password);
-                if ($userId === null) {
-                    recordLoginAttempt();
-                    $error = 'Invalid password.';
-                } elseif (twoFactorEnabled($userId)) {
-                    $_SESSION['2fa_user'] = $userId;
-                    header('Location: ' . BASE_PATH . '/admin/2fa.php');
-                    exit;
-                } else {
-                    clearLoginAttempts();
-                    completeLogin($userId);
-                    header('Location: ' . BASE_PATH . '/admin/dashboard.php');
-                    exit;
-                }
-            }
+            recordLoginAttempt();
+            $error = 'Invalid verification code.';
         }
     }
 }
@@ -52,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="<?= BASE_PATH ?>/assets/favicon.png" />
-    <title>Sign in — Admin</title>
+    <title>Verify — Admin</title>
     <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/icons/phosphor/style.css" />
     <link rel="stylesheet" href="<?= BASE_PATH ?>/admin-assets/admin.css" />
     <style>html,body{margin:0;padding:0;background:#0a0a0c;scrollbar-width:none;-ms-overflow-style:none}html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}.login-wrap{scrollbar-width:none;-ms-overflow-style:none}.login-wrap::-webkit-scrollbar{display:none}.back-home{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:18px;padding:10px;color:rgba(255,255,255,0.55);font-size:13px;font-weight:500;text-decoration:none;border-radius:8px;transition:color 0.2s,background 0.2s}.back-home:hover{color:#f5f5f7;background:rgba(255,255,255,0.06)}</style>
@@ -65,20 +57,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         </video>
     </div>
     <div class="login-card">
-        <h1>Welcome back</h1>
-        <p class="sub">Enter your password to sign in</p>
+        <h1>Two-factor check</h1>
+        <p class="sub">Enter the 6-digit code from your authenticator app</p>
         <?php if ($error): ?>
         <div class="alert alert-no"><?= h($error) ?></div>
         <?php endif; ?>
         <form method="POST">
             <input type="hidden" name="_csrf" value="<?= generateCsrfToken() ?>">
             <div class="fg">
-                <label class="fg-label">Password</label>
-                <input class="fg-input" type="password" name="password" required autocomplete="current-password" />
+                <label class="fg-label">Verification code</label>
+                <input class="fg-input" type="text" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required autofocus placeholder="000000" />
             </div>
-            <button type="submit" name="login" class="btn btn-pri">Sign In</button>
+            <button type="submit" name="verify" class="btn btn-pri">Verify</button>
         </form>
-        <a href="<?= BASE_PATH ?>/index.php" class="back-home"><i class="ph ph-house-line"></i> Back to Home</a>
+        <a href="<?= BASE_PATH ?>/admin/login.php" class="back-home"><i class="ph ph-arrow-left"></i> Back to sign in</a>
     </div>
 </div>
 <script>

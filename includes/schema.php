@@ -3,19 +3,27 @@
 // Shared by config.php (table bootstrap), migrations.php (one-time runs),
 // and tools/smoke.php (verification).
 
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 const GITHUB_CACHE_TTL = 1800;   // seconds (30 min)
 const GITHUB_MAX_REPOS = 50;
 const BEACON_MAX_SECONDS = 3600;
 const LOGIN_MAX_ATTEMPTS = 5;
 const LOGIN_LOCK_MINUTES = 15;
+const RATE_LIMIT_WINDOW = 60;       // seconds per window
+const RATE_LIMIT_MAX = 100;         // max requests per IP per window
+const SESSION_TIMEOUT_MINUTES = 30; // admin idle timeout
+const TOTP_DIGITS = 6;
+const TOTP_PERIOD = 30;             // seconds
+const TOTP_WINDOW = 1;              // ±1 step tolerance
 
 function schemaTables(): array {
     return [
         'users' => "CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             password_hash TEXT NOT NULL,
+            totp_secret TEXT DEFAULT '',
+            totp_enabled INTEGER DEFAULT 0,
             created_at TEXT DEFAULT (datetime('now'))
         )",
 
@@ -138,6 +146,14 @@ function schemaTables(): array {
             attempted_at TEXT DEFAULT (datetime('now'))
         )",
 
+        'rate_limits' => "CREATE TABLE IF NOT EXISTS rate_limits (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip TEXT NOT NULL,
+            window_start INTEGER NOT NULL,
+            hits INTEGER DEFAULT 1,
+            UNIQUE (ip, window_start)
+        )",
+
         'pages' => "CREATE TABLE IF NOT EXISTS pages (
             key TEXT PRIMARY KEY NOT NULL,
             title TEXT NOT NULL DEFAULT '',
@@ -153,5 +169,6 @@ function schemaSettingsDefaults(): array {
         'show_contact' => '1', 'show_experience' => '1',
         'enable_analytics' => '1', 'enable_contact_form' => '1', 'github_username' => 'namtran592005',
         'show_back_top' => '1', 'show_call_fab' => '1',
+        'default_lang' => 'vi',
     ];
 }

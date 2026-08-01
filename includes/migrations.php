@@ -37,6 +37,15 @@ try {
         try { $pdo->exec("ALTER TABLE profile ADD COLUMN avatar TEXT DEFAULT ''"); } catch (PDOException $e) {}
     }
 
+    // users: 2FA (TOTP) columns
+    $ucols = $pdo->query("PRAGMA table_info(users)")->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array('totp_secret', $ucols, true)) {
+        try { $pdo->exec("ALTER TABLE users ADD COLUMN totp_secret TEXT DEFAULT ''"); } catch (PDOException $e) {}
+    }
+    if (!in_array('totp_enabled', $ucols, true)) {
+        try { $pdo->exec("ALTER TABLE users ADD COLUMN totp_enabled INTEGER DEFAULT 0"); } catch (PDOException $e) {}
+    }
+
     // --- Seed data ---
 
     // Pricing plans (only when empty)
@@ -53,7 +62,8 @@ try {
 
     // Legal pages: seed defaults + migrate legacy HTML rows
     $legalDefaults = require __DIR__ . '/legal_defaults.php';
-    $pageTitles = ['privacy' => 'Chính Sách Quyền Riêng Tư', 'terms' => 'Điều Khoản Sử Dụng'];
+    $pageTitles = ['privacy' => 'Chính Sách Quyền Riêng Tư', 'terms' => 'Điều Khoản Sử Dụng',
+        'privacy_en' => 'Privacy Policy', 'terms_en' => 'Terms of Service'];
     foreach ($legalDefaults as $k => $content) {
         $pdo->prepare("INSERT OR IGNORE INTO pages (key, title, content, updated_at) VALUES (?, ?, ?, datetime('now'))")
             ->execute([$k, $pageTitles[$k] ?? $k, $content]);

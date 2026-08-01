@@ -21,8 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_pages'])) {
     if (!$csrfOk) {
         $msg = 'Invalid request.';
     } else {
-        $pageTitles = ['privacy' => 'Chính Sách Quyền Riêng Tư', 'terms' => 'Điều Khoản Sử Dụng'];
-        foreach (['privacy', 'terms'] as $key) {
+        $pageTitles = ['privacy' => 'Chính Sách Quyền Riêng Tư', 'terms' => 'Điều Khoản Sử Dụng',
+            'privacy_en' => 'Privacy Policy', 'terms_en' => 'Terms of Service'];
+        foreach (['privacy', 'terms', 'privacy_en', 'terms_en'] as $key) {
             $content = $_POST[$key . '_content'] ?? '';
             $pdo->prepare("INSERT OR REPLACE INTO pages (key, title, content, updated_at) VALUES (?, ?, ?, datetime('now'))")
                 ->execute([$key, $pageTitles[$key], $content]);
@@ -32,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_pages'])) {
 }
 
 $pages = [];
-foreach (['privacy', 'terms'] as $key) {
+foreach (['privacy', 'terms', 'privacy_en', 'terms_en'] as $key) {
     $row = null;
     try {
         $st = $pdo->prepare("SELECT * FROM pages WHERE key = ?");
@@ -84,7 +85,7 @@ $page = 'pages';
         <form method="POST">
             <input type="hidden" name="_csrf" value="<?= generateCsrfToken() ?>">
             <div class="form-card page-edit">
-                <div class="form-title">Chính Sách Quyền Riêng Tư</div>
+                <div class="form-title">Chính Sách Quyền Riêng Tư (VI)</div>
                 <div class="fg">
                     <textarea name="privacy_content" rows="20"><?= h($pages['privacy']['content'] ?? '') ?></textarea>
                 </div>
@@ -92,11 +93,27 @@ $page = 'pages';
             </div>
 
             <div class="form-card page-edit" style="margin-top:20px">
-                <div class="form-title">Điều Khoản Sử Dụng</div>
+                <div class="form-title">Privacy Policy (EN)</div>
+                <div class="fg">
+                    <textarea name="privacy_en_content" rows="20"><?= h($pages['privacy_en']['content'] ?? '') ?></textarea>
+                </div>
+                <p class="help-note">Plain-text format, same as above. Placeholders <code>{name}</code> and <code>{email}</code> are replaced automatically.</p>
+            </div>
+
+            <div class="form-card page-edit" style="margin-top:20px">
+                <div class="form-title">Điều Khoản Sử Dụng (VI)</div>
                 <div class="fg">
                     <textarea name="terms_content" rows="20"><?= h($pages['terms']['content'] ?? '') ?></textarea>
                 </div>
                 <p class="help-note">Plain-text format, tương tự trang Chính Sách. Placeholders <code>{name}</code> và <code>{email}</code> sẽ tự động thay bằng tên &amp; email trong hồ sơ khi hiển thị.</p>
+            </div>
+
+            <div class="form-card page-edit" style="margin-top:20px">
+                <div class="form-title">Terms of Service (EN)</div>
+                <div class="fg">
+                    <textarea name="terms_en_content" rows="20"><?= h($pages['terms_en']['content'] ?? '') ?></textarea>
+                </div>
+                <p class="help-note">Plain-text format, same as above. Placeholders <code>{name}</code> and <code>{email}</code> are replaced automatically.</p>
             </div>
 
             <div class="btn-group" style="margin-top:20px">

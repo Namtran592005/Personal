@@ -10,8 +10,8 @@
         </div>
         <div class="container">
             <div class="section-header fade-in">
-                <p class="label">FAQ</p>
-                <h2>Câu hỏi thường gặp</h2>
+                <p class="label"><?= t('sec_faq_label') ?></p>
+                <h2><?= t('sec_faq_title') ?></h2>
             </div>
             <div class="faq-list">
                 <?php if (isset($faqs) && count($faqs) > 0): ?>
@@ -23,20 +23,20 @@
                     <?php endforeach; ?>
                 <?php else: ?>
                 <div class="faq-item fade-in">
-                    <div class="faq-question">What technologies do you work with?</div>
-                    <div class="faq-answer">I work across the full stack — from React, Next.js, and TypeScript on the frontend to Node.js, Python, and Go on the backend. I'm always exploring new tools and frameworks to find the best solution for each project.</div>
+                    <div class="faq-question"><?= t('faq_placeholder_1_q') ?></div>
+                    <div class="faq-answer"><?= t('faq_placeholder_1_a') ?></div>
                 </div>
                 <div class="faq-item fade-in">
-                    <div class="faq-question">Are you available for freelance work?</div>
-                    <div class="faq-answer">I'm open to freelance projects and collaborations. Whether it's building a web application, contributing to an open-source project, or providing technical consultation, feel free to reach out.</div>
+                    <div class="faq-question"><?= t('faq_placeholder_2_q') ?></div>
+                    <div class="faq-answer"><?= t('faq_placeholder_2_a') ?></div>
                 </div>
                 <div class="faq-item fade-in">
-                    <div class="faq-question">What's your preferred development workflow?</div>
-                    <div class="faq-answer">I follow an agile approach — breaking projects into small, iterative milestones. I prioritise clean code, thorough testing, and clear communication throughout the development process.</div>
+                    <div class="faq-question"><?= t('faq_placeholder_3_q') ?></div>
+                    <div class="faq-answer"><?= t('faq_placeholder_3_a') ?></div>
                 </div>
                 <div class="faq-item fade-in">
-                    <div class="faq-question">How can I get in touch with you?</div>
-                    <div class="faq-answer">You can reach me via email at <a href="mailto:hello@namtran.dev" style="color:#1d1d1f;text-decoration:underline">hello@namtran.dev</a>. I typically respond within 24 hours.</div>
+                    <div class="faq-question"><?= t('faq_placeholder_4_q') ?></div>
+                    <div class="faq-answer"><?= t('faq_placeholder_4_a') ?></div>
                 </div>
                 <?php endif; ?>
             </div>

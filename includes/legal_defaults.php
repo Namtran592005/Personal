@@ -136,4 +136,137 @@ Nếu bất kỳ điều khoản nào của thoả thuận này bị tuyên bố
 Nếu bạn có câu hỏi hoặc thắc mắc về các điều khoản này, vui lòng liên hệ qua:
 [{email}](mailto:{email})
 TXT,
+
+    'privacy_en' => <<<'TXT'
+This policy describes how the website {name} ("we") collects, uses, stores and protects your data when you visit the website and use our services. Please read it carefully before using the website.
+
+## 1. Introduction & Scope
+This policy applies to all pages and features of the website, including but not limited to: the homepage, the contact area, the message form and the visitor tracking system. By accessing or using the website, you confirm that you have read, understood and agreed to the contents of this policy.
+
+## 2. Data we collect
+### 2.1. Automatically collected data (visit analytics)
+When you visit the website, the system automatically records some technical information for statistics and user experience improvement:
+- The IP (Internet Protocol) address of the device.
+- User-Agent (browser type, operating system, device type).
+- The referrer page that led you to the website.
+- Screen size and browser language.
+- Pages visited and visit counts.
+- Time spent on page (only counted while the browser tab is visible, reported when you leave).
+- Estimated geographic location (country, city) based on the IP address.
+This data is stored in a local database (SQLite) on the website hosting server and is not used to identify you beyond statistical purposes.
+
+### 2.2. Data you provide voluntarily
+When using the contact form, you may provide:
+- Your name.
+- Your email address.
+- The subject and body of your message.
+If you choose the "Send anonymously" option, we only receive the message content and do not store your name or email. Form data is stored in the local database and may be sent to our email inbox for processing.
+
+### 2.3. Browser local storage (localStorage)
+The website uses browser localStorage to remember your theme preference (light/dark mode). This information stays on your device, is not sent to the server, and is not used for any other purpose.
+
+## 3. Purpose of data processing
+We only use collected data for the following purposes:
+- Operating, maintaining and securing the website.
+- Counting visits and traffic sources to improve content and user experience.
+- Responding to contact messages and supporting you.
+- Complying with applicable legal obligations.
+We do **not** use the data to build advertising profiles, and we do not sell, rent or transfer your data to third parties for commercial purposes.
+
+## 4. Legal basis for data processing
+Processing of your personal data is based on your consent when using the website and contact form. We also comply with applicable laws, including but not limited to:
+- **Vietnam:** Decree No. 13/2023/ND-CP dated 17/04/2023 on personal data protection.
+- **European Union:** General Data Protection Regulation (GDPR 2016/679) if you are a citizen or resident of the EU/EEA.
+
+## 5. Sharing data with third parties
+We do not sell, rent or exchange your personal data. Data may only be disclosed in the following cases:
+- **Service providers:** contact messages may be sent via Google email services (Gmail SMTP) to respond to you; messages are processed according to Google's privacy policy.
+- **Public data:** the website displays public repositories of the configured GitHub account, which are public data on GitHub.
+- **Legal requests:** when required by a lawful request from a competent authority.
+
+## 6. Data security
+We apply reasonable technical and organisational measures to protect data, including:
+- The admin password is hashed with bcrypt and never stored in plain text.
+- The login session uses cookies with HttpOnly and SameSite=Strict attributes, reducing the risk of session hijacking and CSRF.
+- The login form is protected by a CSRF token and rate-limited login attempts.
+- Data is stored in a local database on the server, reducing the risk of unauthorised access.
+- We recommend accessing the website over an HTTPS connection to protect data in transit.
+That said, no data transmission or storage method is absolutely secure. We cannot guarantee absolute security and recommend you do not send sensitive information through the contact form.
+
+## 7. Cookies and similar technologies
+The website uses a session cookie required for admin login and localStorage to remember your theme preference. The website does not use third-party cookies, has no ads and no external tracking tools. You can delete cookies and localStorage data at any time through your browser settings.
+
+## 8. Data retention
+Visit analytics and contact messages are retained for as long as needed for the stated purposes. Analytics data can be deleted periodically through the admin area. Contact messages may be kept to allow us to respond and support you, then removed when no longer needed.
+
+## 9. Your rights
+Depending on applicable law, you have the right to:
+- Access and request a copy of your personal data.
+- Request correction of inaccurate data.
+- Request deletion of personal data when no longer needed or when consent is withdrawn.
+- Restrict or object to data processing where the law allows.
+- Lodge a complaint with the competent data protection authority if you believe your rights have been violated.
+To exercise these rights, please contact us using the details in section 12. We will respond within a reasonable time as required by law.
+
+## 10. Children
+The website is not directed at children under 16 and we do not knowingly collect personal data from children. If you are a parent or guardian and believe we have inadvertently collected data from a child, please contact us so we can handle and delete it.
+
+## 11. Policy changes
+We may update this policy from time to time to reflect changes in technology, services or the law. Any changes will be posted on this page with the update date. Continued use of the website after changes means you accept the new version of the policy.
+
+## 12. Contact
+If you have any questions or requests regarding this privacy policy, please contact us:
+[{email}](mailto:{email})
+TXT,
+
+    'terms_en' => <<<'TXT'
+These terms govern your access to and use of the website {name} ("the website"). By accessing the website, you agree to comply with all the terms below. If you do not agree, please stop using the website.
+
+## 1. Introduction & Acceptance of terms
+The website is a personal introduction and services page for {name}, including intro, skills, projects, pricing, FAQ and contact sections. By using the website, you are deemed to have read, understood and agreed to be bound by these terms together with our Privacy Policy.
+
+## 2. Use of the website
+You may access and use the website for personal, lawful, non-commercial purposes, unless otherwise agreed in writing. You agree not to:
+- Use the website for any unlawful purpose or in violation of applicable law.
+- Attempt to gain unauthorised access to the admin area, database or technical systems of the website.
+- Engage in destructive acts, attacks (including denial-of-service), vulnerability scanning, or exploit security flaws of the website.
+- Scrape large volumes of data or interfere with the operation of the website.
+- Post or transmit malicious content, harmful software or malware through the website.
+
+## 3. Intellectual property
+All content on the website — including design, interface, images, text, logos, website source code and presentation — is our property or that of the respective rights holders and is protected by intellectual property law. You may not copy, republish, distribute, modify or reuse website content for commercial purposes without prior written consent.
+Use of open-source libraries (such as GSAP, Phosphor Icons, Inter font) is subject to each library's license.
+
+## 4. GitHub projects and external links
+The website displays a list of public repositories from the configured GitHub account via the public GitHub API. The content and license of each repository are determined by their respective owners.
+The website may contain links to third-party websites (GitHub, social media, email...). We do not control and are not responsible for the content, privacy policies or behaviour of these third-party websites.
+
+## 5. User-submitted content
+When using the contact form, you submit certain information to us. You warrant that what you submit:
+- Does not violate Vietnamese or relevant international law.
+- Does not contain offensive, abusive, harassing, discriminatory or threatening content.
+- Does not contain advertising, spam or other nuisance.
+- Does not contain false information or impersonation.
+- Does not contain malware, malicious links or unlawful content.
+We reserve the right to refuse to process or delete messages that violate the above. When you send a message, you grant us the right to use that information to respond and process your request, in line with the Privacy Policy.
+
+## 6. Pricing
+Prices, packages and related information displayed on the website are for reference only and may change over time. Contract value, scope of work and schedule are agreed specifically between the parties and take effect according to the signed contract or service agreement. Information displayed on the website does not constitute an offer or binding commitment until a formal agreement is reached.
+
+## 7. Limitation of liability
+The website is provided on an "as is" basis without any warranties, express or implied, including but not limited to warranties of availability, accuracy of content, or fitness for a particular purpose. To the fullest extent permitted by law, we are not liable for any direct, indirect, incidental, consequential or special damages arising from the use or inability to use the website, even if we have been advised of the possibility of such damages.
+
+## 8. Governing law and dispute resolution
+These terms are governed by and interpreted in accordance with the laws of the Socialist Republic of Vietnam. Any dispute arising from or in connection with the use of the website shall be settled first through negotiation and mediation. If resolution cannot be reached, the dispute shall be submitted to the competent People's Court in Vietnam.
+
+## 9. Changes to terms
+We may revise and supplement these terms at any time. The new version will be posted on this page with the update date. Continued use of the website after changes means you accept the new terms. You should check this page periodically for updates.
+
+## 10. Miscellaneous
+If any provision of this agreement is held to be invalid or unenforceable, that provision will be severed from the remaining provisions, and the remaining provisions remain in full force. Our failure to enforce any provision does not constitute a waiver of the right to enforce it.
+
+## 11. Contact
+If you have questions or concerns about these terms, please contact us:
+[{email}](mailto:{email})
+TXT,
 ];

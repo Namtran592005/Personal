@@ -17,12 +17,13 @@ $faqs = [];
 
 $legalDefaults = require __DIR__ . '/includes/legal_defaults.php';
 
-$legalContent = $legalDefaults['terms'] ?? '';
+$legalKey = $LANG === 'en' ? 'terms_en' : 'terms';
+$legalContent = $legalDefaults[$legalKey] ?? $legalDefaults['terms'] ?? '';
 $legalUpdated = date('d/m/Y');
 if ($dbAvailable) {
     try {
-        $st = $pdo->prepare("SELECT content, updated_at FROM pages WHERE key = 'terms'");
-        $st->execute();
+        $st = $pdo->prepare("SELECT content, updated_at FROM pages WHERE key = ?");
+        $st->execute([$legalKey]);
         $row = $st->fetch();
         if ($row) {
             if (!empty($row['content'])) $legalContent = $row['content'];
@@ -33,7 +34,7 @@ if ($dbAvailable) {
 $legalHtml = renderLegalText($legalContent);
 $legalHtml = str_replace(['{name}', '{email}'], [h($profile['name'] ?? 'Nam Trần'), h($profile['email'] ?? '')], $legalHtml);
 
-$pageTitle = 'Điều Khoản Sử Dụng — ' . ($profile['name'] ?? 'Nam Trần');
+$pageTitle = t('terms_title') . ' — ' . ($profile['name'] ?? 'Nam Trần');
 
 $navHomeOnly = true;
 
@@ -43,12 +44,12 @@ include 'partials/nav.php';
     <section class="section legal-section">
         <div class="container">
             <div class="section-header">
-                <p class="label">Terms of Service</p>
-                <h2>Điều Khoản Sử Dụng</h2>
+                <p class="label"><?= t('terms_label') ?></p>
+                <h2><?= t('terms_title') ?></h2>
             </div>
             <div class="legal">
                 <?= $legalHtml ?>
-                <span class="updated">Cập nhật lần cuối: <?= h($legalUpdated) ?></span>
+                <span class="updated"><?= t('legal_updated') ?> <?= h($legalUpdated) ?></span>
             </div>
         </div>
     </section>

@@ -664,6 +664,46 @@ nav.scrolled {
   color: #1d1d1f;
   background: rgba(0, 0, 0, 0.05);
 }
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #86868b;
+  margin-right: 10px;
+}
+.lang-switch a {
+  color: #86868b;
+  text-decoration: none;
+  padding: 3px 7px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+}
+.lang-switch a:hover {
+  color: #1d1d1f;
+}
+.lang-switch a.on {
+  color: #1d1d1f;
+  background: rgba(0, 0, 0, 0.06);
+}
+html.dark .lang-switch a.on {
+  color: #f5f5f7;
+  background: rgba(255, 255, 255, 0.1);
+}
+html.dark .lang-switch a {
+  color: #a1a1a6;
+}
+html.dark .lang-switch a:hover {
+  color: #f5f5f7;
+}
+.lang-switch .sep {
+  color: #d2d2d7;
+}
+.lang-switch a::after {
+  display: none;
+}
 html.dark .dark-toggle {
   color: #86868b;
 }
@@ -753,6 +793,13 @@ html.dark .nav-toggle:hover {
   }
   html.dark .nav-links a:hover {
     color: #ffffff;
+  }
+  .lang-switch {
+    font-size: 13px;
+    margin-right: 0;
+  }
+  .lang-switch a {
+    font-size: 13px;
   }
 }
 

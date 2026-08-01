@@ -2,21 +2,26 @@
 $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
 $base = substr(__DIR__, strlen(rtrim($docRoot, '/')));
 define('BASE_PATH', $base === '' || $base === false || $base === '.' ? '' : $base);
+
+// Lightweight i18n (standalone page — works even when the DB is down).
+$lang = $_GET['lang'] ?? ($_COOKIE['lang'] ?? 'vi');
+$lang = $lang === 'en' ? 'en' : 'vi';
+
 $code = $_GET['code'] ?? '404';
 $msg = match ($code) {
-    '403' => 'Forbidden',
-    '404' => 'Page not found',
-    '500' => 'Internal server error',
-    default => 'Something went wrong'
+    '403' => $lang === 'en' ? 'Forbidden' : 'Forbidden',
+    '404' => $lang === 'en' ? 'Page not found' : 'Page not found',
+    '500' => $lang === 'en' ? 'Internal server error' : 'Internal server error',
+    default => $lang === 'en' ? 'Something went wrong' : 'Something went wrong'
 };
 $hint = match ($code) {
-    '403' => 'Bạn không có quyền truy cập trang này.',
-    '404' => 'Trang bạn tìm đã bị di chuyển hoặc không còn tồn tại.',
-    '500' => 'Đã có lỗi phía máy chủ. Vui lòng thử lại sau.',
-    default => 'Đã xảy ra sự cố ngoài ý muốn.'
+    '403' => $lang === 'en' ? 'You do not have permission to view this page.' : 'Bạn không có quyền truy cập trang này.',
+    '404' => $lang === 'en' ? 'The page you are looking for was moved or no longer exists.' : 'Trang bạn tìm đã bị di chuyển hoặc không còn tồn tại.',
+    '500' => $lang === 'en' ? 'A server error occurred. Please try again later.' : 'Đã có lỗi phía máy chủ. Vui lòng thử lại sau.',
+    default => $lang === 'en' ? 'Something unexpected happened.' : 'Đã xảy ra sự cố ngoài ý muốn.'
 };
 ?><!DOCTYPE html>
-<html lang="vi">
+<html lang="<?= $lang === 'en' ? 'en' : 'vi' ?>">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -160,11 +165,11 @@ $hint = match ($code) {
     <div class="wrap">
         <div class="code"><?= $code ?></div>
         <span class="pill"><i class="ph ph-circle-notch"></i> <?= $msg ?></span>
-        <h1 class="title">Không thể tải trang</h1>
+        <h1 class="title"><?= $lang === 'en' ? 'Page could not be loaded' : 'Không thể tải trang' ?></h1>
         <p class="hint"><?= $hint ?></p>
         <div class="actions">
-            <a class="btn-home" href="<?= BASE_PATH ?>/index.php"><i class="ph ph-house-line"></i> Về trang chủ</a>
-            <a class="btn-admin" href="<?= BASE_PATH ?>/admin/login.php"><i class="ph ph-user-circle"></i> Quản trị</a>
+            <a class="btn-home" href="<?= BASE_PATH ?>/index.php"><i class="ph ph-house-line"></i> <?= $lang === 'en' ? 'Back to Home' : 'Về trang chủ' ?></a>
+            <a class="btn-admin" href="<?= BASE_PATH ?>/admin/login.php"><i class="ph ph-user-circle"></i> <?= $lang === 'en' ? 'Admin' : 'Quản trị' ?></a>
         </div>
         <p class="foot">Nam Trần — Personal Website</p>
     </div>

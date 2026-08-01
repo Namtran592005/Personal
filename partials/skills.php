@@ -5,8 +5,8 @@
         <div class="deco-rings lg r3" aria-hidden="true"></div>
         <div class="container">
             <div class="section-header fade-in">
-                <p class="label">Skills</p>
-                <h2>What I Do</h2>
+                <p class="label"><?= t('sec_skills_label') ?></p>
+                <h2><?= t('sec_skills_title') ?></h2>
             </div>
             <div class="skills-grid">
                 <?php foreach ($skills as $skill): ?>

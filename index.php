@@ -71,7 +71,7 @@ if ($dbAvailable) {
     }
 }
 
-$pageTitle = $profile['name'] . ' — Personal Website';
+$pageTitle = $profile['name'] . t('site_title');
 
 include 'partials/header.php';
 include 'partials/nav.php';
