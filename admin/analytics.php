@@ -26,7 +26,9 @@ if ($dbAvailable) {
         $activeWeek = $pdo->query("SELECT COUNT(*) FROM analytics WHERE last_seen >= datetime('now', '-7 days')")->fetchColumn();
         $totalSeconds = (int)$pdo->query("SELECT COALESCE(SUM(time_spent), 0) FROM analytics")->fetchColumn();
 
-        $daily = $pdo->query("SELECT date(last_seen) as d, COUNT(*) as c FROM analytics WHERE strftime('%Y', last_seen) = '$thisYear' GROUP BY d ORDER BY d ASC")->fetchAll();
+        $stmtD = $pdo->prepare("SELECT date(last_seen) as d, COUNT(*) as c FROM analytics WHERE strftime('%Y', last_seen) = ? GROUP BY d ORDER BY d ASC");
+        $stmtD->execute([$thisYear]);
+        $daily = $stmtD->fetchAll();
 
         $langs = $pdo->query("SELECT language, COUNT(*) as c FROM analytics WHERE language != '' GROUP BY language ORDER BY c DESC LIMIT 10")->fetchAll();
 

@@ -33,7 +33,7 @@ $csrfOk = validateCsrfToken($_POST['_csrf'] ?? null);
 // Toggle settings
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     if (!$csrfOk) { $msg = 'Invalid request.'; } else {
-    $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','enable_analytics','enable_contact_form','show_back_top','show_call_fab'];
+    $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','show_experience','enable_analytics','enable_contact_form','show_back_top','show_call_fab'];
     foreach ($keys as $k) {
         $v = isset($_POST[$k]) ? '1' : '0';
         $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)")->execute([$k, $v]);
@@ -139,6 +139,7 @@ $page = 'settings';
                     $toggles = [
                         'show_skills' => ['Skills Section', 'Show skills grid on homepage'],
                         'show_projects' => ['Projects Section', 'Show GitHub projects on homepage'],
+                        'show_experience' => ['Experience Section', 'Show work history timeline on homepage'],
                         'show_pricing' => ['Pricing Section', 'Show services & pricing on homepage'],
                         'show_faq' => ['FAQ Section', 'Show frequently asked questions'],
                         'show_contact' => ['Contact Section', 'Show contact info and form'],

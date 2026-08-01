@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/functions.php';
 requireLogin();
 
 $skillCount = 0; $projectCount = 0; $unread = 0; $totalMsg = 0;
-$faqCount = 0; $visitCount = 0;
+$faqCount = 0; $visitCount = 0; $expCount = 0;
 $recent = [];
 $profile = ['name' => 'Admin'];
 
@@ -13,6 +13,7 @@ if ($dbAvailable) {
     try {
         $skillCount = $pdo->query("SELECT COUNT(*) FROM skills")->fetchColumn();
         $projectCount = $pdo->query("SELECT COUNT(*) FROM projects")->fetchColumn();
+        $expCount = $pdo->query("SELECT COUNT(*) FROM experiences")->fetchColumn();
         $unread = $pdo->query("SELECT COUNT(*) FROM messages WHERE is_read = 0")->fetchColumn();
         $totalMsg = $pdo->query("SELECT COUNT(*) FROM messages")->fetchColumn();
         $faqCount = $pdo->query("SELECT COUNT(*) FROM faqs")->fetchColumn();
@@ -53,6 +54,10 @@ $page = 'dashboard';
             <div class="stat-card">
                 <div class="val"><?= $projectCount ?></div>
                 <div class="lbl">Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="val"><?= $expCount ?></div>
+                <div class="lbl">Experiences</div>
             </div>
             <div class="stat-card">
                 <div class="val"><?= $unread ?></div>

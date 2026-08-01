@@ -7,6 +7,9 @@
                 <?php if (($settings['show_skills'] ?? '1') === '1' && count($skills) > 0): ?>
                 <a href="#skills">Skills</a>
                 <?php endif; ?>
+                <?php if (($settings['show_experience'] ?? '1') === '1' && count($experiences) > 0): ?>
+                <a href="#experience">Experience</a>
+                <?php endif; ?>
                 <?php if (($settings['show_projects'] ?? '1') === '1' && count($projects) > 0): ?>
                 <a href="#projects">Projects</a>
                 <?php endif; ?>

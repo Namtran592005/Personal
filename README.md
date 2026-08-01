@@ -6,16 +6,17 @@ Bản `v2` là thiết kế lại hoàn toàn từ `master`, kèm quản trị n
 
 ## Tính năng
 
-- **One-page** responsive: Hero, Kỹ năng, Dự án, FAQ, Bảng giá, Liên hệ
+- **One-page** responsive: Hero, Kỹ năng, Kinh nghiệm, Dự án, FAQ, Bảng giá, Liên hệ
 - **Trang phụ**: `privacy.php` (chính sách riêng tư), `terms.php` (điều khoản), `sitemap.php` (bản đồ trang web) — nav tự rút gọn chỉ còn "Trang chủ"; nội dung 2 trang pháp lý **chỉnh sửa được** trong Admin → Pages
 - **Xáo trộn dự án** bằng GSAP Flip — hiệu ứng bay chéo mượt, có nút bật/tắt, tự tắt trên mobile
 - **Dark mode** mặc định, đồng bộ qua `localStorage`, nút toggle trên toàn site (kể cả trang lỗi/check)
 - **Cuộn mượt** (`scroll-behavior: smooth`) toàn bộ trang công khai, không áp dụng cho admin
-- **Admin quản trị** đầy đủ: hồ sơ, kỹ năng, dự án, FAQ, **bảng giá**, tin nhắn liên hệ, thống kê truy cập
+- **Admin quản trị** đầy đủ: hồ sơ, kỹ năng, kinh nghiệm, dự án, FAQ, **bảng giá**, tin nhắn liên hệ, thống kê truy cập
+- **Migration tự động** theo `db_version` (`includes/migrations.php`) — chỉ chạy một lần khi schema cũ, seed dữ liệu mẫu lần đầu
 - **Thống kê truy cập** đầy đủ: lượt xem, trình duyệt, ngôn ngữ, **thời gian xem trang** (tổng & trung bình/khách, đo bằng `visibilitychange` + `sendBeacon`, chỉ tính khi tab hiển thị)
 - **Bảng giá dịch vụ** CRUD linh hoạt: giá, gói "phổ biến", badge, tính năng, ẩn/hiện, thứ tự
 - **Form liên hệ** gửi mail SMTP (Gmail App Password) + lưu vào DB, chế độ **gửi ẩn danh** thu gọn, thông báo **toast glass**
-- **Bảo mật đăng nhập**: khóa 5 lần sai trong 15 phút theo IP + token CSRF; trang đăng nhập admin nền **liquid glass** (blur + saturate) trên video nền
+- **Bảo mật đăng nhập**: khóa 5 lần sai trong 15 phút theo IP + token CSRF, **đổi mật khẩu** ngay trong Admin → Change Password; trang đăng nhập admin nền **liquid glass** (blur + saturate) trên video nền
 - **Trang pháp lý** viết bằng **plain-text có cú pháp nhẹ** (`##`, `###`, `-`, `**đậm**`, `[link](url)`) — hiển thị đẹp như HTML nhưng dễ chỉnh trong Admin → Pages, hỗ trợ placeholder `{name}`/`{email}`
 - **Nút gọi nhanh** FAB glass (icon điện thoại) — bấm tự gọi số từ profile
 - **Nút trở lên đầu trang** và **nút gọi** đều bật/tắt được trong Admin → Settings
@@ -60,6 +61,7 @@ cp .env.example .env
   - `admin/dashboard.php` — thống kê
   - `admin/profile.php` — hồ sơ cá nhân
   - `admin/skills.php` — kỹ năng
+  - `admin/experiences.php` — kinh nghiệm làm việc (timeline)
   - `admin/projects.php` — dự án
   - `admin/pricing.php` — quản lý bảng giá
   - `admin/faqs.php` — câu hỏi thường gặp
@@ -67,6 +69,7 @@ cp .env.example .env
   - `admin/analytics.php` — thống kê truy cập (biểu đồ line theo ngày)
   - `admin/pages.php` — chỉnh sửa nội dung trang Chính sách & Điều khoản
   - `admin/settings.php` — cấu hình + Export JSON + Reset
+  - `admin/password.php` — đổi mật khẩu admin
 
 ## Cấu trúc thư mục
 
@@ -82,7 +85,7 @@ cp .env.example .env
 ├── .env.example           # Bản mẫu cấu hình
 ├── admin/                 # Khu vực quản trị
 ├── admin-assets/admin.css
-├── includes/              # config, auth, github, mail, track, legal_defaults...
+├── includes/              # config, auth, github, mail, track, legal_defaults, migrations...
 ├── partials/              # header, nav, hero, projects, pricing, footer...
 ├── assets/
 │   ├── js/                # gsap, Flip, chart (local)

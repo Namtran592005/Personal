@@ -51,6 +51,16 @@ if ($dbAvailable) {
     }
 }
 
+// Experiences from DB
+$experiences = [];
+if ($dbAvailable) {
+    try {
+        $experiences = $pdo->query("SELECT * FROM experiences WHERE visible = 1 ORDER BY sort_order ASC, id DESC")->fetchAll();
+    } catch (PDOException $e) {
+        try { $experiences = $pdo->query("SELECT * FROM experiences ORDER BY sort_order ASC, id DESC")->fetchAll(); } catch (PDOException $e2) {}
+    }
+}
+
 // Pricing plans from DB
 $pricingPlans = [];
 if ($dbAvailable) {
@@ -67,6 +77,7 @@ include 'partials/header.php';
 include 'partials/nav.php';
 include 'partials/hero.php';
 if (($settings['show_skills'] ?? '1') === '1') include 'partials/skills.php';
+if (($settings['show_experience'] ?? '1') === '1') include 'partials/experiences.php';
 if (($settings['show_projects'] ?? '1') === '1') include 'partials/projects.php';
 if (($settings['show_faq'] ?? '1') === '1') include 'partials/faq.php';
 if (($settings['show_pricing'] ?? '1') === '1') include 'partials/pricing.php';

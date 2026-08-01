@@ -13,9 +13,11 @@ if ($dbAvailable) {
 
 $skills = [];
 $faqs = [];
+$experiences = [];
 if ($dbAvailable) {
     try { $skills = $pdo->query("SELECT * FROM skills WHERE visible = 1 ORDER BY sort_order ASC")->fetchAll(); } catch (PDOException $e) {}
     try { $faqs = $pdo->query("SELECT * FROM faqs WHERE visible = 1 ORDER BY sort_order ASC, id DESC")->fetchAll(); } catch (PDOException $e) {}
+    try { $experiences = $pdo->query("SELECT * FROM experiences WHERE visible = 1 ORDER BY sort_order ASC, id DESC")->fetchAll(); } catch (PDOException $e) {}
 }
 $projects = [];
 
@@ -44,6 +46,9 @@ include 'partials/nav.php';
                 <ul class="sitemap-list">
                     <?php if (($settings['show_skills'] ?? '1') === '1' && count($skills) > 0): ?>
                     <li><a href="<?= BASE_PATH ?>/index.php#skills">Kỹ năng</a><span>Các công nghệ và kỹ năng chuyên môn.</span></li>
+                    <?php endif; ?>
+                    <?php if (($settings['show_experience'] ?? '1') === '1' && count($experiences) > 0): ?>
+                    <li><a href="<?= BASE_PATH ?>/index.php#experience">Kinh nghiệm</a><span>Lịch trình làm việc và công ty đã làm việc.</span></li>
                     <?php endif; ?>
                     <?php if (($settings['show_projects'] ?? '1') === '1'): ?>
                     <li><a href="<?= BASE_PATH ?>/index.php#projects">Dự án</a><span>Bộ sưu tập dự án đồng bộ từ GitHub.</span></li>

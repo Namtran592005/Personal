@@ -20,6 +20,9 @@
             <a href="<?= BASE_PATH ?>/admin/projects.php" class="<?= $page === 'projects' ? 'active' : '' ?>">
                 <i class="ph ph-folder"></i> <span>Projects</span>
             </a>
+            <a href="<?= BASE_PATH ?>/admin/experiences.php" class="<?= $page === 'experiences' ? 'active' : '' ?>">
+                <i class="ph ph-briefcase"></i> <span>Experiences</span>
+            </a>
             <a href="<?= BASE_PATH ?>/admin/pricing.php" class="<?= $page === 'pricing' ? 'active' : '' ?>">
                 <i class="ph ph-currency-circle-dollar"></i> <span>Pricing</span>
             </a>
@@ -37,6 +40,9 @@
             </a>
             <a href="<?= BASE_PATH ?>/admin/settings.php" class="<?= $page === 'settings' ? 'active' : '' ?>">
                 <i class="ph ph-gear"></i> <span>Settings</span>
+            </a>
+            <a href="<?= BASE_PATH ?>/admin/password.php" class="<?= $page === 'password' ? 'active' : '' ?>">
+                <i class="ph ph-lock-key"></i> <span>Change Password</span>
             </a>
         </nav>
         <div class="sidebar-foot">

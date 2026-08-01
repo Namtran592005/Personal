@@ -845,6 +845,22 @@ canvas#chartDaily {
     content: "Status";
   }
 
+  .tbl-experiences td:nth-child(1)::before {
+    content: "Order";
+  }
+  .tbl-experiences td:nth-child(2)::before {
+    content: "Title";
+  }
+  .tbl-experiences td:nth-child(3)::before {
+    content: "Company";
+  }
+  .tbl-experiences td:nth-child(4)::before {
+    content: "Period";
+  }
+  .tbl-experiences td:nth-child(5)::before {
+    content: "Status";
+  }
+
   .tbl-projects td:nth-child(1)::before {
     content: "Title";
   }
