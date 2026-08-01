@@ -1038,3 +1038,32 @@ canvas#chartDaily {
     margin-bottom: 10px !important;
   }
 }
+
+/* Ultra-large screens: scale the whole admin up proportionally so it
+   never looks tiny on 4K / ultrawide / browser zoomed out < 70%. */
+@media (min-width: 1600px) {
+  html {
+    zoom: 1.06;
+  }
+  .main-content {
+    padding: 36px 48px;
+  }
+}
+@media (min-width: 2200px) {
+  html {
+    zoom: 1.16;
+  }
+}
+@media (min-width: 3000px) {
+  html {
+    zoom: 1.28;
+  }
+  .main-content {
+    padding: 44px 60px;
+  }
+}
+@media (min-width: 4000px) {
+  html {
+    zoom: 1.42;
+  }
+}

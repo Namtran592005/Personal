@@ -2194,3 +2194,49 @@ nav:not(.scrolled) .nav-toggle:hover {
     background: rgba(28, 28, 30, 0.92);
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Ultra-large screens (4K / ultrawide / browser zoomed out < 70%)     */
+/* Scale the whole layout proportionally so content never looks tiny,  */
+/* and let the main column breathe a little wider on very big displays.*/
+/* ------------------------------------------------------------------ */
+@media (min-width: 1600px) {
+  html {
+    zoom: 1.06;
+  }
+  .container,
+  .nav-container,
+  .footer-content {
+    max-width: 1220px;
+  }
+}
+@media (min-width: 2200px) {
+  html {
+    zoom: 1.16;
+  }
+  .container,
+  .nav-container,
+  .footer-content {
+    max-width: 1360px;
+  }
+}
+@media (min-width: 3000px) {
+  html {
+    zoom: 1.28;
+  }
+  .container,
+  .nav-container,
+  .footer-content {
+    max-width: 1520px;
+  }
+}
+@media (min-width: 4000px) {
+  html {
+    zoom: 1.42;
+  }
+  .container,
+  .nav-container,
+  .footer-content {
+    max-width: 1720px;
+  }
+}
