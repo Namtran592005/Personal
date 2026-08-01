@@ -11,7 +11,7 @@ $sh = (int)($_GET['sh'] ?? 0);
 $lang = $_GET['lang'] ?? '';
 $country = $_GET['country'] ?? '';
 $city = $_GET['city'] ?? '';
-$duration = max(0, min(3600, (int)($_GET['duration'] ?? 0)));
+$duration = max(0, min(BEACON_MAX_SECONDS, (int)($_GET['duration'] ?? 0)));
 
 if ($dbAvailable && $ip && ($settings['enable_analytics'] ?? '1') === '1') {
     try {

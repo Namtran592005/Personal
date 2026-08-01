@@ -29,7 +29,7 @@ if ($dbAvailable) {
 // Fetch projects from GitHub
 require 'includes/github.php';
 $githubUser = $settings['github_username'] ?? 'namtran592005';
-$projects = fetchGithubRepos($githubUser, 50, $githubUser);
+$projects = fetchGithubRepos($githubUser, GITHUB_MAX_REPOS, $githubUser);
 
 // Skills from DB (fallback: empty)
 $skills = [];

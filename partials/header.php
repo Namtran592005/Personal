@@ -55,7 +55,7 @@
             var s = Math.round(acc / 1000);
             if (s > 0) {
                 try {
-                    navigator.sendBeacon('<?= BASE_PATH ?>/includes/track.php?duration=' + Math.min(s, 3600));
+                    navigator.sendBeacon('<?= BASE_PATH ?>/includes/track.php?duration=' + Math.min(s, <?= BEACON_MAX_SECONDS ?>));
                 } catch (e) {}
             }
         });

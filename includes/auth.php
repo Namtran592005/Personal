@@ -55,9 +55,6 @@ function logout(): void {
     exit;
 }
 
-define('LOGIN_MAX_ATTEMPTS', 5);
-define('LOGIN_LOCK_MINUTES', 15);
-
 function clientIp(): string {
     return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 }

@@ -13,6 +13,8 @@ Bản `v2` là thiết kế lại hoàn toàn từ `master`, kèm quản trị n
 - **Cuộn mượt** (`scroll-behavior: smooth`) toàn bộ trang công khai, không áp dụng cho admin
 - **Admin quản trị** đầy đủ: hồ sơ, kỹ năng, kinh nghiệm, dự án, FAQ, **bảng giá**, tin nhắn liên hệ, thống kê truy cập
 - **Migration tự động** theo `db_version` (`includes/migrations.php`) — chỉ chạy một lần khi schema cũ, seed dữ liệu mẫu lần đầu
+- **Schema tập trung** (`includes/schema.php`) — DDL, hằng số (`DB_VERSION`, cache TTL, giới hạn beacon, khóa đăng nhập) dùng chung cho config, migration và test
+- **Kiểm tra tự động** (`tools/`): `lint.php` quét syntax toàn bộ PHP (`php -l`), `smoke.php` kiểm tra DB/tables/settings/helpers + HTTP theo `--url`; có sẵn GitHub Actions workflow chạy trên mỗi push
 - **Thống kê truy cập** đầy đủ: lượt xem, trình duyệt, ngôn ngữ, **thời gian xem trang** (tổng & trung bình/khách, đo bằng `visibilitychange` + `sendBeacon`, chỉ tính khi tab hiển thị)
 - **Bảng giá dịch vụ** CRUD linh hoạt: giá, gói "phổ biến", badge, tính năng, ẩn/hiện, thứ tự
 - **Form liên hệ** gửi mail SMTP (Gmail App Password) + lưu vào DB, chế độ **gửi ẩn danh** thu gọn, thông báo **toast glass**
@@ -85,7 +87,8 @@ cp .env.example .env
 ├── .env.example           # Bản mẫu cấu hình
 ├── admin/                 # Khu vực quản trị
 ├── admin-assets/admin.css
-├── includes/              # config, auth, github, mail, track, legal_defaults, migrations...
+├── includes/              # config, auth, github, mail, track, schema, migrations, legal_defaults...
+├── tools/                 # lint.php, smoke.php — kiểm tra tự động
 ├── partials/              # header, nav, hero, projects, pricing, footer...
 ├── assets/
 │   ├── js/                # gsap, Flip, chart (local)

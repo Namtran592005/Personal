@@ -2,6 +2,8 @@
 // One-time migrations & seed data.
 // Included from config.php only when DB_VERSION is out of date.
 
+require_once __DIR__ . '/schema.php';
+
 global $pdo, $dbAvailable, $settings;
 if (defined('MIGRATIONS_RAN')) return;
 if (!$dbAvailable || !$pdo) return;
@@ -59,13 +61,7 @@ try {
     }
 
     // Settings defaults
-    $defaults = [
-        'show_skills' => '1', 'show_projects' => '1', 'show_pricing' => '1', 'show_faq' => '1',
-        'show_contact' => '1', 'show_experience' => '1',
-        'enable_analytics' => '1', 'enable_contact_form' => '1', 'github_username' => 'namtran592005',
-        'show_back_top' => '1', 'show_call_fab' => '1',
-    ];
-    foreach ($defaults as $k => $v) {
+    foreach (schemaSettingsDefaults() as $k => $v) {
         $pdo->prepare("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)")->execute([$k, $v]);
     }
 

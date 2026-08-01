@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [v2, master]
+  pull_request:
+
+jobs:
+  lint-and-smoke:
+    name: PHP lint + smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo, pdo_sqlite, mbstring, session, fileinfo, json
+
+      - name: Lint all PHP files
+        run: php tools/lint.php
+
+      - name: Smoke test
+        run: php tools/smoke.php

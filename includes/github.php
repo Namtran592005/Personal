@@ -1,11 +1,12 @@
 <?php
-function fetchGithubRepos(string $username, int $max = 50, string $exclude = ''): array {
+require_once __DIR__ . '/schema.php';
+
+function fetchGithubRepos(string $username, int $max = GITHUB_MAX_REPOS, string $exclude = ''): array {
     $cacheDir = __DIR__ . '/../cache';
     if (!is_dir($cacheDir)) @mkdir($cacheDir, 0775, true);
     $cacheFile = $cacheDir . '/github_repos.json';
-    $cacheTime = 1800; // 30 min
 
-    if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTime) {
+    if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < GITHUB_CACHE_TTL) {
         $data = @file_get_contents($cacheFile);
         if ($data !== false) return json_decode($data, true) ?: [];
     }
