@@ -48,7 +48,7 @@ foreach ($dirs as $dir) {
 }
 
 // Key files
-$files = ['index.php', 'includes/config.php', 'includes/auth.php', 'includes/functions.php', 'admin/login.php', '.env'];
+$files = ['index.php', 'includes/config.php', 'includes/auth.php', 'includes/functions.php', 'includes/schema.php', 'includes/migrations.php', 'includes/lang.php', 'includes/totp.php', 'admin/login.php', 'admin/security.php', 'partials/header.php', '.env'];
 foreach ($files as $f) {
     $exists = file_exists(__DIR__ . "/$f");
     $checks["File: $f"] = ['ok' => $exists, 'val' => $exists ? 'exists' : 'missing'];
@@ -58,9 +58,96 @@ foreach ($files as $f) {
 $envUser = $_ENV['SMTP_USER'] ?? $_SERVER['SMTP_USER'] ?? getenv('SMTP_USER');
 $checks['SMTP configured'] = ['ok' => !empty($envUser), 'val' => empty($envUser) ? 'not set' : 'set'];
 
+// DB version: code (DB_VERSION from schema.php) vs server (settings.db_version)
+$dbVersionServer = null;
+if (isset($pdo) && $pdo) {
+    try { $dbVersionServer = (int)$pdo->query("SELECT value FROM settings WHERE key = 'db_version'")->fetchColumn(); } catch (Exception $e) {}
+}
+$dbVersionOk = $dbVersionServer !== null && $dbVersionServer >= DB_VERSION;
+$checks['DB version (server vs code)'] = [
+    'ok' => $dbVersionOk,
+    'val' => $dbVersionServer !== null ? "server $dbVersionServer / code " . DB_VERSION : 'DB not initialised yet',
+];
+
+// --- Deploy / permission helper (Linux + SFTP) ---
+// Detects the PHP process owner/group, inspects each critical path, and
+// produces the chown/chmod commands to run over SSH after an SFTP upload.
+$phpUser = 'www-data';
+$webGroup = 'www-data';
+if (function_exists('posix_geteuid')) {
+    $u = @posix_getpwuid(posix_geteuid());
+    if (is_array($u) && !empty($u['name'])) $phpUser = $u['name'];
+}
+if (function_exists('posix_getegid')) {
+    $g = @posix_getgrgid(posix_getegid());
+    if (is_array($g) && !empty($g['name'])) $webGroup = $g['name'];
+}
+
+function checkPermInfo(string $path): ?array {
+    if (!file_exists($path)) return null;
+    $owner = function_exists('posix_getpwuid') ? (@posix_getpwuid(fileowner($path))['name'] ?? (string)fileowner($path)) : (string)fileowner($path);
+    $group = function_exists('posix_getgrgid') ? (@posix_getgrgid(filegroup($path))['name'] ?? (string)filegroup($path)) : (string)filegroup($path);
+    return [
+        'mode' => decoct(fileperms($path) & 0777),
+        'owner' => $owner,
+        'group' => $group,
+        'writable' => is_writable($path),
+        'isDir' => is_dir($path),
+    ];
+}
+
+$permTargets = [
+    'data'             => ['mode' => '775', 'hint' => 'SQLite DB folder'],
+    'cache'            => ['mode' => '775', 'hint' => 'GitHub cache folder'],
+    'media'            => ['mode' => '775', 'hint' => 'Avatar uploads'],
+    'data/app.sqlite'  => ['mode' => '664', 'hint' => 'Database file'],
+    '.env'             => ['mode' => '640', 'hint' => 'Secrets file'],
+];
+
+$permRows = [];
+$permAllOk = true;
+$fixCmds = [];
+foreach ($permTargets as $rel => $t) {
+    $path = __DIR__ . '/' . $rel;
+    $info = checkPermInfo($path);
+    if ($info === null) {
+        $permRows[$rel] = [
+            'ok' => false,
+            'detail' => 'missing',
+            'cmd' => null,
+            'hint' => $t['hint'],
+            'missing' => true,
+        ];
+        $permAllOk = false;
+        continue;
+    }
+    $modeOk = $info['mode'] === $t['mode'];
+    $ownerOk = $info['owner'] === $phpUser && $info['group'] === $webGroup;
+    $ok = $modeOk && $ownerOk;
+    if (!$ok) $permAllOk = false;
+    $parts = [];
+    if (!$ownerOk) $parts[] = "sudo chown -R $phpUser:$webGroup $rel";
+    if (!$modeOk) $parts[] = "sudo chmod {$t['mode']} $rel";
+    $permRows[$rel] = [
+        'ok' => $ok,
+        'detail' => $info['mode'] . "  {$info['owner']}:{$info['group']}",
+        'cmd' => implode(' && ', $parts),
+        'hint' => $t['hint'],
+    ];
+    if (!$ok && $parts) $fixCmds[] = implode(' && ', $parts);
+}
+$fixCmds = array_values(array_unique($fixCmds));
+$permCmdBlock = count($fixCmds) > 0
+    ? "cd " . __DIR__ . "\n" . implode("\n", $fixCmds)
+    : '';
+
 $total = count($checks);
 $okCount = 0;
 foreach ($checks as $c) { if ($c['ok']) $okCount++; else $allOk = false; }
+$permFailCount = count(array_filter($permRows, fn($r) => !$r['ok']));
+if ($permFailCount > 0) $allOk = false;
+$total += count($permRows);
+$okCount += count($permRows) - $permFailCount;
 $failCount = $total - $okCount;
 ?><!DOCTYPE html>
 <html lang="vi">
@@ -163,6 +250,40 @@ $failCount = $total - $okCount;
         }
         .val-pill.ok { background: #e8f5e9; color: #2e7d32; }
         .val-pill.fail { background: #fbe9e7; color: #c62828; }
+        .val-pill.warn { background: #fff8e1; color: #b26a00; }
+
+        .perm-row { display: flex; align-items: center; gap: 14px; padding: 13px 20px; border-bottom: 1px solid #f2f2f5; }
+        html.dark .perm-row { border-color: #3a3a3c; }
+        .perm-row:last-child { border: none; }
+        .perm-row .p-path { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12.5px; font-weight: 500; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .perm-row .p-hint { font-size: 11px; color: #86868b; margin-left: 8px; flex-shrink: 0; }
+        .perm-row .p-mode { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; color: #515154; flex-shrink: 0; }
+        html.dark .perm-row .p-mode { color: #a1a1a6; }
+
+        .cmd-box-wrap { padding: 14px 20px 18px; }
+        .cmd-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .cmd-head .t { font-size: 12.5px; font-weight: 600; color: #1d1d1f; }
+        html.dark .cmd-head .t { color: #f5f5f7; }
+        .cmd-head .sub { font-size: 11.5px; color: #86868b; margin-top: 1px; }
+        .cmd-box {
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 12px; line-height: 1.7;
+            background: #f5f5f7; color: #1d1d1f;
+            border: 1px solid #e8e8ed; border-radius: 10px;
+            padding: 12px 14px; overflow-x: auto; white-space: pre;
+        }
+        html.dark .cmd-box { background: #1d1d1f; color: #f5f5f7; border-color: #3a3a3c; }
+        .copy-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 14px; border-radius: 999px; border: 1.5px solid #d2d2d7;
+            background: none; color: #515154; font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: all .2s;
+        }
+        .copy-btn:hover { border-color: #1d1d1f; color: #1d1d1f; }
+        html.dark .copy-btn { color: #a1a1a6; border-color: #48484a; }
+        html.dark .copy-btn:hover { border-color: #f5f5f7; color: #f5f5f7; }
+        .copy-btn.copied { border-color: #2e7d32; color: #2e7d32; }
+        html.dark .copy-btn.copied { border-color: #4caf50; color: #4caf50; }
 
         .actions { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
         .btn {
@@ -237,11 +358,81 @@ $failCount = $total - $okCount;
             <?php endforeach; ?>
         </div>
 
+        <div class="card" style="margin-top:18px">
+            <div class="row" style="border-bottom:1px solid #f2f2f5">
+                <div class="r-icon <?= $permAllOk ? 'ok' : 'fail' ?>">
+                    <i class="ph <?= $permAllOk ? 'ph-lock-key' : 'ph-lock-key' ?>"></i>
+                </div>
+                <span class="label"><?= $lang === 'en' ? 'File permissions (SFTP deploy)' : 'Quyền tập tin (deploy qua SFTP)' ?></span>
+                <span class="val" title="PHP user: <?= h($phpUser) ?> / group: <?= h($webGroup) ?>">php: <?= h($phpUser) ?>:<?= h($webGroup) ?></span>
+                <span class="val-pill <?= $permAllOk ? 'ok' : 'fail' ?>"><?= $permAllOk ? 'OK' : 'FIX' ?></span>
+            </div>
+            <?php foreach ($permRows as $rel => $pr): ?>
+            <div class="perm-row">
+                <div class="r-icon <?= $pr['ok'] ? 'ok' : 'fail' ?>">
+                    <i class="ph <?= $pr['ok'] ? 'ph-check' : 'ph-x' ?>"></i>
+                </div>
+                <span class="p-path"><?= h($rel) ?><span class="p-hint"><?= h($pr['hint']) ?></span></span>
+                <span class="p-mode"><?= h($pr['detail']) ?></span>
+                <span class="val-pill <?= $pr['ok'] ? 'ok' : 'warn' ?>"><?= $pr['ok'] ? 'OK' : 'FIX' ?></span>
+            </div>
+            <?php endforeach; ?>
+            <div class="cmd-box-wrap">
+                <div class="cmd-head">
+                    <div>
+                        <div class="t"><?= $lang === 'en' ? 'Run over SSH after SFTP upload' : 'Chạy qua SSH sau khi kéo file bằng SFTP' ?></div>
+                        <div class="sub"><?= $lang === 'en'
+                            ? 'Paste into the server terminal, then refresh this page.'
+                            : 'Dán vào terminal trên server, sau đó tải lại trang này.' ?></div>
+                    </div>
+                    <button class="copy-btn" onclick="copyCmd()" id="copyBtn"><i class="ph ph-copy-simple"></i> Copy</button>
+                </div>
+                <?php if ($permCmdBlock !== ''): ?>
+                <div class="cmd-box" id="cmdBox"><?= h($permCmdBlock) ?></div>
+                <?php else: ?>
+                <div class="cmd-box" id="cmdBox" style="color:#2e7d32"><?= $lang === 'en' ? '# Permissions are correct — nothing to run.' : '# Quyền đã đúng — không cần chạy gì.' ?></div>
+                <?php endif; ?>
+            </div>
+        </div>
+
         <div class="actions">
             <a class="btn btn-pri" href="<?= BASE_PATH ?>/admin/login.php"><i class="ph ph-user-circle"></i> <?= $lang === 'en' ? 'Admin' : 'Quản trị' ?></a>
             <a class="btn btn-out" href="<?= BASE_PATH ?>/index.php"><i class="ph ph-house-line"></i> <?= $lang === 'en' ? 'Back to Home' : 'Về trang chủ' ?></a>
         </div>
         <p class="foot">Nam Trần — Personal Website</p>
     </div>
+    <script>
+    function copyCmd() {
+        var box = document.getElementById('cmdBox');
+        var btn = document.getElementById('copyBtn');
+        if (!box || !btn) return;
+        var text = box.textContent;
+        function done() {
+            var label = btn.innerHTML;
+            btn.classList.add('copied');
+            btn.innerHTML = '<i class="ph ph-check"></i> Copied';
+            setTimeout(function() {
+                btn.classList.remove('copied');
+                btn.innerHTML = label;
+            }, 1800);
+        }
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(done, function() { fallbackCopy(text, done); });
+        } else {
+            fallbackCopy(text, done);
+        }
+    }
+    function fallbackCopy(text, done) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        done();
+    }
+    </script>
 </body>
 </html>
