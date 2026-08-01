@@ -55,6 +55,7 @@ if ($dbAvailable) {
 }
 
 $page = 'projects';
+$showForm = isset($_GET['new']) || !empty($edit);
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,12 +75,13 @@ $page = 'projects';
                 <h1>Projects</h1>
                 <div class="sub">Manage your featured projects</div>
             </div>
-            <a href="<?= BASE_PATH ?>/admin/projects.php" class="btn btn-pri <?= $edit ? '' : 'style=display:none' ?>"><i class="ph ph-plus"></i> Add New</a>
+            <a href="<?= BASE_PATH ?>/admin/projects.php?new=1" class="btn btn-pri <?= $showForm ? 'style=display:none' : '' ?>"><i class="ph ph-plus"></i> Add New</a>
         </div>
 
         <?php if ($success): ?><div class="alert alert-ok"><?= h($success) ?></div><?php endif; ?>
         <?php if ($error): ?><div class="alert alert-no"><?= h($error) ?></div><?php endif; ?>
 
+        <?php if (!$showForm): ?>
         <div class="tbl tbl-projects" style="margin-bottom:28px">
             <table>
                 <thead>
@@ -107,8 +109,9 @@ $page = 'projects';
                 </tbody>
             </table>
         </div>
+        <?php endif; ?>
 
-        <div class="form-card">
+        <div class="form-card" <?= $showForm ? '' : 'style=display:none' ?>>
             <div class="form-title"><?= $edit ? 'Edit Project' : 'Add Project' ?></div>
             <form method="POST">
                 <input type="hidden" name="_csrf" value="<?= generateCsrfToken() ?>">
@@ -153,7 +156,7 @@ $page = 'projects';
                 </div>
                 <div class="btn-group" style="margin-top:16px">
                     <button type="submit" name="save" class="btn btn-pri">Save</button>
-                    <?php if ($edit): ?><a href="<?= BASE_PATH ?>/admin/projects.php" class="btn btn-out">Cancel</a><?php endif; ?>
+                    <a href="<?= BASE_PATH ?>/admin/projects.php" class="btn btn-out">Cancel</a>
                 </div>
             </form>
         </div>

@@ -90,7 +90,7 @@ $page = 'settings';
     <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/icons/phosphor/style.css" />
     <link rel="stylesheet" href="<?= BASE_PATH ?>/admin-assets/admin.css" />
     <style>
-        .toggle-group { display: flex; flex-direction: column; gap: 16px; }
+        .toggle-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
         .toggle-row {
             display: flex; align-items: center; justify-content: space-between;
             padding: 14px 18px; background: #fafafa; border-radius: 8px; border: 1px solid #e8e8ed;
@@ -112,6 +112,9 @@ $page = 'settings';
         .danger-zone { margin-top: 32px; padding-top: 24px; border-top: 1px solid #e8e8ed; }
         .danger-zone h3 { font-size: 14px; font-weight: 600; color: #dc2626; margin-bottom: 12px; }
         .danger-zone .desc { font-size: 13px; color: #86868b; margin-bottom: 16px; }
+        @media (max-width: 560px) {
+            .toggle-group { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -127,7 +130,7 @@ $page = 'settings';
 
         <?php if ($msg): ?><div class="alert alert-ok"><?= h($msg) ?></div><?php endif; ?>
 
-        <div class="form-card" style="max-width:600px">
+        <div class="form-card" style="max-width:820px">
             <div class="form-title">Feature Toggles</div>
             <form method="POST">
                 <input type="hidden" name="_csrf" value="<?= generateCsrfToken() ?>">

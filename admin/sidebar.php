@@ -6,7 +6,7 @@
         <div class="sidebar-head">
             <h1>Dashboard</h1>
             <div class="sub">Admin Panel</div>
-        </div>
+            <a href="<?= BASE_PATH ?>/index.php" class="sidebar-view-site" target="_blank" rel="noopener">View Site</a>        </div>
         <nav class="sidebar-nav">
             <a href="<?= BASE_PATH ?>/admin/dashboard.php" class="<?= $page === 'dashboard' ? 'active' : '' ?>">
                 <i class="ph ph-chart-bar"></i> <span>Overview</span>

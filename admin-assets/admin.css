@@ -103,9 +103,30 @@ ul {
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+.sidebar-view-site {
+  display: block;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.sidebar-view-site:hover {
+  color: #fff;
+}
 .sidebar-nav {
   flex: 1;
   padding: 12px 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.sidebar-nav::-webkit-scrollbar {
+  display: none;
 }
 .sidebar-nav a {
   display: flex;
