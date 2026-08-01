@@ -15,7 +15,9 @@ Bản `v2` là thiết kế lại hoàn toàn từ `master`, kèm quản trị n
 - **Migration tự động** theo `db_version` (`includes/migrations.php`) — chỉ chạy một lần khi schema cũ, seed dữ liệu mẫu lần đầu
 - **Schema tập trung** (`includes/schema.php`) — DDL, hằng số (`DB_VERSION`, cache TTL, giới hạn beacon, khóa đăng nhập) dùng chung cho config, migration và test
 - **Kiểm tra tự động** (`tools/`): `lint.php` quét syntax toàn bộ PHP (`php -l`), `smoke.php` kiểm tra DB/tables/settings/helpers + HTTP theo `--url`; có sẵn GitHub Actions workflow chạy trên mỗi push
-- **Thống kê truy cập** đầy đủ: lượt xem, trình duyệt, ngôn ngữ, **thời gian xem trang** (tổng & trung bình/khách, đo bằng `visibilitychange` + `sendBeacon`, chỉ tính khi tab hiển thị)
+- **Thống kê truy cập** đầy đủ: lượt xem, trình duyệt, ngôn ngữ, **thời gian xem trang** (tổng & trung bình/khách, đo bằng `visibilitychange` + `sendBeacon`, chỉ tính khi tab hiển thị); bảng Visitors **phân trang**
+- **Upload ảnh đại diện** ngay trong Admin → Profile (PNG/JPG/WEBP, tối đa 2MB, tự validate MIME, lưu vào `media/`), hero hiển thị ảnh từ profile kèm fallback `media/avt.png`
+- **Tin nhắn liên hệ** có **phân trang + lọc** theo trạng thái (All/Unread/Read) và tìm kiếm theo tên/email/chủ đề
 - **Bảng giá dịch vụ** CRUD linh hoạt: giá, gói "phổ biến", badge, tính năng, ẩn/hiện, thứ tự
 - **Form liên hệ** gửi mail SMTP (Gmail App Password) + lưu vào DB, chế độ **gửi ẩn danh** thu gọn, thông báo **toast glass**
 - **Bảo mật đăng nhập**: khóa 5 lần sai trong 15 phút theo IP + token CSRF, **đổi mật khẩu** ngay trong Admin → Change Password; trang đăng nhập admin nền **liquid glass** (blur + saturate) trên video nền
@@ -33,7 +35,7 @@ Bản `v2` là thiết kế lại hoàn toàn từ `master`, kèm quản trị n
 
 - PHP **8.0+** với các extension: `pdo_sqlite`, `mbstring`, `session`, `fileinfo`, `json`
 - Web server bất kỳ (Caddy / Apache / Nginx / `php -S`)
-- Quyền ghi vào thư mục `data/` và `cache/`
+- **Quyền ghi vào thư mục `data/`, `cache/` và `media/`** (để upload ảnh đại diện)
 
 ## Cài đặt
 
@@ -67,8 +69,8 @@ cp .env.example .env
   - `admin/projects.php` — dự án
   - `admin/pricing.php` — quản lý bảng giá
   - `admin/faqs.php` — câu hỏi thường gặp
-  - `admin/messages.php` — tin nhắn liên hệ
-  - `admin/analytics.php` — thống kê truy cập (biểu đồ line theo ngày)
+  - `admin/messages.php` — tin nhắn liên hệ (phân trang + lọc/tìm kiếm)
+  - `admin/analytics.php` — thống kê truy cập (biểu đồ line theo ngày, bảng Visitors phân trang)
   - `admin/pages.php` — chỉnh sửa nội dung trang Chính sách & Điều khoản
   - `admin/settings.php` — cấu hình + Export JSON + Reset
   - `admin/password.php` — đổi mật khẩu admin

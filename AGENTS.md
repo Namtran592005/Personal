@@ -59,7 +59,7 @@ Chạy 1 lần khi `db_version < DB_VERSION`. Toàn bộ phải **idempotent** (
 ├── includes/          # config, schema, migrations, auth, functions, github, mail, track, legal_defaults, email-template
 ├── partials/          # header, nav, hero, skills, experiences, projects, faq, pricing, contact, footer
 ├── assets/            # site.css, js (gsap/Flip/chart), icons phosphor, fonts Inter, video (bg/hero)
-├── media/avt.png      # Ảnh đại diện
+├── media/avt.png      # Ảnh đại diện mặc định; avatar upload lưu media/avatar-*.png|jpg|webp
 ├── data/app.sqlite    # DB (gitignored, tự tạo lần đầu)
 ├── cache/             # Cache GitHub repos (gitignored)
 ├── tools/             # lint.php, smoke.php (test tự động)
@@ -87,7 +87,15 @@ Bảng `settings`, các key toggle: `show_skills`, `show_experience`, `show_proj
   - Image beacon (`?path=...&sw=&sh=&lang=`) → upsert 1 dòng/IP.
   - Duration beacon (`?duration=N`) → `UPDATE analytics SET time_spent += N, last_seen=now WHERE ip=?`.
 - `partials/header.php` — JS gửi pixel lúc load + `sendBeacon` lúc `pagehide` (chỉ tính khi tab visible qua `visibilitychange`), cap `BEACON_MAX_SECONDS`.
-- `admin/analytics.php` — thẻ thống kê + chart (Chart.js local) + bảng visitors. Cột `pages` hiển thị gọn `Nx /trang-đầu` kèm tooltip.
+- `admin/analytics.php` — thẻ thống kê + chart (Chart.js local) + bảng visitors phân trang (`vpage`, 20/trang). Cột `pages` hiển thị gọn `Nx /trang-đầu` kèm tooltip.
+
+### Avatar đại diện
+- Cột `avatar` trong bảng `profile` (`DB_VERSION=3`, ALTER idempotent trong migrations). Giá trị lưu đường dẫn tương đối như `media/avatar-<ts>-<rand>.<ext>`.
+- Upload ở `admin/profile.php`: form `enctype=multipart/form-data`, validate MIME bằng `finfo` (png/jpeg/webp, ≤2MB), lưu bằng `move_uploaded_file` vào `media/`.
+- Hiển thị: `partials/hero.php` + admin preview dùng `$profile['avatar'] ?: 'media/avt.png'` với `onerror` fallback về `media/avt.png`.
+
+### Tin nhắn liên hệ
+- `admin/messages.php` có phân trang (`page`, 15/trang) + lọc `status` (all/unread/read) + tìm `q` theo name/email/subject. Phải nhớ: biến `$page` dùng cho sidebar highlight — đừng dùng chung làm biến số trang.
 
 ### GitHub repos (`includes/github.php`)
 `fetchGithubRepos($username, $max=GITHUB_MAX_REPOS, $exclude)` — cache JSON 30 phút trong `cache/`, fallback cache cũ nếu API lỗi. Projects trên trang chủ lấy từ đây (không phải bảng `projects`). Bảng `projects` chỉ dùng nếu bạn bật tự CRUD (hiện trang chủ dùng GitHub).

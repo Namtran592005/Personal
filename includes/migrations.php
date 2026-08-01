@@ -31,6 +31,12 @@ try {
         try { $pdo->exec("ALTER TABLE analytics ADD COLUMN time_spent INTEGER DEFAULT 0"); } catch (PDOException $e) {}
     }
 
+    // profile: avatar column
+    $pcols = $pdo->query("PRAGMA table_info(profile)")->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array('avatar', $pcols, true)) {
+        try { $pdo->exec("ALTER TABLE profile ADD COLUMN avatar TEXT DEFAULT ''"); } catch (PDOException $e) {}
+    }
+
     // --- Seed data ---
 
     // Pricing plans (only when empty)

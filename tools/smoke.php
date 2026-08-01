@@ -44,6 +44,10 @@ if ($dbAvailable) {
     $pages = $pdo->query("SELECT key FROM pages")->fetchAll(PDO::FETCH_COLUMN);
     check('Legal pages seeded', in_array('privacy', $pages, true) && in_array('terms', $pages, true));
 
+    // profile.avatar column (DB_VERSION >= 3)
+    $pcols = $pdo->query("PRAGMA table_info(profile)")->fetchAll(PDO::FETCH_COLUMN, 1);
+    check('profile.avatar column', in_array('avatar', $pcols, true));
+
     // Core helpers exist
     check('Helper: renderLegalText', function_exists('renderLegalText'));
     check('Helper: formatDuration', function_exists('formatDuration'));

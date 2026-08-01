@@ -5,6 +5,23 @@ require_once __DIR__ . '/../includes/functions.php';
 requireLogin();
 
 $success = null; $error = null; $messages = []; $view = null;
+$perPage = 15;
+$p = max(1, (int)($_GET['page'] ?? 1));
+$status = $_GET['status'] ?? 'all';
+$q = trim($_GET['q'] ?? '');
+$total = 0;
+$pages = 1;
+
+$where = [];
+$params = [];
+if ($status === 'read') { $where[] = "is_read = 1"; }
+if ($status === 'unread') { $where[] = "is_read = 0"; }
+if ($q !== '') {
+    $where[] = "(name LIKE ? OR email LIKE ? OR subject LIKE ?)";
+    $like = "%$q%";
+    array_push($params, $like, $like, $like);
+}
+$whereSql = $where ? ' WHERE ' . implode(' AND ', $where) : '';
 
 if ($dbAvailable) {
     if (isset($_GET['delete'])) {
@@ -26,7 +43,17 @@ if ($dbAvailable) {
         } catch (PDOException $e) {}
     }
 
-    try { $messages = $pdo->query("SELECT * FROM messages ORDER BY created_at DESC")->fetchAll(); } catch (PDOException $e) {}
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM messages$whereSql");
+        $stmt->execute($params);
+        $total = (int)$stmt->fetchColumn();
+        $pages = max(1, (int)ceil($total / $perPage));
+        $p = min($p, $pages);
+        $offset = ($p - 1) * $perPage;
+        $stmt = $pdo->prepare("SELECT * FROM messages$whereSql ORDER BY created_at DESC LIMIT $perPage OFFSET $offset");
+        $stmt->execute($params);
+        $messages = $stmt->fetchAll();
+    } catch (PDOException $e) {}
 }
 
 $page = 'messages';
@@ -83,6 +110,19 @@ $page = 'messages';
         </div>
         <?php else: ?>
 
+        <form method="GET" class="filter-bar" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+            <input class="fg-input" type="text" name="q" value="<?= h($q) ?>" placeholder="Search name, email, subject..." style="max-width:280px" />
+            <select class="fg-input" name="status" style="max-width:160px">
+                <option value="all" <?= $status === 'all' ? 'selected' : '' ?>>All</option>
+                <option value="unread" <?= $status === 'unread' ? 'selected' : '' ?>>Unread</option>
+                <option value="read" <?= $status === 'read' ? 'selected' : '' ?>>Read</option>
+            </select>
+            <button type="submit" class="btn btn-out btn-sm">Filter</button>
+            <?php if ($status !== 'all' || $q !== ''): ?>
+            <a href="<?= BASE_PATH ?>/admin/messages.php" class="btn btn-out btn-sm">Clear</a>
+            <?php endif; ?>
+        </form>
+
         <div class="tbl tbl-messages">
                     <table>
                 <thead>
@@ -111,6 +151,21 @@ $page = 'messages';
                 </tbody>
             </table>
         </div>
+
+        <?php if ($total > $perPage): ?>
+        <div class="pagination" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:16px">
+            <?php
+            $qs = function (int $p) use ($status, $q) {
+                $parts = ['page' => $p];
+                if ($status !== 'all') $parts['status'] = $status;
+                if ($q !== '') $parts['q'] = $q;
+                return http_build_query($parts);
+            };
+            for ($i = 1; $i <= $pages; $i++): ?>
+            <a href="<?= BASE_PATH ?>/admin/messages.php?<?= $qs($i) ?>" class="btn btn-out btn-sm <?= $i === $p ? 'pagination-current' : '' ?>"><?= $i ?></a>
+            <?php endfor; ?>
+        </div>
+        <?php endif; ?>
         <?php endif; ?>
     </main>
 </div>

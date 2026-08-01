@@ -13,6 +13,10 @@ if ($dbAvailable) {
 }
 
 $thisYear = date('Y');
+$perPage = 20;
+$vPage = max(1, (int)($_GET['vpage'] ?? 1));
+$visitorTotal = 0;
+$visitorPages = 1;
 
 $totalVisitors = 0; $totalVisits = 0; $todayVisits = 0; $activeWeek = 0; $totalSeconds = 0;
 $daily = []; $browsers = []; $langs = [];
@@ -44,7 +48,11 @@ if ($dbAvailable) {
             $browsers[$bn] += (int)$a['visits'];
         }
 
-        $visitors = $pdo->query("SELECT * FROM analytics ORDER BY visits DESC, last_seen DESC")->fetchAll();
+        $visitorTotal = (int)$pdo->query("SELECT COUNT(*) FROM analytics")->fetchColumn();
+        $visitorPages = max(1, (int)ceil($visitorTotal / $perPage));
+        $vPage = min($vPage, $visitorPages);
+        $vOffset = ($vPage - 1) * $perPage;
+        $visitors = $pdo->query("SELECT * FROM analytics ORDER BY visits DESC, last_seen DESC LIMIT $perPage OFFSET $vOffset")->fetchAll();
     } catch (PDOException $e) {}
 }
 
@@ -147,6 +155,13 @@ $page = 'analytics';
                     </tbody>
                 </table>
             </div>
+            <?php if ($visitorTotal > $perPage): ?>
+            <div class="pagination" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:16px">
+                <?php for ($i = 1; $i <= $visitorPages; $i++): ?>
+                <a href="<?= BASE_PATH ?>/admin/analytics.php?vpage=<?= $i ?>" class="btn btn-out btn-sm <?= $i === $vPage ? 'pagination-current' : '' ?>"><?= $i ?></a>
+                <?php endfor; ?>
+            </div>
+            <?php endif; ?>
         </div>
     </main>
 </div>

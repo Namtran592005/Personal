@@ -3,7 +3,7 @@
 // Shared by config.php (table bootstrap), migrations.php (one-time runs),
 // and tools/smoke.php (verification).
 
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 const GITHUB_CACHE_TTL = 1800;   // seconds (30 min)
 const GITHUB_MAX_REPOS = 50;
@@ -27,6 +27,7 @@ function schemaTables(): array {
             email TEXT NOT NULL DEFAULT '',
             phone TEXT NOT NULL DEFAULT '',
             location TEXT NOT NULL DEFAULT '',
+            avatar TEXT DEFAULT '',
             social_github TEXT DEFAULT '',
             social_linkedin TEXT DEFAULT '',
             social_twitter TEXT DEFAULT '',

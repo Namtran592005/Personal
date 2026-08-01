@@ -4,7 +4,7 @@
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <img src="<?= BASE_PATH ?>/media/avt.png" alt="<?= h($profile['name'] ?? 'Avatar') ?>" class="hero-avatar" />
+            <img src="<?= BASE_PATH ?>/<?= h($profile['avatar'] ?: 'media/avt.png') ?>" alt="<?= h($profile['name'] ?? 'Avatar') ?>" class="hero-avatar" onerror="this.src='<?= BASE_PATH ?>/media/avt.png'" />
             <p class="hero-greeting">Hi, I'm</p>
             <h1 class="hero-name"><?= h($profile['name'] ?? 'Nam Trần') ?></h1>
             <p class="hero-title"><?= h($profile['title'] ?? 'Developer & Designer') ?></p>

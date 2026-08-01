@@ -8,6 +8,7 @@ $profile = ['name'=>'','title'=>'','bio'=>'','email'=>'','phone'=>'','location'=
     'social_github'=>'','social_linkedin'=>'','social_twitter'=>'','social_dribbble'=>'',
     'social_facebook'=>'','social_instagram'=>'','social_threads'=>'','social_tiktok'=>''];
 $success = null;
+$error = null;
 
 if ($dbAvailable) {
     try {
@@ -23,7 +24,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
                'social_facebook','social_instagram','social_threads','social_tiktok'];
     $sets = implode('=?, ', $fields) . '=?';
     $vals = array_map(fn($f) => trim($_POST[$f] ?? ''), $fields);
+
+    $avatar = $profile['avatar'] ?? '';
+    if (isset($_FILES['avatar']) && is_uploaded_file($_FILES['avatar']['tmp_name'])) {
+        $img = $_FILES['avatar'];
+        $ext = strtolower(pathinfo($img['name'], PATHINFO_EXTENSION));
+        $allowed = ['png' => 'image/png', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'webp' => 'image/webp'];
+        $mime = @finfo_file(finfo_open(FILEINFO_MIME_TYPE), $img['tmp_name']) ?: '';
+        if (!isset($allowed[$ext]) || $mime !== $allowed[$ext]) {
+            /* invalid type */ $error = 'Invalid image type (PNG, JPG, WEBP only).';
+        } elseif ($img['error'] !== UPLOAD_ERR_OK || $img['size'] > 2 * 1024 * 1024) {
+            $error = 'Upload failed or image larger than 2MB.';
+        } else {
+            $name = 'avatar-' . time() . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
+            if (move_uploaded_file($img['tmp_name'], __DIR__ . '/../media/' . $name)) {
+                $avatar = 'media/' . $name;
+            }
+        }
+    }
+
+    $vals[] = $avatar;
     $vals[] = 1;
+    $sets .= ', avatar=?';
     try {
         $pdo->prepare("UPDATE profile SET $sets WHERE id=?")->execute($vals);
         $db = $pdo->query("SELECT * FROM profile WHERE id = 1")->fetch();
@@ -60,9 +82,20 @@ $page = 'profile';
         </div>
 
         <?php if ($success): ?><div class="alert alert-ok"><?= h($success) ?></div><?php endif; ?>
+        <?php if ($error): ?><div class="alert alert-no"><?= h($error) ?></div><?php endif; ?>
 
-        <form method="POST" class="form-card">
+        <form method="POST" class="form-card" enctype="multipart/form-data">
             <input type="hidden" name="_csrf" value="<?= generateCsrfToken() ?>">
+            <div class="fg" style="margin-bottom:20px">
+                <label class="fg-label">Avatar</label>
+                <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+                    <img src="<?= BASE_PATH ?>/<?= h($profile['avatar'] ?: 'media/avt.png') ?>" alt="Avatar" style="width:72px;height:72px;border-radius:50%;object-fit:cover;background:#f0f0f2" onerror="this.src='<?= BASE_PATH ?>/media/avt.png'" />
+                    <div>
+                        <input type="file" name="avatar" accept="image/png,image/jpeg,image/webp" class="fg-input" style="padding:8px 12px" />
+                        <div class="txt-sm txt-muted" style="margin-top:6px">PNG, JPG or WEBP, max 2MB. Uploading replaces the current avatar.</div>
+                    </div>
+                </div>
+            </div>
             <div class="fg-row">
                 <div class="fg">
                     <label class="fg-label">Name</label>
