@@ -1,6 +1,7 @@
 <?php
 $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
-$base = substr(__DIR__, strlen(rtrim($docRoot, '/')));
+$base = substr(__DIR__, strlen(rtrim($docRoot, '/\\')));
+$base = str_replace('\\', '/', $base);
 define('BASE_PATH', $base === '' || $base === false || $base === '.' ? '' : $base);
 
 // Lightweight i18n (standalone page — works even when the DB is down).

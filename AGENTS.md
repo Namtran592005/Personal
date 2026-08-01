@@ -87,6 +87,7 @@ Chạy 1 lần khi `db_version < DB_VERSION`. Toàn bộ phải **idempotent** (
 - **SQL luôn dùng prepared statement** — không nối biến vào SQL. Nếu phải nối tên cột/bảng, dùng whitelist mảng cứng (vd `admin/profile.php`).
 - KHÔNG thêm comment khi viết code mới trừ khi thật cần thiết (mã hiện tại có một số comment tiếng Việt/Anh từ trước).
 - Đường dẫn luôn dùng `BASE_PATH` (portable, không hardcode). CSS cache-bust qua `filemtime()` trong `partials/header.php`.
+- **Tính portable (triển khai bất kỳ đâu, không phụ thuộc domain)**: toàn bộ link `href`/`src`/`action`/`fetch`/`header('Location')` PHẢI dùng `BASE_PATH` hoặc dạng tương đối (`?q=`, `#anchor`, `mailto:`, `tel:`, `../`). Không hardcode domain/đường dẫn tuyệt đối. `BASE_PATH` được chuẩn hóa forward-slash trong `config.php`, `error.php`, `check.php` (Windows/Linux đều chạy). URL tuyệt đối động (og:url, sitemap.xml, email template) dựng từ `$_SERVER['HTTPS']`+`HTTP_HOST`+`BASE_PATH`. Lưu ý: `$_SERVER['SCRIPT_NAME']` ĐÃ bao gồm `BASE_PATH` nên khi dùng nó không nối thêm `BASE_PATH` (xem `langUrl()` trong `includes/lang.php`).
 - Error handling kiểu codebase: bọc `try { ... } catch (PDOException $e) {}` — DB có thể unavailable, page phải fallback mềm.
 - Các trang admin: bắt đầu bằng 4 `require_once` (config, auth, functions) + `requireLogin()`, đặt `$page = '<tên>'` trước khi include sidebar để highlight menu.
 

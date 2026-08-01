@@ -88,7 +88,7 @@ include 'partials/nav.php';
                     <?php endif; ?>
                 </ul>
 
-                <span class="updated"><?= t('legal_updated') ?> 31/07/2026</span>
+                <span class="updated"><?= t('legal_updated') ?> <?= date('d/m/Y') ?></span>
             </div>
         </div>
     </section>

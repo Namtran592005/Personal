@@ -39,10 +39,12 @@ function t(string $key, string $default = ''): string {
 }
 
 // Current page URL with an explicit lang param (for the language switcher).
+// SCRIPT_NAME already includes BASE_PATH (e.g. /subdir/index.php), so don't
+// prefix it again; only fall back to the homepage when the route isn't a .php file.
 function langUrl(string $lang): string {
     $qs = $_GET;
     $qs['lang'] = $lang;
     $script = $_SERVER['SCRIPT_NAME'] ?? '';
-    if (!str_ends_with($script, '.php')) $script = '/index.php';
-    return BASE_PATH . $script . '?' . http_build_query($qs);
+    if (!str_ends_with($script, '.php')) $script = BASE_PATH . '/index.php';
+    return $script . '?' . http_build_query($qs);
 }

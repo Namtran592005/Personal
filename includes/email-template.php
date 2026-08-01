@@ -1,7 +1,8 @@
 <?php
 function emailTemplate(string $title, string $bodyHtml): string {
-    $domain = $_SERVER['HTTP_HOST'] ?? 'namtran.dev';
-    $siteUrl = ($_SERVER['REQUEST_SCHEME'] ?? 'https') . '://' . $domain;
+    $domain = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $scheme = $_SERVER['REQUEST_SCHEME'] ?? 'https';
+    $siteUrl = $scheme . '://' . $domain . (BASE_PATH ?: '');
     return <<<HTML
 <!DOCTYPE html>
 <html>

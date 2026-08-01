@@ -53,7 +53,9 @@ try {
 
 $projectDir = dirname(__DIR__);
 $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(dirname(__DIR__));
-$basePath = substr($projectDir, strlen(rtrim($docRoot, '/')));
+$basePath = substr($projectDir, strlen(rtrim($docRoot, '/\\')));
+// Normalise Windows backslashes so BASE_PATH is always URL-ready (/subdir).
+$basePath = str_replace('\\', '/', $basePath);
 define('BASE_PATH', $basePath === '' || $basePath === false || $basePath === '.' ? '' : $basePath);
 
 if ($dbAvailable) {

@@ -2,7 +2,8 @@
 require_once __DIR__ . '/includes/schema.php';
 require_once __DIR__ . '/includes/functions.php';
 $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
-$base = substr(__DIR__, strlen(rtrim($docRoot, '/')));
+$base = substr(__DIR__, strlen(rtrim($docRoot, '/\\')));
+$base = str_replace('\\', '/', $base);
 define('BASE_PATH', $base === '' || $base === false || $base === '.' ? '' : $base);
 
 // Lightweight i18n (standalone diagnostic page — works even when the DB is down).

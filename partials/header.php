@@ -8,7 +8,12 @@
     <meta property="og:title" content="<?= h($pageTitle ?? 'Nam Trần — Personal Website') ?>" />
     <meta property="og:description" content="<?= h(truncate($profile['bio'] ?? $profile['title'] ?? t('meta_default_desc'), 160)) ?>" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="<?= BASE_PATH ?>/" />
+    <?php
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $ogUrl = $scheme . '://' . $host . ($_SERVER['SCRIPT_NAME'] ?? BASE_PATH . '/');
+    ?>
+    <meta property="og:url" content="<?= h($ogUrl) ?>" />
     <link rel="alternate" hreflang="vi" href="<?= BASE_PATH ?>/index.php?lang=vi" />
     <link rel="alternate" hreflang="en" href="<?= BASE_PATH ?>/index.php?lang=en" />
     <link rel="icon" type="image/png" href="<?= BASE_PATH ?>/assets/favicon.png" />
