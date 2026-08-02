@@ -6,7 +6,7 @@ Hướng dẫn cho AI agent làm việc trong repo này. Đọc hết trước k
 
 Website cá nhân **PHP thuần + SQLite** (không Composer, không framework, không build step). One-page portfolio kiểu Apple + CMS mini với đầy đủ admin. Chạy trên Caddy/Apache/Nginx có PHP 8.0+.
 
-- Nhánh chính: `v2` (thiết kế lại hoàn toàn). Nhánh `master` là bản gốc cũ.
+- Nhánh chính: `main` (thiết kế lại hoàn toàn). Nhánh `legacy` là bản gốc cũ.
 - Repo: https://github.com/Namtran592005/Personal
 - Deploy thực tế: Caddy, web root trỏ vào thư mục dự án.
 
@@ -142,7 +142,7 @@ php tools/smoke.php                         # kiểm tra DB/tables/settings/help
 php tools/smoke.php --url http://localhost:8080   # + hit các trang live
 ```
 
-GitHub Actions chạy tự động (lint + smoke) trên mỗi push `v2`/`master`.
+GitHub Actions chạy tự động (lint + smoke) trên mỗi push `main`.
 
 ## Deploy
 
@@ -153,8 +153,8 @@ GitHub Actions chạy tự động (lint + smoke) trên mỗi push `v2`/`master`
 
 ## Git
 
-- Nhánh `v2`. Commit message tiếng Anh, phong cách: `feat: ...` / `fix: ...` / `docs: ...`.
-- Chỉ commit khi được yêu cầu. Sau commit push lên `origin/v2`.
+- Nhánh `main`. Commit message tiếng Anh, phong cách: `feat: ...` / `fix: ...` / `docs: ...`.
+- Chỉ commit khi được yêu cầu. Sau commit push lên `origin/main`.
 - `data/`, `cache/`, `.env` đã gitignore.
 - Lưu ý: Git cảnh báo LF→CRLF (không ảnh hưởng).
 
