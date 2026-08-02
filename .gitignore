@@ -5,6 +5,9 @@
 data/
 cache/
 
+# Uploaded videos (custom hero / login backgrounds)
+media/videos/
+
 # OS noise
 Thumbs.db
 Desktop.ini

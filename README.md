@@ -32,6 +32,7 @@ Website cá nhân phong cách Apple, viết bằng **PHP thuần + SQLite** — 
 ### Admin
 - Hồ sơ, kỹ năng, kinh nghiệm, dự án, FAQ, **bảng giá**, tin nhắn liên hệ, thống kê truy cập, trang pháp lý
 - **Upload ảnh đại diện** trong Admin → Profile (PNG/JPG/WEBP, ≤2MB, validate MIME, lưu `media/`)
+- **Đổi video nền** hero & trang login admin trong Admin → Videos (MP4/WEBM/OGG, ≤20MB, có nút Reset về mặc định)
 - **Tin nhắn liên hệ**: phân trang + lọc trạng thái (All/Unread/Read) + tìm theo tên/email/chủ đề
 - **Bảng giá dịch vụ** CRUD: giá, gói "phổ biến", badge, tính năng, ẩn/hiện, thứ tự
 - **Sidebar giữ vị trí cuộn** khi điều hướng giữa các trang (lưu `sessionStorage`)
@@ -94,6 +95,7 @@ cp .env.example .env
   - `admin/messages.php` — tin nhắn liên hệ (phân trang + lọc/tìm kiếm)
   - `admin/analytics.php` — thống kê truy cập
   - `admin/pages.php` — nội dung Chính sách & Điều khoản (VI + EN)
+  - `admin/videos.php` — video nền hero & trang login
   - `admin/security.php` — 2FA (TOTP) & cấu hình phiên
   - `admin/settings.php` — feature toggles + ngôn ngữ mặc định + Export JSON + Reset
   - `admin/password.php` — đổi mật khẩu admin
@@ -122,11 +124,10 @@ cp .env.example .env
 │   ├── icons/phosphor/    # icon font (local)
 │   ├── fonts/inter/       # font Inter (local)
 │   └── video/             # bg.mp4 & hero.mp4 (video nền, local)
-├── media/avt.png          # Ảnh đại diện
+├── media/avt.png          # Ảnh đại diện; video nền upload lưu media/videos/ (gitignore)
 ├── data/                  # SQLite (gitignore)
 └── cache/                 # Cache GitHub (gitignore)
 ```
-
 ## Kiểm tra
 
 ```bash

@@ -76,7 +76,7 @@ Chạy 1 lần khi `db_version < DB_VERSION`. Toàn bộ phải **idempotent** (
 ├── includes/          # config, schema, migrations, auth, functions (facade: helpers + legal), github, mail, track, lang, i18n, totp, rate-limit, legal_defaults, email-template
 ├── partials/          # header, nav, hero, skills, experiences, projects, faq, pricing, contact, footer
 ├── assets/            # css/ (base, decor, nav, hero, sections, layout, components, theme), js/ (darkmode, analytics, ui, lang-switch, shuffle, main, gsap/Flip/chart), icons phosphor, fonts Inter, video (bg/hero)
-├── media/avt.png      # Ảnh đại diện mặc định; avatar upload lưu media/avatar-*.png|jpg|webp
+├── media/avt.png      # Ảnh đại diện mặc định; avatar upload lưu media/avatar-*.png|jpg|webp; video nền upload lưu media/videos/ (gitignored)
 ├── data/app.sqlite    # DB (gitignored, tự tạo lần đầu)
 ├── cache/             # Cache GitHub repos (gitignored)
 ├── tools/             # lint.php, smoke.php (test tự động)
@@ -114,6 +114,11 @@ Bảng `settings`, các key toggle: `show_skills`, `show_experience`, `show_proj
 
 ### Tin nhắn liên hệ
 - `admin/messages.php` có phân trang (`page`, 15/trang) + lọc `status` (all/unread/read) + tìm `q` theo name/email/subject. Phải nhớ: biến `$page` dùng cho sidebar highlight — đừng dùng chung làm biến số trang.
+
+### Video nền (hero + login)
+- Settings keys: `hero_video` (video nền hero, `partials/hero.php`) và `login_video` (video nền admin login + 2FA, `admin/login.php` + `admin/2fa.php`). Giá trị là đường dẫn tương đối (rỗng → dùng default `assets/video/hero.mp4` / `bg.mp4`).
+- Upload ở `admin/videos.php`: form `enctype=multipart/form-data`, validate MIME bằng `finfo` (mp4/webm/ogg, ≤20MB), lưu `move_uploaded_file` vào `media/videos/` (đã gitignore), tự xóa file cũ khi thay/reset.
+- Render: dùng helper chung `videoType(string $path)` trong `includes/helpers.php` để in đúng `type` cho `<source>` (mp4/webm/ogg).
 
 ### GitHub repos (`includes/github.php`)
 `fetchGithubRepos($username, $max=GITHUB_MAX_REPOS, $exclude)` — cache JSON 30 phút trong `cache/`, fallback cache cũ nếu API lỗi. Projects trên trang chủ lấy từ đây (không phải bảng `projects`). Bảng `projects` chỉ dùng nếu bạn bật tự CRUD (hiện trang chủ dùng GitHub).

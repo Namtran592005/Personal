@@ -1,6 +1,6 @@
     <section id="hero">
         <video class="hero-video" autoplay muted loop playsinline>
-            <source src="<?= BASE_PATH ?>/assets/video/hero.mp4" type="video/mp4" />
+            <source src="<?= BASE_PATH ?>/<?= h($settings['hero_video'] ?: 'assets/video/hero.mp4') ?>" type="<?= h(videoType($settings['hero_video'] ?: 'assets/video/hero.mp4')) ?>" />
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">

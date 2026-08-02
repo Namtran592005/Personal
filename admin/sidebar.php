@@ -38,6 +38,9 @@
             <a href="<?= BASE_PATH ?>/admin/pages.php" class="<?= $page === 'pages' ? 'active' : '' ?>">
                 <i class="ph ph-file-text"></i> <span>Pages</span>
             </a>
+            <a href="<?= BASE_PATH ?>/admin/videos.php" class="<?= $page === 'videos' ? 'active' : '' ?>">
+                <i class="ph ph-video"></i> <span>Videos</span>
+            </a>
             <a href="<?= BASE_PATH ?>/admin/settings.php" class="<?= $page === 'settings' ? 'active' : '' ?>">
                 <i class="ph ph-gear"></i> <span>Settings</span>
             </a>

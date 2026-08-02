@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     <div class="login-wrap">
     <div class="login-bg">
         <video autoplay loop muted playsinline>
-            <source src="<?= BASE_PATH ?>/assets/video/bg.mp4" type="video/mp4" />
+            <source src="<?= BASE_PATH ?>/<?= h($settings['login_video'] ?: 'assets/video/bg.mp4') ?>" type="<?= h(videoType($settings['login_video'] ?: 'assets/video/bg.mp4')) ?>" />
         </video>
     </div>
     <div class="login-card">
