@@ -78,46 +78,6 @@
                         <button type="submit" class="btn btn-primary"><?= t('send_btn') ?></button>
                     </form>
                 </div>
-                <style>
-                .anon-toggle { margin-bottom: 12px; }
-                .anon-switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
-                .anon-switch input { display: none; }
-                .anon-slider {
-                    position: relative; width: 40px; height: 22px; background: #d2d2d7; border-radius: 11px; transition: background 0.2s; flex-shrink: 0;
-                }
-                .anon-slider::after {
-                    content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: transform 0.2s;
-                }
-                .anon-switch input:checked + .anon-slider { background: #34c759; }
-                .anon-switch input:checked + .anon-slider::after { transform: translateX(18px); }
-                .anon-label { font-size: 13px; color: #86868b; font-weight: 500; }
-                html.dark .anon-label { color: #a1a1a6; }
-                html.dark .anon-switch input:checked + .anon-slider { background: #f5f5f7; }
-                html.dark .anon-switch input:checked + .anon-slider::after { background: #1d1d1f; }
-                </style>
-                <script>
-                function toggleAnon() {
-                    const anon = document.getElementById('anonCheck').checked;
-                    const fields = document.getElementById('contactFields');
-                    const inputs = fields.querySelectorAll('input');
-                    fields.classList.toggle('collapsed', anon);
-                    inputs.forEach(i => {
-                        if (i.name === 'subject') { i.required = false; return; }
-                        i.required = !anon;
-                    });
-                }
-                (function() {
-                    const form = document.getElementById('contactForm');
-                    const anon = document.getElementById('anonCheck');
-                    if (!form || !anon) return;
-                    function fit() {
-                        if (anon.checked) return;
-                        form.style.minHeight = form.offsetHeight + 'px';
-                    }
-                    fit();
-                    window.addEventListener('resize', fit);
-                })();
-                </script>
             </div>
         </div>
     </section>

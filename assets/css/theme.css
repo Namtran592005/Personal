@@ -1,0 +1,297 @@
+html.dark :focus-visible {
+  outline-color: #f5f5f7;
+}
+html.dark body {
+  background: #1d1d1f;
+  color: #f5f5f7;
+}
+html.dark .section {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(245, 245, 247, 0.06) 0 1px,
+      transparent 1px 48px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(245, 245, 247, 0.06) 0 1px,
+      transparent 1px 48px
+    );
+}
+html.dark .section-alt {
+  background-color: #252527;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(245, 245, 247, 0.06) 0 1px,
+      transparent 1px 48px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(245, 245, 247, 0.06) 0 1px,
+      transparent 1px 48px
+    );
+}
+html.dark nav.scrolled {
+  background: rgba(28, 28, 30, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+html.dark .nav-links a {
+  color: #f5f5f7;
+}
+html.dark .nav-links a:hover {
+  color: #ffffff;
+}
+html.dark .nav-links a::after {
+  background: #f5f5f7;
+}
+html.dark .btn-primary {
+  background: #f5f5f7;
+  color: #1d1d1f;
+}
+html.dark .btn-primary:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+}
+html.dark .btn-outline {
+  border-color: #3d3d3f;
+  color: #f5f5f7;
+}
+html.dark .btn-outline:hover {
+  border-color: #f5f5f7;
+  background: #2d2d2f;
+}
+html.dark .skill-card,
+html.dark .stat-item {
+  background: #2d2d2f;
+  border-color: #3d3d3f;
+}
+html.dark .project-card {
+  background: rgba(28, 28, 30, 0.55);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+html.dark .skill-card i,
+html.dark .stat-item .number {
+  color: #f5f5f7;
+}
+html.dark .skill-tag,
+html.dark .project-tech span {
+  background: #3d3d3f;
+  color: #a1a1a6;
+}
+html.dark .project-github {
+  background: #f5f5f7;
+  color: #1d1d1f;
+}
+html.dark .project-github:hover {
+  background: #ffffff;
+}
+html.dark .show-more-wrap .btn {
+  border-color: #424245;
+  color: #f5f5f7;
+}
+html.dark .show-more-wrap .btn:hover {
+  background: #2c2c2e;
+}
+html.dark .faq-item {
+  border-color: #3d3d3f;
+}
+html.dark .faq-question {
+  color: #f5f5f7;
+}
+html.dark .faq-answer,
+html.dark .about-text p,
+html.dark .contact-intro,
+html.dark .contact-item i {
+  color: #f5f5f7;
+}
+html.dark .contact-item a,
+html.dark .contact-item span,
+html.dark .timeline-item p {
+  color: #a1a1a6;
+}
+html.dark .contact-item a:hover {
+  color: #f5f5f7;
+}
+html.dark .social-link {
+  border-color: #3d3d3f;
+  color: #a1a1a6;
+}
+html.dark .social-link:hover {
+  border-color: #f5f5f7;
+  color: #f5f5f7;
+  background: #2d2d2f;
+}
+html.dark .contact-form input,
+html.dark .contact-form textarea {
+  background: #2d2d2f;
+  border-color: #3d3d3f;
+  color: #f5f5f7;
+}
+html.dark .contact-form input:focus,
+html.dark .contact-form textarea:focus {
+  border-color: #f5f5f7;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+  background: #2d2d2f;
+}
+html.dark .section-header h2,
+html.dark .hero-name,
+html.dark .about-text h3,
+html.dark .skill-card h4,
+html.dark .project-body h4,
+html.dark .timeline-item h4,
+html.dark .contact-form-wrap h3 {
+  color: #f5f5f7;
+}
+html.dark .timeline::before {
+  background: #3d3d3f;
+}
+html.dark .timeline-dot {
+  background: #1d1d1f;
+  border-color: #f5f5f7;
+}
+html.dark footer {
+  border-color: #3d3d3f;
+}
+html.dark .footer-admin {
+  color: #6e6e73;
+}
+html.dark .footer-admin:hover {
+  color: #f5f5f7;
+}
+html.dark .nav-toggle {
+  color: #f5f5f7;
+}
+html.dark .nav-overlay.open {
+  background: rgba(0, 0, 0, 0.5);
+}
+html.dark .hero-scroll {
+  color: rgba(255, 255, 255, 0.7);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+html.dark .contact-form input::placeholder,
+html.dark .contact-form textarea::placeholder {
+  color: #6e6e73;
+}
+html.dark .section-header .label,
+html.dark .stat-item .label,
+html.dark .timeline-date,
+html.dark .timeline-item .company,
+html.dark .project-body p {
+  color: #86868b;
+}
+
+/* Header over the hero: always light text, like dark mode, until scrolled past the hero */
+nav:not(.scrolled) .nav-links a {
+  color: #f5f5f7;
+}
+nav:not(.scrolled) .nav-links a:hover {
+  color: #ffffff;
+}
+nav:not(.scrolled) .nav-links a::after {
+  background: #f5f5f7;
+}
+nav:not(.scrolled) .dark-toggle {
+  color: rgba(255, 255, 255, 0.85);
+}
+nav:not(.scrolled) .dark-toggle:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+}
+nav:not(.scrolled) .nav-toggle {
+  color: #f5f5f7;
+}
+nav:not(.scrolled) .nav-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+@media (max-width: 768px) {
+  nav:not(.scrolled) .nav-links.open a,
+  nav:not(.scrolled) .nav-links.open a:hover {
+    color: #1d1d1f;
+  }
+  nav:not(.scrolled) .nav-links.open a::after {
+    background: #1d1d1f;
+  }
+  html.dark nav:not(.scrolled) .nav-links.open a,
+  html.dark nav:not(.scrolled) .nav-links.open a:hover {
+    color: #f5f5f7;
+  }
+  html.dark nav:not(.scrolled) .nav-links.open a::after {
+    background: #f5f5f7;
+  }
+}
+/* Mobile: scrolled bar keeps liquid glass — but drop its backdrop-filter
+   while the drawer (.nav-links) is open, otherwise the ancestor's
+   backdrop-filter disables the descendant's glass effect. */
+@media (max-width: 768px) {
+  nav.scrolled:not(:has(.nav-links.open)) {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 255, 255, 0.55);
+  }
+  html.dark nav.scrolled:not(:has(.nav-links.open)) {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(28, 28, 30, 0.55);
+  }
+  nav.scrolled:has(.nav-links.open) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.92);
+  }
+  html.dark nav.scrolled:has(.nav-links.open) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(28, 28, 30, 0.92);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Ultra-large screens (4K / ultrawide / browser zoomed out < 70%)     */
+/* Scale the whole layout proportionally so content never looks tiny,  */
+/* and let the main column breathe a little wider on very big displays.*/
+/* ------------------------------------------------------------------ */
+@media (min-width: 1600px) {
+  html {
+    zoom: 1.06;
+  }
+  .container,
+  .nav-container,
+  .footer-content {
+    max-width: 1220px;
+  }
+}
+@media (min-width: 2200px) {
+  html {
+    zoom: 1.16;
+  }
+  .container,
+  .nav-container,
+  .footer-content {
+    max-width: 1360px;
+  }
+}
+@media (min-width: 3000px) {
+  html {
+    zoom: 1.28;
+  }
+  .container,
+  .nav-container,
+  .footer-content {
+    max-width: 1520px;
+  }
+}
+@media (min-width: 4000px) {
+  html {
+    zoom: 1.42;
+  }
+  .container,
+  .nav-container,
+  .footer-content {
+    max-width: 1720px;
+  }
+}

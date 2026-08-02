@@ -33,7 +33,7 @@ $csrfOk = validateCsrfToken($_POST['_csrf'] ?? null);
 // Toggle settings
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     if (!$csrfOk) { $msg = 'Invalid request.'; } else {
-    $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','show_experience','enable_analytics','enable_contact_form','show_back_top','show_call_fab'];
+    $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','show_experience','enable_analytics','enable_contact_form','show_back_top','show_call_fab','smooth_lang_switch'];
     foreach ($keys as $k) {
         $v = isset($_POST[$k]) ? '1' : '0';
         $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)")->execute([$k, $v]);
@@ -150,6 +150,7 @@ $page = 'settings';
                         'enable_contact_form' => ['Contact Form', 'Allow visitors to send messages'],
                         'show_back_top' => ['Back-to-Top Button', 'Show the floating back-to-top button'],
                         'show_call_fab' => ['Call Button', 'Show the floating call button (needs a phone number)'],
+                        'smooth_lang_switch' => ['Smooth Language Switch', 'Switch VI/EN without a page reload (AJAX). Off = normal full-page navigation'],
                     ];
                     foreach ($toggles as $key => $desc):
                         $on = ($settings[$key] ?? '1') === '1';

@@ -3,7 +3,7 @@
 // Shared by config.php (table bootstrap), migrations.php (one-time runs),
 // and tools/smoke.php (verification).
 
-const DB_VERSION = 4;
+const DB_VERSION = 5;
 
 const GITHUB_CACHE_TTL = 1800;   // seconds (30 min)
 const GITHUB_MAX_REPOS = 50;
@@ -170,5 +170,6 @@ function schemaSettingsDefaults(): array {
         'enable_analytics' => '1', 'enable_contact_form' => '1', 'github_username' => 'namtran592005',
         'show_back_top' => '1', 'show_call_fab' => '1',
         'default_lang' => 'vi',
+        'smooth_lang_switch' => '1',
     ];
 }

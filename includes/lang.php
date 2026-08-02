@@ -43,6 +43,7 @@ function t(string $key, string $default = ''): string {
 // prefix it again; only fall back to the homepage when the route isn't a .php file.
 function langUrl(string $lang): string {
     $qs = $_GET;
+    unset($qs['ajax']);
     $qs['lang'] = $lang;
     $script = $_SERVER['SCRIPT_NAME'] ?? '';
     if (!str_ends_with($script, '.php')) $script = BASE_PATH . '/index.php';

@@ -59,4 +59,15 @@
         document.getElementById('sidebarOverlay').classList.toggle('open');
         document.getElementById('sidebarToggle').classList.toggle('open');
     }
+    (function() {
+        var nav = document.querySelector('.sidebar-nav');
+        if (!nav) return;
+        var KEY = 'adminSidebarScroll';
+        var saved = sessionStorage.getItem(KEY);
+        if (saved !== null) nav.scrollTop = parseInt(saved, 10) || 0;
+        nav.addEventListener('click', function(e) {
+            var a = e.target.closest('a');
+            if (a) sessionStorage.setItem(KEY, String(nav.scrollTop));
+        });
+    })();
     </script>

@@ -47,7 +47,7 @@
             </div>
             <?php if ($total > $initial): ?>
             <div class="show-more-wrap">
-                <button id="show-more-btn" class="btn btn-out" onclick="document.querySelectorAll('#projects-grid .hidden').forEach(c=>c.classList.remove('hidden'));this.remove()"><?= t('show_more') ?> (<?= $total - $initial ?>)</button>
+                <button id="show-more-btn" class="btn btn-out"><?= t('show_more') ?> (<?= $total - $initial ?>)</button>
             </div>
             <?php endif; ?>
         </div>
