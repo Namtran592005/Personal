@@ -189,3 +189,8 @@ html.dark #toast.err {
     gap: 40px;
   }
 }
+.contact-grid.no-form {
+  grid-template-columns: 1fr;
+  max-width: 480px;
+  margin: 0 auto;
+}

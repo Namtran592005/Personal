@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/github.php';
 requireLogin();
 
 $profile = ['name' => 'Admin'];
@@ -33,25 +34,27 @@ $csrfOk = validateCsrfToken($_POST['_csrf'] ?? null);
 // Toggle settings
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     if (!$csrfOk) { $msg = 'Invalid request.'; } else {
+    try {
     $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','show_experience','enable_analytics','enable_contact_form','show_back_top','show_call_fab','smooth_lang_switch'];
+    $stmt = $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)");
     foreach ($keys as $k) {
         $v = isset($_POST[$k]) ? '1' : '0';
-        $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)")->execute([$k, $v]);
+        $stmt->execute([$k, $v]);
         $settings[$k] = $v;
     }
     $lang = ($_POST['default_lang'] ?? 'vi') === 'en' ? 'en' : 'vi';
-    $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('default_lang', ?)")->execute([$lang]);
+    $stmt->execute(['default_lang', $lang]);
     $settings['default_lang'] = $lang;
     $msg = 'Settings saved.';
+    } catch (PDOException $e) { $msg = 'Failed to save settings: ' . $e->getMessage(); }
     }
 }
 
 // Reset GitHub cache
 if (isset($_POST['reset_github_cache'])) {
     if (!$csrfOk) { $msg = 'Invalid request.'; } else {
-    $cacheFile = __DIR__ . '/../cache/github_repos.json';
-    if (file_exists($cacheFile)) @unlink($cacheFile);
-    $msg = 'GitHub cache cleared.';
+    $removed = clearGithubCache();
+    $msg = $removed > 0 ? 'GitHub cache cleared.' : 'No GitHub cache to clear.';
     }
 }
 

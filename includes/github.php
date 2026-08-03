@@ -1,12 +1,27 @@
 <?php
 require_once __DIR__ . '/schema.php';
 
-function fetchGithubRepos(string $username, int $max = GITHUB_MAX_REPOS, string $exclude = ''): array {
+// Cache file is keyed by username so switching GitHub accounts never shows
+// stale repos from a previous user, and a reset always triggers a fresh fetch.
+function githubCacheFile(string $username): string {
     $cacheDir = __DIR__ . '/../cache';
     if (!is_dir($cacheDir)) @mkdir($cacheDir, 0775, true);
-    $cacheFile = $cacheDir . '/github_repos.json';
+    return $cacheDir . '/github_repos_' . md5(strtolower(trim($username))) . '.json';
+}
 
-    if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < GITHUB_CACHE_TTL) {
+// Remove every GitHub cache file (all users + legacy name). Returns count removed.
+function clearGithubCache(): int {
+    $removed = 0;
+    foreach (glob(__DIR__ . '/../cache/github_repos*.json') ?: [] as $f) {
+        if (@unlink($f)) $removed++;
+    }
+    return $removed;
+}
+
+function fetchGithubRepos(string $username, int $max = GITHUB_MAX_REPOS, string $exclude = ''): array {
+    $cacheFile = githubCacheFile($username);
+
+    if (file_exists($cacheFile) && (time() - @filemtime($cacheFile)) < GITHUB_CACHE_TTL) {
         $data = @file_get_contents($cacheFile);
         if ($data !== false) return json_decode($data, true) ?: [];
     }
@@ -18,13 +33,18 @@ function fetchGithubRepos(string $username, int $max = GITHUB_MAX_REPOS, string 
     ]]);
 
     $response = @file_get_contents($url, false, $context);
-    if ($response === false) {
+    $repos = is_string($response) ? json_decode($response, true) : null;
+    if (!is_array($repos) || isset($repos['message'])) {
+        // GitHub unreachable or erroring (network / rate limit): serve the last
+        // known cache so the projects section never goes blank. It will be
+        // refreshed once the API is reachable again.
         $old = @file_get_contents($cacheFile);
-        return $old ? (json_decode($old, true) ?: []) : [];
+        if ($old !== false) {
+            $cached = json_decode($old, true);
+            if (is_array($cached)) return $cached;
+        }
+        return [];
     }
-
-    $repos = json_decode($response, true);
-    if (!is_array($repos) || isset($repos['message'])) return [];
 
     $projects = [];
     foreach ($repos as $repo) {

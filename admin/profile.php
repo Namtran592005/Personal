@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/github.php';
 requireLogin();
 
 $profile = ['name'=>'','title'=>'','bio'=>'','email'=>'','phone'=>'','location'=>'',
@@ -54,7 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     } catch (PDOException $e) { $success = null; }
     $ghUser = trim($_POST['github_username'] ?? '');
     if ($ghUser) {
+        $oldUser = $settings['github_username'] ?? '';
         $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('github_username', ?)")->execute([$ghUser]);
+        if (strcasecmp($oldUser, $ghUser) !== 0) {
+            clearGithubCache();
+        }
     }
     }
 }

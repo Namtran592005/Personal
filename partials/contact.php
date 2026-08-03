@@ -21,7 +21,7 @@
                 <p class="label"><?= t('sec_contact_label') ?></p>
                 <h2><?= t('sec_contact_title') ?></h2>
             </div>
-            <div class="contact-grid">
+            <div class="contact-grid<?= (($settings['enable_contact_form'] ?? '1') !== '1') ? ' no-form' : '' ?>">
                 <div class="contact-info fade-in">
                     <p class="contact-intro"><?= t('contact_intro') ?></p>
                     <div class="contact-links">
@@ -57,6 +57,7 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
+                <?php if (($settings['enable_contact_form'] ?? '1') === '1'): ?>
                 <div class="contact-form-wrap fade-in">
                     <h3><?= t('send_message') ?></h3>
                     <form class="contact-form" id="contactForm">
@@ -78,6 +79,7 @@
                         <button type="submit" class="btn btn-primary"><?= t('send_btn') ?></button>
                     </form>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
