@@ -13,7 +13,7 @@ Website cá nhân phong cách Apple, viết bằng **PHP thuần + SQLite** — 
 - **One-page** responsive: Hero, Kỹ năng, Kinh nghiệm, Dự án, FAQ, Bảng giá, Liên hệ
 - **Đa ngôn ngữ** Việt / English cho toàn bộ trang công khai — chuyển bằng nút **VI | EN** trên nav (lưu cookie `lang` 365 ngày)
 - **Smooth language switch**: chuyển ngôn ngữ **không reload** (AJAX + `DOMParser`), bật/tắt được trong Admin → Settings; khi tắt thì switcher là navigation thường
-- **Xáo trộn dự án** bằng GSAP Flip — hiệu ứng bay chéo mượt, có nút bật/tắt, tự tắt trên mobile
+- **Xáo trộn dự án** bằng GSAP Flip — hiệu ứng bay chéo mượt, có nút bật/tắt, chạy được cả trên mobile (bật/tắt trong Admin → Settings → *Shuffle Effect on Mobile*)
 - **Dark mode** mặc định, đồng bộ qua `localStorage`, nút toggle trên toàn site
 - **Cuộn mượt** (`scroll-behavior: smooth`) toàn bộ trang công khai, không áp dụng cho admin
 - **Trang trí line-art**: trái tim hồng (liên hệ), dấu chấm hỏi vàng (FAQ), hình hoa nền, hero có dòng chữ "love you"
@@ -36,7 +36,7 @@ Website cá nhân phong cách Apple, viết bằng **PHP thuần + SQLite** — 
 - **Tin nhắn liên hệ**: phân trang + lọc trạng thái (All/Unread/Read) + tìm theo tên/email/chủ đề
 - **Bảng giá dịch vụ** CRUD: giá, gói "phổ biến", badge, tính năng, ẩn/hiện, thứ tự
 - **Sidebar giữ vị trí cuộn** khi điều hướng giữa các trang (lưu `sessionStorage`)
-- **Form liên hệ** gửi mail SMTP (socket STARTTLS, không thư viện) + lưu DB, chế độ **gửi ẩn danh**, toast glass
+- **Form liên hệ** gửi mail SMTP (socket STARTTLS, không thư viện) + lưu DB, chế độ **gửi ẩn danh**, toast glass; tắt `enable_contact_form` trong Settings sẽ ẩn form và chặn gửi
 
 ### Bảo mật
 - **2FA (TOTP)** Google Authenticator / Authy / 1Password — bật/tắt trong Admin → Security, đăng nhập 2 bước
@@ -52,7 +52,7 @@ Website cá nhân phong cách Apple, viết bằng **PHP thuần + SQLite** — 
 ### Hệ thống
 - **Schema tập trung** (`includes/schema.php`) — DDL, hằng số (`DB_VERSION`, cache TTL, giới hạn beacon, khóa đăng nhập) dùng chung
 - **Migration tự động** theo `db_version` (`includes/migrations.php`) — chạy một lần, idempotent, seed dữ liệu mẫu lần đầu
-- **Lấy repo GitHub** tự động (cache 30 phút, fallback cache cũ khi API lỗi)
+- **Lấy repo GitHub** tự động (cache 30 phút theo từng username, fallback cache cũ khi API lỗi, nút Clear Cache trong Admin → Settings)
 - **Kiểm tra tự động** (`tools/`): `lint.php` quét syntax toàn bộ PHP, `smoke.php` kiểm tra DB/tables/settings/helpers + HTTP theo `--url`; GitHub Actions chạy trên mỗi push `main`
 
 ## Yêu cầu
@@ -97,7 +97,7 @@ cp .env.example .env
   - `admin/pages.php` — nội dung Chính sách & Điều khoản (VI + EN)
   - `admin/videos.php` — video nền hero & trang login
   - `admin/security.php` — 2FA (TOTP) & cấu hình phiên
-  - `admin/settings.php` — feature toggles + ngôn ngữ mặc định + Export JSON + Reset
+  - `admin/settings.php` — feature toggles (gồm shuffle trên mobile) + ngôn ngữ mặc định + Clear GitHub cache + Export JSON + Reset
   - `admin/password.php` — đổi mật khẩu admin
 
 ## Cấu trúc thư mục

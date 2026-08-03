@@ -57,6 +57,10 @@ html.dark .shuffle-switch input:checked + .shuffle-slider::after {
   .shuffle-toggle {
     display: none;
   }
+  .shuffle-toggle.on-mobile {
+    display: flex;
+    margin-top: 0;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-scroll {

@@ -10,9 +10,11 @@
         var cards = [];
         var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var hasGsap = !!(window.gsap && window.Flip);
+        var shuffleMobile = !!(window.SITE && window.SITE.shuffleMobile);
         if (window.__shuffleMqBound !== true) {
             window.__shuffleMqBound = true;
             var mq = window.matchMedia('(max-width: 768px)');
+            window.__shuffleIsMobile = mq.matches;
             if (mq.addEventListener) {
                 mq.addEventListener('change', function(e) {
                     window.__shuffleIsMobile = e.matches;
@@ -61,7 +63,7 @@
         }
         function run() {
             if (shuffleId !== window.__shuffleId) return;
-            if (window.__shuffleIsMobile === true) { schedule(); return; }
+            if (window.__shuffleIsMobile === true && !shuffleMobile) { schedule(); return; }
             cards = Array.prototype.slice.call(grid.querySelectorAll('.project-card'));
             if (busy) { schedule(); return; }
             var items = visible();
@@ -126,7 +128,7 @@
         }
         function schedule() {
             if (timer) clearTimeout(timer);
-            timer = (window.__shuffleIsMobile === true || !shuffleOn) ? null : setTimeout(run, 3500 + Math.random() * 4000);
+            timer = ((window.__shuffleIsMobile === true && !shuffleMobile) || !shuffleOn) ? null : setTimeout(run, 3500 + Math.random() * 4000);
         }
         window.__shuffleWake = function() { schedule(); };
 

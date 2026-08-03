@@ -59,7 +59,7 @@ Chạy 1 lần khi `db_version < DB_VERSION`. Toàn bộ phải **idempotent** (
 - Trang pháp lý có 4 keys trong bảng `pages`: `privacy`/`terms`/`privacy_en`/`terms_en`, biên tập ở `admin/pages.php`.
 - `error.php` và `check.php` tự detect lang inline (không phụ thuộc DB).
 - **Smooth language switch (AJAX, không reload)**: click switcher → `fetch(url + '&ajax=1')` → swap `document.body.innerHTML` → set `<html lang>`/`title`/URL/cookie → `initPage(true)` (bind lại: nav/contact/fade-in/lang-switch/shuffle). Bật/tắt bằng toggle `smooth_lang_switch` (off → switcher là navigation thường). Quy ước `?ajax=1`: header/footer BỎ analytics beacon khi có param này (tránh đếm trùng). Mọi script cần chạy lại sau swap PHẢI đặt trong bind function gọi từ `initPage` — KHÔNG viết script inline tự thực thi vì nó không chạy lại khi body bị thay thế (chỉ có 1 inline config `window.SITE` trong footer; `swapLang` re-eval nó từ doc mới vì innerHTML không chạy script).
-- **JS module phía client** (`assets/js/`): `darkmode.js` (head, trước first paint), `analytics.js` (chỉ load khi `enable_analytics=1` VÀ không phải `?ajax=1`), `ui.js` (`showToast`/`toggleAnon`/`fitContact` + `bindGlobal`/`bindFadeIn`/`bindNav`/`bindContact` + `initPage`), `lang-switch.js` (`swapLang`/`bindLangSwitch`, no-op khi `window.SITE.smoothLang` false), `shuffle.js` (`initShuffle` + show-more), `main.js` (boot `initPage` lúc DOM sẵn sàng). Config qua `window.SITE = { basePath, smoothLang, beaconMax, langUI }` được in inline trong `partials/footer.php`. CSS chia module trong `assets/css/` (base, decor, nav, hero, sections, layout, components, theme), cache-bust bằng `filemtime()`.
+- **JS module phía client** (`assets/js/`): `darkmode.js` (head, trước first paint), `analytics.js` (chỉ load khi `enable_analytics=1` VÀ không phải `?ajax=1`), `ui.js` (`showToast`/`toggleAnon`/`fitContact` + `bindGlobal`/`bindFadeIn`/`bindNav`/`bindContact` + `initPage`), `lang-switch.js` (`swapLang`/`bindLangSwitch`, no-op khi `window.SITE.smoothLang` false), `shuffle.js` (`initShuffle` + show-more, đọc `window.SITE.shuffleMobile` để bật/tắt shuffle trên mobile), `main.js` (boot `initPage` lúc DOM sẵn sàng). Config qua `window.SITE = { basePath, smoothLang, shuffleMobile, beaconMax, langUI }` được in inline trong `partials/footer.php`. CSS chia module trong `assets/css/` (base, decor, nav, hero, sections, layout, components, theme), cache-bust bằng `filemtime()`.
 
 ## Cấu trúc thư mục
 
@@ -96,9 +96,10 @@ Chạy 1 lần khi `db_version < DB_VERSION`. Toàn bộ phải **idempotent** (
 ## Module chính
 
 ### Settings / Feature toggles
-Bảng `settings`, các key toggle: `show_skills`, `show_experience`, `show_projects`, `show_faq`, `show_pricing`, `show_contact`, `enable_analytics`, `enable_contact_form`, `show_back_top`, `show_call_fab`, `smooth_lang_switch`, `github_username`.
+Bảng `settings`, các key toggle: `show_skills`, `show_experience`, `show_projects`, `show_faq`, `show_pricing`, `show_contact`, `enable_analytics`, `enable_contact_form`, `show_back_top`, `show_call_fab`, `smooth_lang_switch`, `shuffle_on_mobile`, `github_username`.
 - Trang chủ check: `if (($settings['show_x'] ?? '1') === '1') include 'partials/x.php';`
 - **Khi thêm section mới**: thêm toggle key vào `schemaSettingsDefaults()` (migrations), `admin/settings.php` (cả `$keys` và mảng `$toggles`), index.php, `partials/nav.php` (link), `sitemap.php` + `sitemap.xml` (nếu có).
+- `shuffle_on_mobile` (mặc định `1`): điều khiển hiệu ứng shuffle projects trên mobile/tablet (≤768px). Bật → toggle shuffle hiện trên mobile (`partials/projects.php` thêm class `on-mobile`, `assets/css/nav.css` hiển thị) và shuffle chạy trên mobile (`assets/js/shuffle.js` đọc `window.SITE.shuffleMobile`). Tắt → toggle ẩn trên mobile, shuffle chỉ chạy desktop. Visitor vẫn tắt/bật shuffle được bằng `#shuffleCheck`.
 
 ### Analytics (thời gian xem trang)
 - `includes/track.php` — nhận 2 loại request:
@@ -121,7 +122,7 @@ Bảng `settings`, các key toggle: `show_skills`, `show_experience`, `show_proj
 - Render: dùng helper chung `videoType(string $path)` trong `includes/helpers.php` để in đúng `type` cho `<source>` (mp4/webm/ogg).
 
 ### GitHub repos (`includes/github.php`)
-`fetchGithubRepos($username, $max=GITHUB_MAX_REPOS, $exclude)` — cache JSON 30 phút trong `cache/`, fallback cache cũ nếu API lỗi. Projects trên trang chủ lấy từ đây (không phải bảng `projects`). Bảng `projects` chỉ dùng nếu bạn bật tự CRUD (hiện trang chủ dùng GitHub).
+`fetchGithubRepos($username, $max=GITHUB_MAX_REPOS, $exclude)` — cache JSON 30 phút trong `cache/` dưới file `github_repos_<md5(username)>.json` (mỗi username một cache, tránh stale khi đổi tài khoản), fallback cache cũ nếu API lỗi. Xoá cache bằng `clearGithubCache()` — nút **Clear Cache** trong `admin/settings.php`, và tự chạy khi đổi `github_username` ở `admin/profile.php`. Projects trên trang chủ lấy từ đây (không phải bảng `projects`). Bảng `projects` chỉ dùng nếu bạn bật tự CRUD (hiện trang chủ dùng GitHub).
 
 ### Legal pages (privacy/terms)
 - Nội dung DB (bảng `pages`), seed từ `includes/legal_defaults.php` (plain-text tiếng Việt).

@@ -11,7 +11,7 @@
                 <p class="label"><?= t('sec_projects_label') ?></p>
                 <h2><?= t('sec_projects_title') ?></h2>
             </div>
-            <div class="shuffle-toggle">
+            <div class="shuffle-toggle<?= (($settings['shuffle_on_mobile'] ?? '1') === '1') ? ' on-mobile' : '' ?>">
                 <label class="shuffle-switch">
                     <input type="checkbox" id="shuffleCheck" checked>
                     <span class="shuffle-slider"></span>

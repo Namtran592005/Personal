@@ -21,6 +21,7 @@
         window.SITE = {
             basePath: '<?= BASE_PATH ?>',
             smoothLang: <?= ($settings['smooth_lang_switch'] ?? '1') === '1' ? 'true' : 'false' ?>,
+            shuffleMobile: <?= ($settings['shuffle_on_mobile'] ?? '1') === '1' ? 'true' : 'false' ?>,
             beaconMax: <?= BEACON_MAX_SECONDS ?>,
             langUI: {
                 sending: <?= json_encode(t('sending')) ?>,

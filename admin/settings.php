@@ -35,7 +35,7 @@ $csrfOk = validateCsrfToken($_POST['_csrf'] ?? null);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     if (!$csrfOk) { $msg = 'Invalid request.'; } else {
     try {
-    $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','show_experience','enable_analytics','enable_contact_form','show_back_top','show_call_fab','smooth_lang_switch'];
+    $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','show_experience','enable_analytics','enable_contact_form','show_back_top','show_call_fab','smooth_lang_switch','shuffle_on_mobile'];
     $stmt = $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)");
     foreach ($keys as $k) {
         $v = isset($_POST[$k]) ? '1' : '0';
@@ -154,6 +154,7 @@ $page = 'settings';
                         'show_back_top' => ['Back-to-Top Button', 'Show the floating back-to-top button'],
                         'show_call_fab' => ['Call Button', 'Show the floating call button (needs a phone number)'],
                         'smooth_lang_switch' => ['Smooth Language Switch', 'Switch VI/EN without a page reload (AJAX). Off = normal full-page navigation'],
+                        'shuffle_on_mobile' => ['Shuffle Effect on Mobile', 'Run the projects shuffle animation on phones/tablets too (max-width 768px). Off = desktop only'],
                     ];
                     foreach ($toggles as $key => $desc):
                         $on = ($settings[$key] ?? '1') === '1';
