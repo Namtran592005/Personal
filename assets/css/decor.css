@@ -75,11 +75,7 @@
   height: 100%;
 }
 .deco-heart svg path {
-  fill: none;
   stroke: rgba(255, 107, 157, 0.4);
-  stroke-width: 0.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 /* line-art question mark */
 .deco-q {

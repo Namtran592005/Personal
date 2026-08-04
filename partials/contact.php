@@ -5,14 +5,15 @@
         <div class="deco-heart" aria-hidden="true">
             <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
                 <path fill="none" stroke="#ff6b9d" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" d="M50 92 C36 80 8 60 8 33 C8 18 18 8 30 8 C38 8 46 13 50 20 C54 13 62 8 70 8 C82 8 92 18 92 33 C92 60 64 80 50 92 Z"/>
-                <g fill="none" stroke="#ff6b9d" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" transform="translate(48 52) scale(0.6) translate(-48 -52)">
-                    <path d="M11 56 C10 48 10 38 11 30 C12 23 15 19 17 22 C19 25 18 31 17 37 C16 43 15 49 15 55 C15 58 17 60 20 58"/>
-                    <path d="M22 57 C25 55 27 52 27 48 C27 43 24 40 20 41 C16 42 15 46 16 50 C17 54 20 57 24 56 C26 55 27 52 27 50"/>
-                    <path d="M29 46 C32 52 35 58 38 59 C40 59 41 56 41 52 C41 49 42 46 44 44"/>
-                    <path d="M45 45 C47 42 50 41 52 43 C54 45 53 48 50 49 C47 50 45 47 46 51 C47 55 49 58 52 57 C54 56 55 54 56 52"/>
-                    <path d="M59 46 C61 42 64 40 66 43 C68 46 67 50 65 51 C63 52 61 51 62 56 C63 62 64 69 63 75 C62 80 58 83 54 82 C51 81 50 78 51 75 C52 71 54 69 56 70"/>
-                    <path d="M70 52 C73 51 76 53 76 57 C76 62 72 65 68 64 C65 63 64 59 65 56 C66 52 69 50 73 51 C75 52 76 54 76 57"/>
-                    <path d="M78 53 C80 56 83 59 84 64 C85 68 82 72 78 72 C74 72 72 68 72 63 C72 58 75 52 78 48 C80 45 83 44 85 45 C87 46 88 47 88 49"/>
+                <g fill="none" stroke="#ff6b9d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+                   transform="translate(16 36) scale(0.36)">
+                    <path d="M10 4 C10 4 8 22 8 30 C8 35 11 38 15 36"/>
+                    <path d="M40 26 C40 33 35 38 28 38 C21 38 16 33 16 26 C16 19 21 14 28 14 C35 14 40 19 40 26 Z"/>
+                    <path d="M46 15 L54 37 L62 15"/>
+                    <path d="M67 27 L87 27 C87 19 81 14 74 14 C67 14 62 20 63 28 C64 35 70 40 77 39 C82 38 85 36 85 33"/>
+                    <path d="M102 15 L110 33 M110 33 L118 15 M110 33 C108 39 106 44 101 44 C98 44 96 42 97 39"/>
+                    <path d="M146 26 C146 33 141 38 134 38 C127 38 122 33 122 26 C122 19 127 14 134 14 C141 14 146 19 146 26 Z"/>
+                    <path d="M152 15 L152 30 C152 35 156 38 160 38 C164 38 168 35 168 30 L168 15"/>
                 </g>
             </svg>
         </div>

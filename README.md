@@ -16,7 +16,7 @@ Website cá nhân phong cách Apple, viết bằng **PHP thuần + SQLite** — 
 - **Xáo trộn dự án** bằng GSAP Flip — hiệu ứng bay chéo mượt, có nút bật/tắt, chạy được cả trên mobile (bật/tắt trong Admin → Settings → *Shuffle Effect on Mobile*)
 - **Dark mode** mặc định, đồng bộ qua `localStorage`, nút toggle trên toàn site
 - **Cuộn mượt** (`scroll-behavior: smooth`) toàn bộ trang công khai, không áp dụng cho admin
-- **Trang trí line-art**: trái tim hồng (liên hệ), dấu chấm hỏi vàng (FAQ), hình hoa nền, hero có dòng chữ "love you"
+- **Trang trí line-art**: dấu chấm hỏi vàng (FAQ), hình hoa nền
 - **Nút gọi nhanh** FAB glass (bấm tự gọi số từ profile) + **nút trở lên đầu trang** — bật/tắt trong Admin → Settings
 - **Assets module hóa**: CSS chia 8 module (`assets/css/`), JS chia theo chức năng (`assets/js/`), cache-bust bằng `filemtime()`
 - **Portable**: dùng `BASE_PATH` tự tính từ thư mục gốc — bỏ vào vị trí bất kỳ cũng chạy
