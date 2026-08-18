@@ -28,7 +28,7 @@ $hint = match ($code) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="<?= BASE_PATH ?>/assets/favicon.png" />
     <link rel="stylesheet" href="<?= BASE_PATH ?>/assets/icons/phosphor/style.css" />
-    <title><?= $code ?> — <?= $msg ?></title>
+    <title><?= h($code) ?> — <?= $msg ?></title>
     <script>
     (function() {
         var saved = localStorage.getItem('darkMode');
@@ -164,7 +164,7 @@ $hint = match ($code) {
         <i class="ph ph-moon"></i><i class="ph ph-sun"></i>
     </button>
     <div class="wrap">
-        <div class="code"><?= $code ?></div>
+        <div class="code"><?= h($code) ?></div>
         <span class="pill"><i class="ph ph-circle-notch"></i> <?= $msg ?></span>
         <h1 class="title"><?= $lang === 'en' ? 'Page could not be loaded' : 'Không thể tải trang' ?></h1>
         <p class="hint"><?= $hint ?></p>

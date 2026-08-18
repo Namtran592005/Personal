@@ -1,8 +1,8 @@
 <?php
 // One-time setup page: create or reset the admin password via the UI.
 // Intended for first deployment: open this file, enter a password, then
-// DELETE admin/setup.php from the server. It can overwrite the existing
-// hash, so leaving it in place would let anyone take over the admin account.
+// DELETE admin/setup.php from the server. Once an admin account exists,
+// resetting it requires the current database key (proof of ownership).
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
@@ -15,8 +15,13 @@ if (isLoggedIn()) {
 
 $error = null;
 $success = false;
+$hasUser = false;
 if (!$dbAvailable) {
     $error = 'Database connection unavailable.';
+} else {
+    try {
+        $hasUser = (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn() > 0;
+    } catch (PDOException $e) {}
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['setup'])) {
@@ -29,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['setup'])) {
         $confirm = $_POST['confirm'] ?? '';
         $dbKeyInput = $_POST['db_key'] ?? '';
         $dbKeyConfirm = $_POST['db_key_confirm'] ?? '';
+        $currentDbKey = $_POST['current_db_key'] ?? '';
         if (strlen($password) < 8) {
             $error = 'Password must be at least 8 characters.';
         } elseif ($password !== $confirm) {
@@ -39,23 +45,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['setup'])) {
             $error = 'Database keys do not match.';
         } else {
             try {
-                $hash = password_hash($password, PASSWORD_BCRYPT);
                 $count = (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-                if ($count === 0) {
-                    $pdo->prepare("INSERT INTO users (password_hash) VALUES (?)")->execute([$hash]);
-                } else {
-                    $pdo->prepare("UPDATE users SET password_hash = ? WHERE id = (SELECT id FROM users ORDER BY id LIMIT 1)")
-                        ->execute([$hash]);
+                // Resetting an existing admin requires proof of ownership: the
+                // current database key (from includes/db-key.php). Otherwise a
+                // leftover setup.php would let anyone take over the account.
+                if ($count > 0 && dbKeyExists()) {
+                    $keyOk = hash_equals(dbKey(), 'p' . hash('sha256', $currentDbKey))
+                          || ($currentDbKey !== '' && hash_equals(dbKey(), $currentDbKey));
+                    if (!$keyOk) {
+                        $error = 'Enter the current database key to reset the admin password.';
+                    }
                 }
-                if ($dbKeyInput !== '') {
-                    $newKey = 'p' . hash('sha256', $dbKeyInput);
-                } else {
-                    $newKey = 'x' . bin2hex(random_bytes(32));
+                if ($error === null) {
+                    $hash = password_hash($password, PASSWORD_BCRYPT);
+                    if ($count === 0) {
+                        $pdo->prepare("INSERT INTO users (password_hash) VALUES (?)")->execute([$hash]);
+                    } else {
+                        $pdo->prepare("UPDATE users SET password_hash = ? WHERE id = (SELECT id FROM users ORDER BY id LIMIT 1)")
+                            ->execute([$hash]);
+                    }
+                    if ($dbKeyInput !== '') {
+                        $newKey = 'p' . hash('sha256', $dbKeyInput);
+                    } elseif ($count === 0) {
+                        $newKey = 'x' . bin2hex(random_bytes(32));
+                    } else {
+                        $newKey = dbKey();
+                    }
+                    saveDbKey($newKey);
+                    $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('db_key_verifier', ?)")
+                        ->execute([dbKeyVerifier($newKey)]);
+                    $success = true;
                 }
-                saveDbKey($newKey);
-                $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('db_key_verifier', ?)")
-                    ->execute([dbKeyVerifier($newKey)]);
-                $success = true;
             } catch (PDOException $e) {
                 $error = 'Save failed.';
             }
@@ -90,6 +110,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['setup'])) {
         <?php else: ?>
         <form method="POST">
             <input type="hidden" name="_csrf" value="<?= generateCsrfToken() ?>">
+            <?php if ($hasUser && dbKeyExists()): ?>
+            <div class="fg">
+                <label class="fg-label">Current database key</label>
+                <input class="fg-input" type="password" name="current_db_key" required autocomplete="off" placeholder="Required to reset an existing admin" />
+                <div class="fg-hint">An admin account already exists — proof of ownership is required. Enter the current database key (from includes/db-key.php).</div>
+            </div>
+            <?php endif; ?>
             <div class="fg">
                 <label class="fg-label">Password</label>
                 <input class="fg-input" type="password" name="password" required minlength="8" autocomplete="new-password" />
@@ -99,12 +126,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['setup'])) {
                 <input class="fg-input" type="password" name="confirm" required minlength="8" autocomplete="new-password" />
             </div>
             <div class="fg">
-                <label class="fg-label">Database key</label>
-                <input class="fg-input" type="password" name="db_key" minlength="8" autocomplete="new-password" placeholder="Leave blank to auto-generate" />
+                <label class="fg-label">New database key</label>
+                <input class="fg-input" type="password" name="db_key" minlength="8" autocomplete="new-password" placeholder="Leave blank to keep / auto-generate" />
                 <div class="fg-hint">Used by the site to encrypt sensitive data (e.g. 2FA secret). Stored in includes/db-key.php, never in the database itself. Keep a copy — losing it makes encrypted data unreadable.</div>
             </div>
             <div class="fg">
-                <label class="fg-label">Confirm Database key</label>
+                <label class="fg-label">Confirm New database key</label>
                 <input class="fg-input" type="password" name="db_key_confirm" minlength="8" autocomplete="new-password" />
             </div>
             <button type="submit" name="setup" class="btn btn-pri">Save Setup</button>

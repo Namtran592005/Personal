@@ -2,7 +2,13 @@
 // includes/legal.php — renderers for the plain-text legal pages (privacy/terms).
 
 function legalInline(string $s): string {
-    $s = preg_replace('/\[([^\]]+)\]\(([^)\s]+)\)/', '<a href="$2">$1</a>', $s);
+    $s = preg_replace_callback('/\[([^\]]+)\]\(([^)\s]+)\)/', function ($m) {
+        $scheme = strtolower((string)parse_url($m[2], PHP_URL_SCHEME));
+        if ($scheme !== '' && !in_array($scheme, ['http', 'https', 'mailto', 'tel'], true)) {
+            return $m[0];
+        }
+        return '<a href="' . $m[2] . '">' . $m[1] . '</a>';
+    }, $s);
     $s = preg_replace('/\*\*([^*]+)\*\*/', '<strong>$1</strong>', $s);
     return $s;
 }

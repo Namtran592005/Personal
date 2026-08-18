@@ -25,7 +25,7 @@
                         <div class="project-head">
                             <h4><?= h($project['title']) ?></h4>
                             <?php if ($project['stars'] > 0): ?>
-                            <span class="project-stars"><i class="ph ph-star"></i> <?= $project['stars'] ?></span>
+                            <span class="project-stars"><i class="ph ph-star"></i> <?= (int)$project['stars'] ?></span>
                             <?php endif; ?>
                         </div>
                         <p><?= h($project['description']) ?></p>

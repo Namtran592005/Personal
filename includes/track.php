@@ -3,14 +3,14 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/functions.php';
 
 $ip = getClientIp();
-$ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
-$ref = $_SERVER['HTTP_REFERER'] ?? '';
-$path = $_GET['path'] ?? '/';
+$ua = mb_substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 300);
+$ref = mb_substr($_SERVER['HTTP_REFERER'] ?? '', 0, 300);
+$path = mb_substr($_GET['path'] ?? '/', 0, 200);
 $sw = (int)($_GET['sw'] ?? 0);
 $sh = (int)($_GET['sh'] ?? 0);
-$lang = $_GET['lang'] ?? '';
-$country = $_GET['country'] ?? '';
-$city = $_GET['city'] ?? '';
+$lang = mb_substr($_GET['lang'] ?? '', 0, 10);
+$country = mb_substr($_GET['country'] ?? '', 0, 50);
+$city = mb_substr($_GET['city'] ?? '', 0, 50);
 $duration = max(0, min(BEACON_MAX_SECONDS, (int)($_GET['duration'] ?? 0)));
 
 if ($dbAvailable && $ip && ($settings['enable_analytics'] ?? '1') === '1') {

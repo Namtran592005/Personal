@@ -1,9 +1,10 @@
 <?php
 // includes/helpers.php — generic output/format helpers.
 
+// Use the raw connection IP only. X-Forwarded-For / X-Real-IP are client-
+// controlled headers and would let visitors spoof arbitrary IPs (poisoning
+// analytics). Caddy/Nginx php_fastcgi sets REMOTE_ADDR to the real client IP.
 function getClientIp(): string {
-    $forwarded = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_REAL_IP'] ?? '';
-    if ($forwarded) return trim(explode(',', $forwarded)[0]);
     return $_SERVER['REMOTE_ADDR'] ?? '';
 }
 
