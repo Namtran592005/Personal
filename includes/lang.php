@@ -22,7 +22,7 @@ function currentLang(): string {
 
 // Persist the language preference (only when explicitly switched).
 if (isset($_GET['lang']) && in_array($_GET['lang'], $ALLOWED_LANGS, true)) {
-    setcookie('lang', $_GET['lang'], time() + 60 * 60 * 24 * 365, '/', '', false, true);
+    setcookie('lang', $_GET['lang'], time() + 60 * 60 * 24 * 365, '/', '', true, true);
 }
 
 $LANG = currentLang();

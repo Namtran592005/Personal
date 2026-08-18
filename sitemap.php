@@ -2,7 +2,7 @@
 require __DIR__ . '/includes/config.php';
 require __DIR__ . '/includes/functions.php';
 
-$profile = ['name' => 'Nam Trần', 'email' => 'hello@namtran.dev', 'bio' => ''];
+$profile = ['name' => '', 'email' => '', 'bio' => ''];
 if ($dbAvailable) {
     try {
         $stmt = $pdo->query("SELECT * FROM profile WHERE id = 1");
@@ -21,7 +21,7 @@ if ($dbAvailable) {
 }
 $projects = [];
 
-$pageTitle = t('footer_sitemap') . ' — ' . ($profile['name'] ?? 'Nam Trần');
+$pageTitle = t('footer_sitemap') . ' — ' . ($profile['name'] ?? '');
 
 $navHomeOnly = true;
 
@@ -62,7 +62,7 @@ include 'partials/nav.php';
                     <li><a href="<?= BASE_PATH ?>/index.php#faq"><?= t('nav_faq') ?></a><span><?= $LANG === 'en' ? 'Answers to common questions.' : 'Giải đáp các thắc mắc phổ biến.' ?></span></li>
                     <?php endif; ?>
                     <?php if (($settings['show_contact'] ?? '1') === '1'): ?>
-                    <li><a href="<?= BASE_PATH ?>/index.php#contact"><?= t('nav_contact') ?></a><span><?= $LANG === 'en' ? 'A direct contact form.' : 'Biểu mẫu gửi tin nhắn trực tiếp.' ?></span></li>
+                    <li><a href="<?= BASE_PATH ?>/index.php#contact"><?= t('nav_contact') ?></a><span><?= $LANG === 'en' ? 'Contact channels and social profiles.' : 'Các kênh liên hệ và mạng xã hội.' ?></span></li>
                     <?php endif; ?>
                 </ul>
 

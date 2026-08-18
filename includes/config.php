@@ -1,32 +1,13 @@
 <?php
 require_once __DIR__ . '/schema.php';
-
-function getAdminPassword(): string {
-    static $pw = null;
-    if ($pw !== null) return $pw;
-    $pw = $_ENV['ADMIN_PASSWORD'] ?? $_SERVER['ADMIN_PASSWORD'] ?? getenv('ADMIN_PASSWORD');
-    if ($pw) return $pw;
-    $envFile = __DIR__ . '/../.env';
-    if (file_exists($envFile)) {
-        foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            $line = trim($line);
-            if ($line === '' || str_starts_with($line, '#')) continue;
-            if (str_starts_with($line, 'ADMIN_PASSWORD=')) {
-                $pw = substr($line, strlen('ADMIN_PASSWORD='));
-                $pw = trim($pw, '"\'');
-                break;
-            }
-        }
-    }
-    return $pw ?: '';
-}
+require_once __DIR__ . '/paths.php';
 
 $sessionParams = session_get_cookie_params();
 session_set_cookie_params([
     'lifetime' => $sessionParams['lifetime'],
     'path' => $sessionParams['path'],
     'domain' => $sessionParams['domain'],
-    'secure' => $sessionParams['secure'] ?? true,
+    'secure' => true,
     'httponly' => true,
     'samesite' => 'Strict'
 ]);
@@ -36,9 +17,18 @@ $dbAvailable = false;
 $pdo = null;
 $settings = [];
 
-$dbPath = __DIR__ . '/../data/app.sqlite';
-$dataDir = dirname($dbPath);
+$dbPath = DB_DATA_DIR . '/app.sqlite';
+$dataDir = DB_DATA_DIR;
 if (!is_dir($dataDir)) @mkdir($dataDir, 0775, true);
+
+// If the DB moved outside the web root, carry over an existing database on first run.
+if (!file_exists($dbPath)) {
+    $legacy = __DIR__ . '/../data/app.sqlite';
+    if (file_exists($legacy)) {
+        @copy($legacy, $dbPath);
+        if (file_exists($legacy . '-wal')) @copy($legacy . '-wal', $dbPath . '-wal');
+    }
+}
 
 try {
     $pdo = new PDO("sqlite:$dbPath");

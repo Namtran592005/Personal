@@ -1,3 +1,4 @@
+    <?php if (isset($faqs) && count($faqs) > 0): ?>
     <section id="faq" class="section section-alt">
         <div class="deco-rings r1" aria-hidden="true"></div>
         <div class="deco-rings sm r2" aria-hidden="true"></div>
@@ -14,31 +15,13 @@
                 <h2><?= t('sec_faq_title') ?></h2>
             </div>
             <div class="faq-list">
-                <?php if (isset($faqs) && count($faqs) > 0): ?>
-                    <?php foreach ($faqs as $item): ?>
-                    <div class="faq-item fade-in">
-                        <div class="faq-question"><?= h($item['question']) ?></div>
-                        <div class="faq-answer"><?= nl2br(h($item['answer'])) ?></div>
-                    </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
+                <?php foreach ($faqs as $item): ?>
                 <div class="faq-item fade-in">
-                    <div class="faq-question"><?= t('faq_placeholder_1_q') ?></div>
-                    <div class="faq-answer"><?= t('faq_placeholder_1_a') ?></div>
+                    <div class="faq-question"><?= h($item['question']) ?></div>
+                    <div class="faq-answer"><?= nl2br(h($item['answer'])) ?></div>
                 </div>
-                <div class="faq-item fade-in">
-                    <div class="faq-question"><?= t('faq_placeholder_2_q') ?></div>
-                    <div class="faq-answer"><?= t('faq_placeholder_2_a') ?></div>
-                </div>
-                <div class="faq-item fade-in">
-                    <div class="faq-question"><?= t('faq_placeholder_3_q') ?></div>
-                    <div class="faq-answer"><?= t('faq_placeholder_3_a') ?></div>
-                </div>
-                <div class="faq-item fade-in">
-                    <div class="faq-question"><?= t('faq_placeholder_4_q') ?></div>
-                    <div class="faq-answer"><?= t('faq_placeholder_4_a') ?></div>
-                </div>
-                <?php endif; ?>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
+    <?php endif; ?>

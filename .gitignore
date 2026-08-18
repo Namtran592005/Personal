@@ -1,5 +1,7 @@
 # Environment & secrets
 .env
+includes/db-key.php
+includes/config-local.php
 
 # Runtime data
 data/

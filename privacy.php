@@ -2,7 +2,7 @@
 require __DIR__ . '/includes/config.php';
 require __DIR__ . '/includes/functions.php';
 
-$profile = ['name' => 'Nam Trần', 'email' => 'hello@namtran.dev', 'bio' => ''];
+$profile = ['name' => '', 'email' => '', 'bio' => ''];
 if ($dbAvailable) {
     try {
         $stmt = $pdo->query("SELECT * FROM profile WHERE id = 1");
@@ -32,9 +32,9 @@ if ($dbAvailable) {
     } catch (PDOException $e) {}
 }
 $legalHtml = renderLegalText($legalContent);
-$legalHtml = str_replace(['{name}', '{email}'], [h($profile['name'] ?? 'Nam Trần'), h($profile['email'] ?? '')], $legalHtml);
+$legalHtml = str_replace(['{name}', '{email}'], [h($profile['name'] ?? ''), h($profile['email'] ?? '')], $legalHtml);
 
-$pageTitle = t('privacy_title') . ' — ' . ($profile['name'] ?? 'Nam Trần');
+$pageTitle = t('privacy_title') . ' — ' . ($profile['name'] ?? '');
 
 $navHomeOnly = true;
 

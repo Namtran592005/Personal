@@ -126,25 +126,12 @@ html.dark .social-link:hover {
   color: #f5f5f7;
   background: #2d2d2f;
 }
-html.dark .contact-form input,
-html.dark .contact-form textarea {
-  background: #2d2d2f;
-  border-color: #3d3d3f;
-  color: #f5f5f7;
-}
-html.dark .contact-form input:focus,
-html.dark .contact-form textarea:focus {
-  border-color: #f5f5f7;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
-  background: #2d2d2f;
-}
 html.dark .section-header h2,
 html.dark .hero-name,
 html.dark .about-text h3,
 html.dark .skill-card h4,
 html.dark .project-body h4,
-html.dark .timeline-item h4,
-html.dark .contact-form-wrap h3 {
+html.dark .timeline-item h4 {
   color: #f5f5f7;
 }
 html.dark .timeline::before {
@@ -172,10 +159,6 @@ html.dark .nav-overlay.open {
 html.dark .hero-scroll {
   color: rgba(255, 255, 255, 0.7);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-}
-html.dark .contact-form input::placeholder,
-html.dark .contact-form textarea::placeholder {
-  color: #6e6e73;
 }
 html.dark .section-header .label,
 html.dark .stat-item .label,

@@ -804,38 +804,6 @@ canvas#chartDaily {
   }
 
   /* Column labels per page */
-  .tbl-dashboard td:nth-child(1)::before {
-    content: "Name";
-  }
-  .tbl-dashboard td:nth-child(2)::before {
-    content: "Email";
-  }
-  .tbl-dashboard td:nth-child(3)::before {
-    content: "Subject";
-  }
-  .tbl-dashboard td:nth-child(4)::before {
-    content: "Date";
-  }
-  .tbl-dashboard td:nth-child(5)::before {
-    content: "Status";
-  }
-
-  .tbl-messages td:nth-child(1)::before {
-    content: "Name";
-  }
-  .tbl-messages td:nth-child(2)::before {
-    content: "Email";
-  }
-  .tbl-messages td:nth-child(3)::before {
-    content: "Subject";
-  }
-  .tbl-messages td:nth-child(4)::before {
-    content: "Date";
-  }
-  .tbl-messages td:nth-child(5)::before {
-    content: "Status";
-  }
-
   .tbl-skills td:nth-child(1)::before {
     content: "Order";
   }

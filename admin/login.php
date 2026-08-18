@@ -9,15 +9,25 @@ if (isLoggedIn()) {
 }
 
 $error = null;
+$noUser = false;
 if (!$dbAvailable) {
     $error = 'Database connection unavailable.';
+} else {
+    // True when no admin account exists yet → tell the user to use admin/setup.php.
+    try {
+        $noUser = (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn() === 0;
+    } catch (PDOException $e) {
+        $noUser = false;
+    }
 }
 if (isset($_GET['timeout'])) {
     $error = 'Session expired. Please sign in again.';
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-    if (!validateCsrfToken($_POST['_csrf'] ?? '')) {
+    if (loginRateLimitCheck()) {
+        $error = 'Too many login attempts. Please try again later.';
+    } elseif (!validateCsrfToken($_POST['_csrf'] ?? '')) {
         $error = 'Invalid request. Please try again.';
     } else {
         $lock = loginLockMinutes();
@@ -78,7 +88,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             </div>
             <button type="submit" name="login" class="btn btn-pri">Sign In</button>
         </form>
-        <a href="<?= BASE_PATH ?>/index.php" class="back-home"><i class="ph ph-house-line"></i> Back to Home</a>
+        <?php if ($noUser): ?>
+        <p class="sub" style="margin-top:14px">No admin account yet — create one at
+            <a href="<?= BASE_PATH ?>/admin/setup.php" style="color:#4d9fff">admin/setup.php</a>.</p>
+        <?php endif; ?>
+        <a href="<?= BASE_PATH ?>/index.php" class="back-home">Back to Home</a>
     </div>
 </div>
 <script>

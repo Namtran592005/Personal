@@ -7,7 +7,7 @@
     <div id="toast" aria-live="polite"></div>
     <footer>
         <div class="footer-content">
-            <p>&copy; <?= date('Y') ?> <?= h($profile['name'] ?? 'Nam Trần') ?>. <?= t('footer_rights') ?></p>
+            <p>&copy; <?= date('Y') ?> <?= h($profile['name'] ?? '') ?>. <?= t('footer_rights') ?></p>
             <div class="footer-right">
                 <a href="<?= BASE_PATH ?>/privacy.php" class="footer-link"><?= t('footer_privacy') ?></a>
                 <a href="<?= BASE_PATH ?>/terms.php" class="footer-link"><?= t('footer_terms') ?></a>
@@ -22,13 +22,7 @@
             basePath: '<?= BASE_PATH ?>',
             smoothLang: <?= ($settings['smooth_lang_switch'] ?? '1') === '1' ? 'true' : 'false' ?>,
             shuffleMobile: <?= ($settings['shuffle_on_mobile'] ?? '1') === '1' ? 'true' : 'false' ?>,
-            beaconMax: <?= BEACON_MAX_SECONDS ?>,
-            langUI: {
-                sending: <?= json_encode(t('sending')) ?>,
-                sendBtn: <?= json_encode(t('send_btn')) ?>,
-                sendSuccess: <?= json_encode(t('send_success')) ?>,
-                sendFail: <?= json_encode(t('send_fail')) ?>
-            }
+            beaconMax: <?= BEACON_MAX_SECONDS ?>
         };
     </script>
     <?php if (($settings['enable_analytics'] ?? '1') === '1' && ($_GET['ajax'] ?? '0') !== '1'): ?>

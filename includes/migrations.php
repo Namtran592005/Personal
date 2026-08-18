@@ -23,7 +23,9 @@ try {
     foreach (['social_facebook','social_instagram','social_threads','social_tiktok'] as $col) {
         try { $pdo->exec("ALTER TABLE profile ADD COLUMN $col TEXT DEFAULT ''"); } catch (PDOException $e) {}
     }
-    try { $pdo->exec("ALTER TABLE messages ADD COLUMN is_anonymous INTEGER DEFAULT 0"); } catch (PDOException $e) {}
+
+    // messages: feature removed (was contact form + SMTP); drop the table
+    try { $pdo->exec("DROP TABLE IF EXISTS messages"); } catch (PDOException $e) {}
 
     // analytics: time_spent column
     $cols = $pdo->query("PRAGMA table_info(analytics)")->fetchAll(PDO::FETCH_COLUMN, 1);
@@ -48,18 +50,6 @@ try {
 
     // --- Seed data ---
 
-    // Pricing plans (only when empty)
-    $planCount = $pdo->query("SELECT COUNT(*) FROM pricing_plans")->fetchColumn();
-    if ($planCount == 0) {
-        $seedPlans = [
-            ['Landing Page', '2.500.000đ', 'trọn gói', '', "Trang giới thiệu 1 trang\nThiết kế responsive\nTối ưu tốc độ & SEO cơ bản\nChỉnh sửa miễn phí 2 vòng\nBàn giao trong 5–7 ngày", 'Bắt đầu ngay', 0, 1],
-            ['Website Doanh Nghiệp', '5.500.000đ', 'trọn gói', 'Phổ biến nhất', "5–10 trang nội dung\nAdmin quản lý nội dung\nForm liên hệ & bản đồ\nTích hợp thống kê truy cập\nSEO chuẩn chỉnh\nHỗ trợ 1 tháng sau bàn giao", 'Bắt đầu ngay', 1, 2],
-            ['Ứng Dụng Tùy Chỉnh', 'Theo yêu cầu', 'báo giá riêng', '', "Web app theo yêu cầu\nThanh toán / đặt lịch / API\nCơ sở dữ liệu & bảo mật\nPhân quyền người dùng\nBảo trì & nâng cấp dài hạn", 'Liên hệ báo giá', 0, 3],
-        ];
-        $insPlan = $pdo->prepare("INSERT INTO pricing_plans (title, price, price_note, badge, features, button_text, popular, sort_order) VALUES (?,?,?,?,?,?,?,?)");
-        foreach ($seedPlans as $p) $insPlan->execute($p);
-    }
-
     // Legal pages: seed defaults + migrate legacy HTML rows
     $legalDefaults = require __DIR__ . '/legal_defaults.php';
     $pageTitles = ['privacy' => 'Chính Sách Quyền Riêng Tư', 'terms' => 'Điều Khoản Sử Dụng',
@@ -81,19 +71,15 @@ try {
         $pdo->prepare("INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)")->execute([$k, $v]);
     }
 
-    // Admin user (only when none)
-    $count = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-    if ($count == 0) {
-        $adminPw = getAdminPassword();
-        $pdo->prepare("INSERT INTO users (password_hash) VALUES (?)")
-             ->execute([password_hash($adminPw, PASSWORD_BCRYPT)]);
-    }
+    // NOTE: no admin user is seeded here. The password hash lives only in the
+    // users table; the first-run setup page (admin/setup.php) creates or resets
+    // the admin account.
 
-    // Profile seed (only when empty)
+    // Profile seed (only when empty) — blank, filled by the admin
     $count = $pdo->query("SELECT COUNT(*) FROM profile")->fetchColumn();
     if ($count == 0) {
         $pdo->prepare("INSERT INTO profile (name, title, email) VALUES (?, ?, ?)")
-             ->execute(['Nam Trần', 'Developer & Designer', 'hello@namtran.dev']);
+             ->execute(['', '', '']);
     }
 
     // Mark schema as up-to-date

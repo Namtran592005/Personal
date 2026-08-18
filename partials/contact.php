@@ -22,7 +22,7 @@
                 <p class="label"><?= t('sec_contact_label') ?></p>
                 <h2><?= t('sec_contact_title') ?></h2>
             </div>
-            <div class="contact-grid<?= (($settings['enable_contact_form'] ?? '1') !== '1') ? ' no-form' : '' ?>">
+            <div class="contact-grid no-form">
                 <div class="contact-info fade-in">
                     <p class="contact-intro"><?= t('contact_intro') ?></p>
                     <div class="contact-links">
@@ -58,29 +58,6 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
-                <?php if (($settings['enable_contact_form'] ?? '1') === '1'): ?>
-                <div class="contact-form-wrap fade-in">
-                    <h3><?= t('send_message') ?></h3>
-                    <form class="contact-form" id="contactForm">
-                        <div class="anon-toggle">
-                            <label class="anon-switch">
-                                <input type="checkbox" name="anonymous" id="anonCheck" onchange="toggleAnon()">
-                                <span class="anon-slider"></span>
-                                <span class="anon-label"><?= t('send_anon') ?></span>
-                            </label>
-                        </div>
-                        <div id="contactFields">
-                            <div class="fg-group">
-                                <input type="text" name="name" placeholder="<?= h(t('name_ph')) ?>" required />
-                                <input type="email" name="email" placeholder="<?= h(t('email_ph')) ?>" required />
-                            </div>
-                            <input type="text" name="subject" placeholder="<?= h(t('subject_ph')) ?>" />
-                        </div>
-                        <textarea name="message" placeholder="<?= h(t('message_ph')) ?>" required></textarea>
-                        <button type="submit" class="btn btn-primary"><?= t('send_btn') ?></button>
-                    </form>
-                </div>
-                <?php endif; ?>
             </div>
         </div>
     </section>

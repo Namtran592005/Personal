@@ -1,0 +1,10 @@
+<?php
+// Copy this file to includes/config-local.php (gitignored) to relocate the
+// SQLite database OUTSIDE the web root. Caddy/Nginx do not honour .htaccess,
+// so a database kept in data/ inside the web root can be downloaded directly
+// over HTTP. Moving it outside the web root makes it reachable only by PHP.
+//
+// The directory must already exist (or be creatable) and be writable by the
+// PHP user. On the first run, an existing data/app.sqlite is copied there
+// automatically. If the path is unusable, the app silently falls back to data/.
+$DATA_DIR_OVERRIDE = '/var/www/private/personal-data';

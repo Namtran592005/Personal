@@ -4,14 +4,14 @@ require 'includes/functions.php';
 
 // Default profile data (fallback when DB is unavailable)
 $profile = [
-    'name' => 'Nam Trần',
-    'title' => 'Developer & Designer',
+    'name' => '',
+    'title' => '',
     'bio' => '',
-    'email' => 'hello@namtran.dev',
-    'social_github' => '#',
-    'social_linkedin' => '#',
-    'social_twitter' => '#',
-    'social_dribbble' => '#',
+    'email' => '',
+    'social_github' => '',
+    'social_linkedin' => '',
+    'social_twitter' => '',
+    'social_dribbble' => '',
     'social_facebook' => '',
     'social_instagram' => '',
     'social_threads' => '',
@@ -28,8 +28,8 @@ if ($dbAvailable) {
 
 // Fetch projects from GitHub
 require 'includes/github.php';
-$githubUser = $settings['github_username'] ?? 'namtran592005';
-$projects = fetchGithubRepos($githubUser, GITHUB_MAX_REPOS, $githubUser);
+$githubUser = trim($settings['github_username'] ?? '');
+$projects = $githubUser !== '' ? fetchGithubRepos($githubUser, GITHUB_MAX_REPOS, $githubUser) : [];
 
 // Skills from DB (fallback: empty)
 $skills = [];

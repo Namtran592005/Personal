@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/totp.php';
+require_once __DIR__ . '/crypto.php';
 
 function isLoggedIn(): bool {
     return isset($_SESSION['user_id']);
@@ -41,24 +42,15 @@ function sessionFingerprint(): string {
     return hash('sha256', clientIp() . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? ''));
 }
 
-// Verify password + rehash when it matches the .env fallback. Returns user id or null.
+// Verify password against the stored bcrypt hash. Returns user id or null.
 function login(string $password): ?int {
     global $pdo, $dbAvailable;
     if (!$dbAvailable) return null;
-    $adminPassword = getAdminPassword();
     try {
         $stmt = $pdo->query("SELECT id, password_hash FROM users ORDER BY id LIMIT 1");
         $user = $stmt->fetch();
-        if (!$user) return null;
-        if (password_verify($password, $user['password_hash'])) {
-            return (int)$user['id'];
-        }
-        if ($password === $adminPassword) {
-            $hash = password_hash($adminPassword, PASSWORD_DEFAULT);
-            $pdo->prepare("UPDATE users SET password_hash = ? WHERE id = ?")->execute([$hash, $user['id']]);
-            return (int)$user['id'];
-        }
-        return null;
+        if (!$user || $user['password_hash'] === '') return null;
+        return password_verify($password, $user['password_hash']) ? (int)$user['id'] : null;
     } catch (PDOException $e) {
         return null;
     }
@@ -125,7 +117,7 @@ function setTwoFactorSecret(int $userId, string $secret, int $enabled = 0): void
     if (!$dbAvailable) return;
     try {
         $pdo->prepare("UPDATE users SET totp_secret = ?, totp_enabled = ? WHERE id = ?")
-            ->execute([$secret, $enabled, $userId]);
+            ->execute([dbEncrypt($secret), $enabled, $userId]);
     } catch (PDOException $e) {}
 }
 

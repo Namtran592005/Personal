@@ -8,7 +8,7 @@ return [
 Chính sách này mô tả cách website {name} ("chúng tôi") thu thập, sử dụng, lưu trữ và bảo vệ dữ liệu của bạn khi bạn truy cập website và sử dụng các dịch vụ của chúng tôi. Vui lòng đọc kỹ trước khi sử dụng website.
 
 ## 1. Giới thiệu & Phạm vi áp dụng
-Chính sách này áp dụng cho toàn bộ các trang và chức năng của website, bao gồm nhưng không giới hạn ở: trang chủ, khu vực liên hệ, biểu mẫu gửi tin nhắn và hệ thống theo dõi truy cập. Bằng việc truy cập hoặc sử dụng website, bạn xác nhận đã đọc, hiểu và đồng ý với các nội dung nêu trong chính sách này.
+Chính sách này áp dụng cho toàn bộ các trang và chức năng của website, bao gồm nhưng không giới hạn ở: trang chủ, khu vực liên hệ và hệ thống theo dõi truy cập. Bằng việc truy cập hoặc sử dụng website, bạn xác nhận đã đọc, hiểu và đồng ý với các nội dung nêu trong chính sách này.
 
 ## 2. Dữ liệu chúng tôi thu thập
 ### 2.1. Dữ liệu thu thập tự động (phân tích truy cập)
@@ -23,11 +23,7 @@ Khi bạn truy cập website, hệ thống tự động ghi nhận một số th
 Các dữ liệu này được lưu trữ tại cơ sở dữ liệu cục bộ (SQLite) trên máy chủ lưu trữ website và không được dùng để nhận diện danh tính chính xác của bạn ngoài mục đích thống kê.
 
 ### 2.2. Dữ liệu do bạn chủ động cung cấp
-Khi sử dụng biểu mẫu liên hệ, bạn có thể cung cấp:
-- Tên của bạn.
-- Địa chỉ email.
-- Chủ đề và nội dung tin nhắn.
-Nếu bạn chọn chế độ "Gửi ẩn danh", chúng tôi chỉ nhận được nội dung tin nhắn mà không lưu trữ tên hoặc email của bạn. Dữ liệu từ biểu mẫu được lưu trong cơ sở dữ liệu cục bộ và có thể được gửi đến hộp thư email của chúng tôi để xử lý phản hồi.
+Website không còn thu thập dữ liệu qua biểu mẫu liên hệ. Bạn chỉ có thể liên hệ với chúng tôi qua email hoặc mạng xã hội được hiển thị công khai trong khu vực liên hệ; việc trao đổi thông tin qua các kênh đó hoàn toàn do bạn tự quyết định.
 
 ### 2.3. Lưu trữ cục bộ trên trình duyệt (localStorage)
 Website sử dụng localStorage của trình duyệt để ghi nhớ lựa chọn giao diện (chế độ sáng/tối) của bạn. Thông tin này chỉ nằm trên thiết bị của bạn, không được gửi lên máy chủ và không được chúng tôi sử dụng cho mục đích nào khác.
@@ -36,18 +32,16 @@ Website sử dụng localStorage của trình duyệt để ghi nhớ lựa ch�
 Chúng tôi chỉ sử dụng dữ liệu thu thập được cho các mục đích sau:
 - Vận hành, bảo trì và bảo mật website.
 - Thống kê số lượng truy cập, nguồn truy cập để cải thiện nội dung và trải nghiệm người dùng.
-- Phản hồi các tin nhắn liên hệ và hỗ trợ bạn.
 - Tuân thủ các nghĩa vụ pháp lý hiện hành.
 Chúng tôi **không** sử dụng dữ liệu để xây dựng hồ sơ quảng cáo, không bán, cho thuê hay chuyển nhượng dữ liệu của bạn cho bên thứ ba vì mục đích thương mại.
 
 ## 4. Căn cứ pháp lý cho việc xử lý dữ liệu
-Việc xử lý dữ liệu cá nhân của bạn dựa trên sự đồng ý của bạn khi sử dụng website và biểu mẫu liên hệ. Chúng tôi cũng tuân thủ các quy định pháp luật có liên quan, bao gồm nhưng không giới hạn:
+Việc xử lý dữ liệu cá nhân của bạn dựa trên sự đồng ý của bạn khi sử dụng website. Chúng tôi cũng tuân thủ các quy định pháp luật có liên quan, bao gồm nhưng không giới hạn:
 - **Việt Nam:** Nghị định số 13/2023/NĐ-CP ngày 17/04/2023 của Chính phủ về bảo vệ dữ liệu cá nhân.
 - **Liên minh Châu Âu:** Quy định bảo vệ dữ liệu chung (GDPR 2016/679) nếu bạn là công dân hoặc đang sinh sống tại khu vực EU/EEA.
 
 ## 5. Chia sẻ dữ liệu với bên thứ ba
 Chúng tôi không bán, cho thuê hoặc trao đổi dữ liệu cá nhân của bạn. Dữ liệu chỉ có thể được tiết lộ trong các trường hợp sau:
-- **Nhà cung cấp dịch vụ:** tin nhắn liên hệ có thể được gửi qua dịch vụ email của Google (Gmail SMTP) để phản hồi bạn; tin nhắn được xử lý theo chính sách bảo mật của Google.
 - **Dữ liệu công khai:** website hiển thị các kho lưu trữ (repository) công khai của tài khoản GitHub, vốn là dữ liệu công khai của GitHub.
 - **Yêu cầu pháp lý:** khi có yêu cầu hợp pháp từ cơ quan nhà nước có thẩm quyền theo quy định pháp luật.
 
@@ -58,13 +52,13 @@ Chúng tôi áp dụng các biện pháp kỹ thuật và tổ chức hợp lý 
 - Biểu mẫu đăng nhập được bảo vệ bằng token chống giả mạo (CSRF) và giới hạn số lần thử sai.
 - Dữ liệu được lưu trữ tại cơ sở dữ liệu cục bộ trên máy chủ, giảm thiểu rủi ro truy cập trái phép.
 - Khuyến nghị truy cập website qua kết nối HTTPS để bảo vệ dữ liệu trong quá trình truyền tải.
-Dù vậy, không có phương thức truyền dữ liệu hay lưu trữ nào là tuyệt đối an toàn. Chúng tôi không thể đảm bảo bảo mật tuyệt đối và khuyến nghị bạn không gửi những thông tin nhạy cảm qua biểu mẫu liên hệ.
+Dù vậy, không có phương thức truyền dữ liệu hay lưu trữ nào là tuyệt đối an toàn. Chúng tôi không thể đảm bảo bảo mật tuyệt đối.
 
 ## 7. Cookie và công nghệ tương tự
 Website sử dụng cookie phiên (session) cần thiết cho việc đăng nhập khu vực quản trị và sử dụng localStorage để ghi nhớ lựa chọn giao diện. Website không sử dụng cookie của bên thứ ba, không có quảng cáo và không có công cụ theo dõi của bên ngoài. Bạn có thể xoá cookie và dữ liệu localStorage bất kỳ lúc nào thông qua cài đặt trình duyệt.
 
 ## 8. Thời gian lưu trữ dữ liệu
-Dữ liệu thống kê truy cập và tin nhắn liên hệ được lưu trữ trong khoảng thời gian cần thiết cho mục đích đã nêu. Dữ liệu thống kê có thể được xoá định kỳ thông qua khu vực quản trị. Tin nhắn liên hệ có thể được giữ lại để phục vụ việc phản hồi và hỗ trợ, sau đó được xoá khi không còn cần thiết.
+Dữ liệu thống kê truy cập được lưu trữ trong khoảng thời gian cần thiết cho mục đích đã nêu và có thể được xoá định kỳ thông qua khu vực quản trị.
 
 ## 9. Quyền của bạn
 Tuỳ theo pháp luật áp dụng, bạn có quyền:
@@ -109,13 +103,7 @@ Website hiển thị danh sách các kho lưu trữ (repository) công khai củ
 Website có thể chứa liên kết đến các website bên thứ ba (GitHub, mạng xã hội, email...). Chúng tôi không kiểm soát và không chịu trách nhiệm về nội dung, chính sách quyền riêng tư hoặc hành vi của các website bên thứ ba này.
 
 ## 5. Nội dung người dùng gửi lên
-Khi sử dụng biểu mẫu liên hệ, bạn gửi cho chúng tôi một số thông tin nhất định. Bạn cam kết rằng nội dung bạn gửi:
-- Không vi phạm pháp luật Việt Nam hoặc pháp luật quốc tế có liên quan.
-- Không chứa nội dung xúc phạm, lăng mạ, quấy rối, phân biệt đối xử hoặc đe doạ.
-- Không chứa nội dung quảng cáo, spam hoặc các hình thức làm phiền khác.
-- Không chứa thông tin sai lệch hoặc mạo danh người khác.
-- Không chứa mã độc, liên kết độc hại hoặc nội dung bất hợp pháp.
-Chúng tôi có quyền từ chối xử lý hoặc xoá các tin nhắn vi phạm các quy định trên. Khi bạn gửi tin nhắn, bạn cấp cho chúng tôi quyền sử dụng thông tin đó để phản hồi và xử lý yêu cầu, phù hợp với Chính Sách Quyền Riêng Tư.
+Website không cung cấp biểu mẫu gửi tin nhắn nên chúng tôi không thu thập nội dung do bạn gửi trực tiếp trên website. Việc trao đổi thông tin với chúng tôi chỉ diễn ra qua các kênh liên hệ công khai (email, mạng xã hội) và thuộc trách nhiệm của bạn.
 
 ## 6. Bảng giá dịch vụ
 Các mức giá, gói dịch vụ và thông tin liên quan được hiển thị trên website chỉ mang tính tham khảo và có thể thay đổi theo thời gian. Giá trị hợp đồng, phạm vi công việc và tiến độ thực hiện được thoả thuận cụ thể giữa các bên và có hiệu lực theo hợp đồng hoặc thoả thuận dịch vụ được ký kết. Thông tin hiển thị trên website không cấu thành chào bán hoặc cam kết ràng buộc cho đến khi có thoả thuận chính thức.
@@ -141,7 +129,7 @@ TXT,
 This policy describes how the website {name} ("we") collects, uses, stores and protects your data when you visit the website and use our services. Please read it carefully before using the website.
 
 ## 1. Introduction & Scope
-This policy applies to all pages and features of the website, including but not limited to: the homepage, the contact area, the message form and the visitor tracking system. By accessing or using the website, you confirm that you have read, understood and agreed to the contents of this policy.
+This policy applies to all pages and features of the website, including but not limited to: the homepage, the contact area and the visitor tracking system. By accessing or using the website, you confirm that you have read, understood and agreed to the contents of this policy.
 
 ## 2. Data we collect
 ### 2.1. Automatically collected data (visit analytics)
@@ -156,11 +144,7 @@ When you visit the website, the system automatically records some technical info
 This data is stored in a local database (SQLite) on the website hosting server and is not used to identify you beyond statistical purposes.
 
 ### 2.2. Data you provide voluntarily
-When using the contact form, you may provide:
-- Your name.
-- Your email address.
-- The subject and body of your message.
-If you choose the "Send anonymously" option, we only receive the message content and do not store your name or email. Form data is stored in the local database and may be sent to our email inbox for processing.
+The website no longer collects data through a contact form. You can only reach us via the email address or social media profiles listed publicly in the contact area; any exchange of information through those channels is entirely at your own discretion.
 
 ### 2.3. Browser local storage (localStorage)
 The website uses browser localStorage to remember your theme preference (light/dark mode). This information stays on your device, is not sent to the server, and is not used for any other purpose.
@@ -169,18 +153,16 @@ The website uses browser localStorage to remember your theme preference (light/d
 We only use collected data for the following purposes:
 - Operating, maintaining and securing the website.
 - Counting visits and traffic sources to improve content and user experience.
-- Responding to contact messages and supporting you.
 - Complying with applicable legal obligations.
 We do **not** use the data to build advertising profiles, and we do not sell, rent or transfer your data to third parties for commercial purposes.
 
 ## 4. Legal basis for data processing
-Processing of your personal data is based on your consent when using the website and contact form. We also comply with applicable laws, including but not limited to:
+Processing of your personal data is based on your consent when using the website. We also comply with applicable laws, including but not limited to:
 - **Vietnam:** Decree No. 13/2023/ND-CP dated 17/04/2023 on personal data protection.
 - **European Union:** General Data Protection Regulation (GDPR 2016/679) if you are a citizen or resident of the EU/EEA.
 
 ## 5. Sharing data with third parties
 We do not sell, rent or exchange your personal data. Data may only be disclosed in the following cases:
-- **Service providers:** contact messages may be sent via Google email services (Gmail SMTP) to respond to you; messages are processed according to Google's privacy policy.
 - **Public data:** the website displays public repositories of the configured GitHub account, which are public data on GitHub.
 - **Legal requests:** when required by a lawful request from a competent authority.
 
@@ -191,13 +173,13 @@ We apply reasonable technical and organisational measures to protect data, inclu
 - The login form is protected by a CSRF token and rate-limited login attempts.
 - Data is stored in a local database on the server, reducing the risk of unauthorised access.
 - We recommend accessing the website over an HTTPS connection to protect data in transit.
-That said, no data transmission or storage method is absolutely secure. We cannot guarantee absolute security and recommend you do not send sensitive information through the contact form.
+That said, no data transmission or storage method is absolutely secure. We cannot guarantee absolute security.
 
 ## 7. Cookies and similar technologies
 The website uses a session cookie required for admin login and localStorage to remember your theme preference. The website does not use third-party cookies, has no ads and no external tracking tools. You can delete cookies and localStorage data at any time through your browser settings.
 
 ## 8. Data retention
-Visit analytics and contact messages are retained for as long as needed for the stated purposes. Analytics data can be deleted periodically through the admin area. Contact messages may be kept to allow us to respond and support you, then removed when no longer needed.
+Visit analytics are retained for as long as needed for the stated purposes and can be deleted periodically through the admin area.
 
 ## 9. Your rights
 Depending on applicable law, you have the right to:
@@ -242,13 +224,7 @@ The website displays a list of public repositories from the configured GitHub ac
 The website may contain links to third-party websites (GitHub, social media, email...). We do not control and are not responsible for the content, privacy policies or behaviour of these third-party websites.
 
 ## 5. User-submitted content
-When using the contact form, you submit certain information to us. You warrant that what you submit:
-- Does not violate Vietnamese or relevant international law.
-- Does not contain offensive, abusive, harassing, discriminatory or threatening content.
-- Does not contain advertising, spam or other nuisance.
-- Does not contain false information or impersonation.
-- Does not contain malware, malicious links or unlawful content.
-We reserve the right to refuse to process or delete messages that violate the above. When you send a message, you grant us the right to use that information to respond and process your request, in line with the Privacy Policy.
+The website does not provide a message form, so we do not collect content you submit directly on the website. Any exchange of information with us takes place only through the publicly listed contact channels (email, social media) and is entirely your responsibility.
 
 ## 6. Pricing
 Prices, packages and related information displayed on the website are for reference only and may change over time. Contract value, scope of work and schedule are agreed specifically between the parties and take effect according to the signed contract or service agreement. Information displayed on the website does not constitute an offer or binding commitment until a formal agreement is reached.

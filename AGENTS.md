@@ -15,12 +15,11 @@ Website cá nhân **PHP thuần + SQLite** (không Composer, không framework, k
 ### Khởi động (`includes/config.php`)
 Mọi request bắt đầu bằng `require 'includes/config.php'`. File này:
 1. `require_once includes/schema.php` (DDL + hằng số tập trung)
-2. Nạp password admin từ env / `.env`
-3. Thiết lập session (`HttpOnly`, `SameSite=Strict`)
-4. Mở SQLite tại `data/app.sqlite` (WAL mode)
-5. Tạo toàn bộ bảng bằng `schemaTables()` (idempotent)
-6. Đọc `db_version` từ bảng `settings`; nếu `< DB_VERSION` thì `require includes/migrations.php`
-7. Nạp toàn bộ `settings` vào biến global `$settings`
+2. Thiết lập session (`Secure`, `HttpOnly`, `SameSite=Strict`) — cookie session và cookie `lang` đều bắt buộc `Secure` (yêu cầu HTTPS)
+3. Mở SQLite tại `DB_DATA_DIR/app.sqlite` (WAL mode) — `DB_DATA_DIR` do `includes/paths.php` phân giải (mặc định `data/`, có thể chuyển ra ngoài web root qua `includes/config-local.php`)
+4. Tạo toàn bộ bảng bằng `schemaTables()` (idempotent)
+5. Đọc `db_version` từ bảng `settings`; nếu `< DB_VERSION` thì `require includes/migrations.php`
+6. Nạp toàn bộ `settings` vào biến global `$settings`
 
 **Quy ước global quan trọng**: sau khi require config, luôn có sẵn:
 - `$pdo` — PDO object (hoặc `null`), `$dbAvailable` — bool
@@ -42,7 +41,15 @@ Chạy 1 lần khi `db_version < DB_VERSION`. Toàn bộ phải **idempotent** (
 - `isLoggedIn()` — kiểm tra `$_SESSION['user_id']`.
 - CSRF: `generateCsrfToken()` / `validateCsrfToken()`. **Mọi form POST admin PHẢI có hidden `_csrf` và validate**.
 - Brute force: `loginLockMinutes()` + `recordLoginAttempt()` + `clearLoginAttempts()` — khóa 5 lần sai/15 phút theo IP, chạy server-side mỗi request.
-- Login chấp nhận password từ `.env` (rehash bcrypt tự động) hoặc hash trong bảng `users`.
+- Login rate limit: `loginRateLimitCheck()` (trong `includes/rate-limit.php`) — chặn ≥ `LOGIN_RATE_MAX` (10) POST login/2FA/IP/`LOGIN_RATE_WINDOW` (60s) bất kể thành công hay thất bại; chạy đầu POST handler ở `admin/login.php` + `admin/2fa.php`. Bảng `login_rate_limits` tự tạo qua `schemaTables()` (không cần migration).
+- Login chỉ verify bằng bcrypt hash trong bảng `users` — KHÔNG có `.env`/fallback. Tạo/reset mật khẩu admin qua trang `admin/setup.php` (form nhập password + confirm + **Database key**, insert/update hash trong `users` + ghi key): upload file → mở URL → nhập mật khẩu → **xoá file khỏi server**. `admin/login.php` hiện link nhắc tới `admin/setup.php` khi bảng `users` rỗng.
+
+### Mã hoá dữ liệu (`includes/dbkey.php` + `includes/crypto.php`)
+- `admin/setup.php` tạo **Database key** (bỏ trống → tự sinh `x`+64hex; nhập tay → `p`+sha256 passphrase) và lưu vào `includes/db-key.php` (file PHP, gitignored, trình duyệt không tải được nội dung). Fingerprint SHA-256 của key lưu ở bảng `settings` (`db_key_verifier`).
+- `dbKey()`/`saveDbKey()`/`dbKeyVerifier()` trong `includes/dbkey.php`; `dbEncrypt()`/`dbDecrypt()` (AES-256-GCM, tiền tố `enc1:`) trong `includes/crypto.php`.
+- Hiện chỉ `users.totp_secret` được mã hoá (qua `setTwoFactorSecret()` trong `auth.php`, giải mã ở `admin/2fa.php`). Giá trị cũ dạng plaintext vẫn hoạt động (dbDecrypt trả nguyên văn khi không có tiền tố `enc1:`). Mất key → dữ liệu mã hoá không đọc được (2FA phải bật lại).
+- `check.php` hiển thị trạng thái: key file tồn tại? verifier khớp DB?
+- **Chống tải DB qua web (Caddy/Nginx — không có `.htaccess`)**: bảo vệ bằng code — `includes/paths.php` phân giải `DB_DATA_DIR`; nếu có `includes/config-local.php` (gitignored, copy từ `config-local.php.example`) đặt `$DATA_DIR_OVERRIDE` là đường dẫn **ngoài web root** thì DB được chuyển ra đó (tự copy DB cũ lần đầu, fallback về `data/` nếu path không dùng được). Key lưu trong `includes/db-key.php` là file PHP nên trình duyệt không tải được. `check.php` báo FAIL nếu DB còn trong web root. **KHÔNG đưa key vào file lưu trong `data/` hoặc web-accessible.**
 - Đăng nhập 2 bước: `login($password)` chỉ verify → trả `?int`; nếu `twoFactorEnabled()` thì set `$_SESSION['2fa_user']` chuyển `admin/2fa.php`, nếu không gọi `completeLogin($userId)` (regenerate session id + set `last_activity`/`fingerprint`).
 - Session hardening: `enforceSessionSecurity()` — idle timeout `SESSION_TIMEOUT_MINUTES` (30p) + fingerprint IP/UA, hủy session khi khớp sai.
 
@@ -58,8 +65,8 @@ Chạy 1 lần khi `db_version < DB_VERSION`. Toàn bộ phải **idempotent** (
 - Toàn bộ trang công khai (index, partials, privacy, terms, sitemap, check, error) đã i18n. Admin không i18n (trừ login/2fa/security tiếng Anh).
 - Trang pháp lý có 4 keys trong bảng `pages`: `privacy`/`terms`/`privacy_en`/`terms_en`, biên tập ở `admin/pages.php`.
 - `error.php` và `check.php` tự detect lang inline (không phụ thuộc DB).
-- **Smooth language switch (AJAX, không reload)**: click switcher → `fetch(url + '&ajax=1')` → swap `document.body.innerHTML` → set `<html lang>`/`title`/URL/cookie → `initPage(true)` (bind lại: nav/contact/fade-in/lang-switch/shuffle). Bật/tắt bằng toggle `smooth_lang_switch` (off → switcher là navigation thường). Quy ước `?ajax=1`: header/footer BỎ analytics beacon khi có param này (tránh đếm trùng). Mọi script cần chạy lại sau swap PHẢI đặt trong bind function gọi từ `initPage` — KHÔNG viết script inline tự thực thi vì nó không chạy lại khi body bị thay thế (chỉ có 1 inline config `window.SITE` trong footer; `swapLang` re-eval nó từ doc mới vì innerHTML không chạy script).
-- **JS module phía client** (`assets/js/`): `darkmode.js` (head, trước first paint), `analytics.js` (chỉ load khi `enable_analytics=1` VÀ không phải `?ajax=1`), `ui.js` (`showToast`/`toggleAnon`/`fitContact` + `bindGlobal`/`bindFadeIn`/`bindNav`/`bindContact` + `initPage`), `lang-switch.js` (`swapLang`/`bindLangSwitch`, no-op khi `window.SITE.smoothLang` false), `shuffle.js` (`initShuffle` + show-more, đọc `window.SITE.shuffleMobile` để bật/tắt shuffle trên mobile), `main.js` (boot `initPage` lúc DOM sẵn sàng). Config qua `window.SITE = { basePath, smoothLang, shuffleMobile, beaconMax, langUI }` được in inline trong `partials/footer.php`. CSS chia module trong `assets/css/` (base, decor, nav, hero, sections, layout, components, theme), cache-bust bằng `filemtime()`.
+- **Smooth language switch (AJAX, không reload)**: click switcher → `fetch(url + '&ajax=1')` → swap `document.body.innerHTML` → set `<html lang>`/`title`/URL/cookie → `initPage(true)` (bind lại: nav/fade-in/lang-switch/shuffle). Bật/tắt bằng toggle `smooth_lang_switch` (off → switcher là navigation thường). Quy ước `?ajax=1`: header/footer BỎ analytics beacon khi có param này (tránh đếm trùng). Mọi script cần chạy lại sau swap PHẢI đặt trong bind function gọi từ `initPage` — KHÔNG viết script inline tự thực thi vì nó không chạy lại khi body bị thay thế (chỉ có 1 inline config `window.SITE` trong footer; `swapLang` re-eval nó từ doc mới vì innerHTML không chạy script).
+- **JS module phía client** (`assets/js/`): `darkmode.js` (head, trước first paint), `analytics.js` (chỉ load khi `enable_analytics=1` VÀ không phải `?ajax=1`), `ui.js` (`showToast` + `bindGlobal`/`bindFadeIn`/`bindNav` + `initPage`), `lang-switch.js` (`swapLang`/`bindLangSwitch`, no-op khi `window.SITE.smoothLang` false), `shuffle.js` (`initShuffle` + show-more, đọc `window.SITE.shuffleMobile` để bật/tắt shuffle trên mobile), `main.js` (boot `initPage` lúc DOM sẵn sàng). Config qua `window.SITE = { basePath, smoothLang, shuffleMobile, beaconMax }` được in inline trong `partials/footer.php`. CSS chia module trong `assets/css/` (base, decor, nav, hero, sections, layout, components, theme), cache-bust bằng `filemtime()`.
 
 ## Cấu trúc thư mục
 
@@ -73,7 +80,7 @@ Chạy 1 lần khi `db_version < DB_VERSION`. Toàn bộ phải **idempotent** (
 ├── error.php          # Trang lỗi 404/403/500
 ├── admin/             # Khu vực quản trị (mỗi file 1 module CRUD)
 ├── admin-assets/admin.css
-├── includes/          # config, schema, migrations, auth, functions (facade: helpers + legal), github, mail, track, lang, i18n, totp, rate-limit, legal_defaults, email-template
+├── includes/          # config, schema, migrations, auth, functions (facade: helpers + legal), github, track, lang, i18n, totp, rate-limit, legal_defaults, dbkey, crypto
 ├── partials/          # header, nav, hero, skills, experiences, projects, faq, pricing, contact, footer
 ├── assets/            # css/ (base, decor, nav, hero, sections, layout, components, theme), js/ (darkmode, analytics, ui, lang-switch, shuffle, main, gsap/Flip/chart), icons phosphor, fonts Inter, video (bg/hero)
 ├── media/avt.png      # Ảnh đại diện mặc định; avatar upload lưu media/avatar-*.png|jpg|webp; video nền upload lưu media/videos/ (gitignored)
@@ -89,14 +96,14 @@ Chạy 1 lần khi `db_version < DB_VERSION`. Toàn bộ phải **idempotent** (
 - **SQL luôn dùng prepared statement** — không nối biến vào SQL. Nếu phải nối tên cột/bảng, dùng whitelist mảng cứng (vd `admin/profile.php`).
 - KHÔNG thêm comment khi viết code mới trừ khi thật cần thiết (mã hiện tại có một số comment tiếng Việt/Anh từ trước).
 - Đường dẫn luôn dùng `BASE_PATH` (portable, không hardcode). CSS cache-bust qua `filemtime()` trong `partials/header.php`.
-- **Tính portable (triển khai bất kỳ đâu, không phụ thuộc domain)**: toàn bộ link `href`/`src`/`action`/`fetch`/`header('Location')` PHẢI dùng `BASE_PATH` hoặc dạng tương đối (`?q=`, `#anchor`, `mailto:`, `tel:`, `../`). Không hardcode domain/đường dẫn tuyệt đối. `BASE_PATH` được chuẩn hóa forward-slash trong `config.php`, `error.php`, `check.php` (Windows/Linux đều chạy). URL tuyệt đối động (og:url, sitemap.xml, email template) dựng từ `$_SERVER['HTTPS']`+`HTTP_HOST`+`BASE_PATH`. Lưu ý: `$_SERVER['SCRIPT_NAME']` ĐÃ bao gồm `BASE_PATH` nên khi dùng nó không nối thêm `BASE_PATH` (xem `langUrl()` trong `includes/lang.php`).
+- **Tính portable (triển khai bất kỳ đâu, không phụ thuộc domain)**: toàn bộ link `href`/`src`/`action`/`fetch`/`header('Location')` PHẢI dùng `BASE_PATH` hoặc dạng tương đối (`?q=`, `#anchor`, `mailto:`, `tel:`, `../`). Không hardcode domain/đường dẫn tuyệt đối. `BASE_PATH` được chuẩn hóa forward-slash trong `config.php`, `error.php`, `check.php` (Windows/Linux đều chạy). URL tuyệt đối động (og:url, sitemap.xml) dựng từ `$_SERVER['HTTPS']`+`HTTP_HOST`+`BASE_PATH`. Lưu ý: `$_SERVER['SCRIPT_NAME']` ĐÃ bao gồm `BASE_PATH` nên khi dùng nó không nối thêm `BASE_PATH` (xem `langUrl()` trong `includes/lang.php`).
 - Error handling kiểu codebase: bọc `try { ... } catch (PDOException $e) {}` — DB có thể unavailable, page phải fallback mềm.
 - Các trang admin: bắt đầu bằng 4 `require_once` (config, auth, functions) + `requireLogin()`, đặt `$page = '<tên>'` trước khi include sidebar để highlight menu.
 
 ## Module chính
 
 ### Settings / Feature toggles
-Bảng `settings`, các key toggle: `show_skills`, `show_experience`, `show_projects`, `show_faq`, `show_pricing`, `show_contact`, `enable_analytics`, `enable_contact_form`, `show_back_top`, `show_call_fab`, `smooth_lang_switch`, `shuffle_on_mobile`, `github_username`.
+Bảng `settings`, các key toggle: `show_skills`, `show_experience`, `show_projects`, `show_faq`, `show_pricing`, `show_contact`, `enable_analytics`, `show_back_top`, `show_call_fab`, `smooth_lang_switch`, `shuffle_on_mobile`, `github_username`.
 - Trang chủ check: `if (($settings['show_x'] ?? '1') === '1') include 'partials/x.php';`
 - **Khi thêm section mới**: thêm toggle key vào `schemaSettingsDefaults()` (migrations), `admin/settings.php` (cả `$keys` và mảng `$toggles`), index.php, `partials/nav.php` (link), `sitemap.php` + `sitemap.xml` (nếu có).
 - `shuffle_on_mobile` (mặc định `1`): điều khiển hiệu ứng shuffle projects trên mobile/tablet (≤768px). Bật → toggle shuffle hiện trên mobile (`partials/projects.php` thêm class `on-mobile`, `assets/css/nav.css` hiển thị) và shuffle chạy trên mobile (`assets/js/shuffle.js` đọc `window.SITE.shuffleMobile`). Tắt → toggle ẩn trên mobile, shuffle chỉ chạy desktop. Visitor vẫn tắt/bật shuffle được bằng `#shuffleCheck`.
@@ -113,9 +120,6 @@ Bảng `settings`, các key toggle: `show_skills`, `show_experience`, `show_proj
 - Upload ở `admin/profile.php`: form `enctype=multipart/form-data`, validate MIME bằng `finfo` (png/jpeg/webp, ≤2MB), lưu bằng `move_uploaded_file` vào `media/`.
 - Hiển thị: `partials/hero.php` + admin preview dùng `$profile['avatar'] ?: 'media/avt.png'` với `onerror` fallback về `media/avt.png`.
 
-### Tin nhắn liên hệ
-- `admin/messages.php` có phân trang (`page`, 15/trang) + lọc `status` (all/unread/read) + tìm `q` theo name/email/subject. Phải nhớ: biến `$page` dùng cho sidebar highlight — đừng dùng chung làm biến số trang.
-
 ### Video nền (hero + login)
 - Settings keys: `hero_video` (video nền hero, `partials/hero.php`) và `login_video` (video nền admin login + 2FA, `admin/login.php` + `admin/2fa.php`). Giá trị là đường dẫn tương đối (rỗng → dùng default `assets/video/hero.mp4` / `bg.mp4`).
 - Upload ở `admin/videos.php`: form `enctype=multipart/form-data`, validate MIME bằng `finfo` (mp4/webm/ogg, ≤20MB), lưu `move_uploaded_file` vào `media/videos/` (đã gitignore), tự xóa file cũ khi thay/reset.
@@ -129,14 +133,8 @@ Bảng `settings`, các key toggle: `show_skills`, `show_experience`, `show_proj
 - Render bởi `renderLegalText()` + `legalInline()` trong `includes/functions.php`. Cú pháp: `##`/`###` tiêu đề, `-` list, `**đậm**`, `[text](url)`, placeholder `{name}`/`{email}`.
 - Migration tự động: nếu bản cũ chứa HTML (`<`) sẽ bị thay bằng plain-text seed.
 
-### Mail (`includes/mail.php`)
-SMTP tự viết bằng socket (fsockopen + STARTTLS), không dùng thư viện. Cấu hình từ `.env`: `SMTP_HOST/PORT/USER/PASS/FROM/FROM_NAME`. `sendMail()` trả `false` nếu không cấu hình.
-
-### Contact form (`includes/contact-handler.php`)
-POST JSON: lưu vào bảng `messages` + gửi mail SMTP. Chế độ ẩn danh (checkbox) bỏ trống name/email. `enable_contact_form` phải = 1.
-
-## DB: 12 bảng
-`users`, `profile`, `skills`, `projects`, `experiences`, `messages`, `faqs`, `pricing_plans`, `analytics`, `settings`, `login_attempts`, `pages`. Schema chi tiết ở `includes/schema.php`.
+## DB: 11 bảng
+`users`, `profile`, `skills`, `projects`, `experiences`, `faqs`, `pricing_plans`, `analytics`, `settings`, `login_attempts`, `pages`. Schema chi tiết ở `includes/schema.php`. Bảng `messages` (form liên hệ + SMTP) đã bị loại bỏ hoàn toàn ở `DB_VERSION=8` (`DROP TABLE IF EXISTS messages` trong migrations).
 
 ## Kiểm tra / Test
 
@@ -161,7 +159,7 @@ GitHub Actions chạy tự động (lint + smoke) trên mỗi push `main`.
 
 - Nhánh `main`. Commit message tiếng Anh, phong cách: `feat: ...` / `fix: ...` / `docs: ...`.
 - Chỉ commit khi được yêu cầu. Sau commit push lên `origin/main`.
-- `data/`, `cache/`, `.env` đã gitignore.
+- `data/`, `cache/` đã gitignore.
 - Lưu ý: Git cảnh báo LF→CRLF (không ảnh hưởng).
 
 ## Lịch sử commit gần đây (mốc kiến trúc)

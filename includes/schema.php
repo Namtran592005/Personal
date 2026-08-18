@@ -3,13 +3,15 @@
 // Shared by config.php (table bootstrap), migrations.php (one-time runs),
 // and tools/smoke.php (verification).
 
-const DB_VERSION = 7;
+const DB_VERSION = 8;
 
 const GITHUB_CACHE_TTL = 1800;   // seconds (30 min)
 const GITHUB_MAX_REPOS = 50;
 const BEACON_MAX_SECONDS = 3600;
 const LOGIN_MAX_ATTEMPTS = 5;
 const LOGIN_LOCK_MINUTES = 15;
+const LOGIN_RATE_WINDOW = 60;       // seconds per window — login form throttle
+const LOGIN_RATE_MAX = 10;          // max login POST attempts per IP per window
 const RATE_LIMIT_WINDOW = 60;       // seconds per window
 const RATE_LIMIT_MAX = 100;         // max requests per IP per window
 const SESSION_TIMEOUT_MINUTES = 30; // admin idle timeout
@@ -84,17 +86,6 @@ function schemaTables(): array {
             created_at TEXT DEFAULT (datetime('now'))
         )",
 
-        'messages' => "CREATE TABLE IF NOT EXISTS messages (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL,
-            subject TEXT DEFAULT '',
-            message TEXT NOT NULL,
-            is_read INTEGER DEFAULT 0,
-            is_anonymous INTEGER DEFAULT 0,
-            created_at TEXT DEFAULT (datetime('now'))
-        )",
-
         'faqs' => "CREATE TABLE IF NOT EXISTS faqs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             question TEXT NOT NULL,
@@ -111,7 +102,7 @@ function schemaTables(): array {
             price_note TEXT DEFAULT '',
             badge TEXT DEFAULT '',
             features TEXT DEFAULT '',
-            button_text TEXT DEFAULT 'Bắt đầu ngay',
+            button_text TEXT DEFAULT '',
             popular INTEGER DEFAULT 0,
             sort_order INTEGER DEFAULT 0,
             visible INTEGER DEFAULT 1,
@@ -154,6 +145,14 @@ function schemaTables(): array {
             UNIQUE (ip, window_start)
         )",
 
+        'login_rate_limits' => "CREATE TABLE IF NOT EXISTS login_rate_limits (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ip TEXT NOT NULL,
+            window_start INTEGER NOT NULL,
+            hits INTEGER DEFAULT 1,
+            UNIQUE (ip, window_start)
+        )",
+
         'pages' => "CREATE TABLE IF NOT EXISTS pages (
             key TEXT PRIMARY KEY NOT NULL,
             title TEXT NOT NULL DEFAULT '',
@@ -167,7 +166,7 @@ function schemaSettingsDefaults(): array {
     return [
         'show_skills' => '1', 'show_projects' => '1', 'show_pricing' => '1', 'show_faq' => '1',
         'show_contact' => '1', 'show_experience' => '1',
-        'enable_analytics' => '1', 'enable_contact_form' => '1', 'github_username' => 'namtran592005',
+        'enable_analytics' => '1', 'github_username' => '',
         'show_back_top' => '1', 'show_call_fab' => '1',
         'default_lang' => 'vi',
         'smooth_lang_switch' => '1',

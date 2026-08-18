@@ -19,7 +19,7 @@ $msg = null;
 if (isset($_GET['export'])) {
     if (!validateCsrfToken($_GET['_csrf'] ?? null)) { http_response_code(403); exit; }
     $data = [];
-    $tables = ['profile','skills','projects','experiences','messages','faqs','pricing_plans','analytics','settings','pages'];
+    $tables = ['profile','skills','projects','experiences','faqs','pricing_plans','analytics','settings','pages'];
     foreach ($tables as $t) {
         try { $data[$t] = $pdo->query("SELECT * FROM \"$t\"")->fetchAll(); } catch (PDOException $e) { $data[$t] = []; }
     }
@@ -35,7 +35,7 @@ $csrfOk = validateCsrfToken($_POST['_csrf'] ?? null);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     if (!$csrfOk) { $msg = 'Invalid request.'; } else {
     try {
-    $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','show_experience','enable_analytics','enable_contact_form','show_back_top','show_call_fab','smooth_lang_switch','shuffle_on_mobile'];
+    $keys = ['show_skills','show_projects','show_pricing','show_faq','show_contact','show_experience','enable_analytics','show_back_top','show_call_fab','smooth_lang_switch','shuffle_on_mobile'];
     $stmt = $pdo->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)");
     foreach ($keys as $k) {
         $v = isset($_POST[$k]) ? '1' : '0';
@@ -70,7 +70,6 @@ if (isset($_POST['reset_analytics'])) {
 if (isset($_POST['reset_all'])) {
     if (!$csrfOk) { $msg = 'Invalid request.'; } else {
     try {
-        $pdo->exec("DELETE FROM messages");
         $pdo->exec("DELETE FROM analytics");
         $pdo->exec("DELETE FROM faqs");
         $pdo->exec("DELETE FROM pricing_plans");
@@ -79,7 +78,7 @@ if (isset($_POST['reset_all'])) {
         $pdo->exec("DELETE FROM experiences");
         $pdo->exec("DELETE FROM profile");
         $pdo->prepare("INSERT INTO profile (name, title, email) VALUES (?, ?, ?)")
-            ->execute(['Nam Trần', 'Developer & Designer', 'hello@namtran.dev']);
+            ->execute(['', '', '']);
     } catch (PDOException $e) {}
     $msg = 'All data has been reset.';
     }
@@ -148,9 +147,8 @@ $page = 'settings';
                         'show_experience' => ['Experience Section', 'Show work history timeline on homepage'],
                         'show_pricing' => ['Pricing Section', 'Show services & pricing on homepage'],
                         'show_faq' => ['FAQ Section', 'Show frequently asked questions'],
-                        'show_contact' => ['Contact Section', 'Show contact info and form'],
+                        'show_contact' => ['Contact Section', 'Show contact info on homepage'],
                         'enable_analytics' => ['Analytics Tracking', 'Record visitor data'],
-                        'enable_contact_form' => ['Contact Form', 'Allow visitors to send messages'],
                         'show_back_top' => ['Back-to-Top Button', 'Show the floating back-to-top button'],
                         'show_call_fab' => ['Call Button', 'Show the floating call button (needs a phone number)'],
                         'smooth_lang_switch' => ['Smooth Language Switch', 'Switch VI/EN without a page reload (AJAX). Off = normal full-page navigation'],
@@ -213,7 +211,7 @@ $page = 'settings';
                         <input type="hidden" name="_csrf" value="<?= generateCsrfToken() ?>">
                     <div>
                         <div class="lbl" style="font-size:14px;font-weight:500">Reset All Database</div>
-                        <div class="desc" style="font-size:12px;color:#86868b">Clear all content, messages, and analytics.</div>
+                        <div class="desc" style="font-size:12px;color:#86868b">Clear all content and analytics.</div>
                     </div>
                     <button type="submit" name="reset_all" class="btn btn-dan btn-lg">Reset All</button>
                 </form>

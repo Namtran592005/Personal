@@ -174,7 +174,7 @@ $page = 'profile';
             <div style="font-size:14px;font-weight:600;margin:24px 0 14px">GitHub Projects</div>
             <div class="fg">
                 <label class="fg-label">GitHub Username</label>
-                <input class="fg-input" type="text" name="github_username" value="<?= h($settings['github_username'] ?? 'namtran592005') ?>" placeholder="Your GitHub username" />
+                <input class="fg-input" type="text" name="github_username" value="<?= h($settings['github_username'] ?? '') ?>" placeholder="Your GitHub username" />
             </div>
             <div class="btn-group" style="margin-top:20px">
                 <button type="submit" name="save" class="btn btn-pri">Save Changes</button>

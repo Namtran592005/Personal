@@ -16,12 +16,14 @@ if (empty($_SESSION['2fa_user'])) {
 
 $error = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify'])) {
-    if (!validateCsrfToken($_POST['_csrf'] ?? '')) {
+    if (loginRateLimitCheck()) {
+        $error = 'Too many verification attempts. Please try again later.';
+    } elseif (!validateCsrfToken($_POST['_csrf'] ?? '')) {
         $error = 'Invalid request. Please try again.';
     } else {
         $userId = (int)$_SESSION['2fa_user'];
         $user = getUser();
-        $secret = $user['totp_secret'] ?? '';
+        $secret = dbDecrypt($user['totp_secret'] ?? '');
         $code = $_POST['code'] ?? '';
 
         if ($secret === '') {

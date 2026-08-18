@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?= h($pageTitle ?? 'Nam Trần — Personal Website') ?></title>
+    <title><?= h($pageTitle ?? '') ?></title>
     <meta name="description" content="<?= h($profile['bio'] ?? $profile['title'] ?? t('meta_default_desc')) ?>" />
-    <meta property="og:title" content="<?= h($pageTitle ?? 'Nam Trần — Personal Website') ?>" />
+    <meta property="og:title" content="<?= h($pageTitle ?? '') ?>" />
     <meta property="og:description" content="<?= h(truncate($profile['bio'] ?? $profile['title'] ?? t('meta_default_desc'), 160)) ?>" />
     <meta property="og:type" content="website" />
     <?php

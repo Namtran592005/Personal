@@ -172,7 +172,7 @@ $hint = match ($code) {
             <a class="btn-home" href="<?= BASE_PATH ?>/index.php"><i class="ph ph-house-line"></i> <?= $lang === 'en' ? 'Back to Home' : 'Về trang chủ' ?></a>
             <a class="btn-admin" href="<?= BASE_PATH ?>/admin/login.php"><i class="ph ph-user-circle"></i> <?= $lang === 'en' ? 'Admin' : 'Quản trị' ?></a>
         </div>
-        <p class="foot">Nam Trần — Personal Website</p>
+        <p class="foot">Personal Website</p>
     </div>
 </body>
 </html>

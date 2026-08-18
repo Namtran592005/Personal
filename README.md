@@ -30,13 +30,11 @@ Website cá nhân phong cách Apple, viết bằng **PHP thuần + SQLite** — 
 - Nav ở các trang phụ tự rút gọn chỉ còn "Trang chủ"
 
 ### Admin
-- Hồ sơ, kỹ năng, kinh nghiệm, dự án, FAQ, **bảng giá**, tin nhắn liên hệ, thống kê truy cập, trang pháp lý
+- Hồ sơ, kỹ năng, kinh nghiệm, dự án, FAQ, **bảng giá**, thống kê truy cập, trang pháp lý
 - **Upload ảnh đại diện** trong Admin → Profile (PNG/JPG/WEBP, ≤2MB, validate MIME, lưu `media/`)
 - **Đổi video nền** hero & trang login admin trong Admin → Videos (MP4/WEBM/OGG, ≤20MB, có nút Reset về mặc định)
-- **Tin nhắn liên hệ**: phân trang + lọc trạng thái (All/Unread/Read) + tìm theo tên/email/chủ đề
 - **Bảng giá dịch vụ** CRUD: giá, gói "phổ biến", badge, tính năng, ẩn/hiện, thứ tự
 - **Sidebar giữ vị trí cuộn** khi điều hướng giữa các trang (lưu `sessionStorage`)
-- **Form liên hệ** gửi mail SMTP (socket STARTTLS, không thư viện) + lưu DB, chế độ **gửi ẩn danh**, toast glass; tắt `enable_contact_form` trong Settings sẽ ẩn form và chặn gửi
 
 ### Bảo mật
 - **2FA (TOTP)** Google Authenticator / Authy / 1Password — bật/tắt trong Admin → Security, đăng nhập 2 bước
@@ -51,7 +49,7 @@ Website cá nhân phong cách Apple, viết bằng **PHP thuần + SQLite** — 
 
 ### Hệ thống
 - **Schema tập trung** (`includes/schema.php`) — DDL, hằng số (`DB_VERSION`, cache TTL, giới hạn beacon, khóa đăng nhập) dùng chung
-- **Migration tự động** theo `db_version` (`includes/migrations.php`) — chạy một lần, idempotent, seed dữ liệu mẫu lần đầu
+- **Migration tự động** theo `db_version` (`includes/migrations.php`) — chạy một lần, idempotent, dựng cấu trúc DB ban đầu (nội dung để trống, người dùng tự nhập qua admin)
 - **Lấy repo GitHub** tự động (cache 30 phút theo từng username, fallback cache cũ khi API lỗi, nút Clear Cache trong Admin → Settings)
 - **Kiểm tra tự động** (`tools/`): `lint.php` quét syntax toàn bộ PHP, `smoke.php` kiểm tra DB/tables/settings/helpers + HTTP theo `--url`; GitHub Actions chạy trên mỗi push `main`
 
@@ -68,22 +66,20 @@ Website cá nhân phong cách Apple, viết bằng **PHP thuần + SQLite** — 
 git clone https://github.com/Namtran592005/Personal.git
 cd Personal
 
-# 2. Tạo file cấu hình từ bản mẫu
-cp .env.example .env
-#   rồi sửa ADMIN_PASSWORD và các thông số SMTP trong .env
-
-# 3. Trỏ web root tới thư mục này rồi mở trình duyệt
+# 2. Trỏ web root tới thư mục này rồi mở trình duyệt
 ```
 
-- Database `data/app.sqlite` và bảng dữ liệu sẽ **tự tạo lần đầu** chạy (kèm dữ liệu mẫu).
-- Thư mục `data/`, `cache/`, file `.env` đã được gitignore — không nên commit.
+- Database `data/app.sqlite` và bảng dữ liệu sẽ **tự tạo lần đầu** chạy (không kèm nội dung mẫu — để trống cho người dùng nhập qua admin).
+- Thư mục `data/`, `cache/` đã được gitignore — không nên commit.
 - Muốn test nhanh: `php -S localhost:8080` rồi mở `http://localhost:8080`.
 
 ## Quản trị
 
 - Đăng nhập: `http://your-site/admin/login.php`
-- Mật khẩu lấy từ `ADMIN_PASSWORD` trong `.env`
-- Bảo mật: khóa tạm thời sau 5 lần sai trong 15 phút (theo IP) + token CSRF; **2FA (TOTP)** tùy chọn qua Admin → Security; phiên hết hạn sau 30 phút không hoạt động
+- **Lần đầu chạy / quên hay bị lộ mật khẩu**: upload `admin/setup.php` lên server → mở `http://your-site/admin/setup.php` → nhập mật khẩu admin + **Database key** (bỏ trống để tự sinh) → **rồi xoá file `admin/setup.php` khỏi server**. Mật khẩu được lưu **chỉ dạng bcrypt hash** trong bảng `users` (KHÔNG dùng `.env`/file cấu hình).
+- **Database key (mã hoá dữ liệu nhạy cảm)**: `admin/setup.php` lưu key vào `includes/db-key.php` (file PHP — trình duyệt không tải được vì nó được thực thi chứ không serve nội dung; đã gitignore). Key dùng để mã hoá giá trị nhạy cảm trong DB (2FA secret) bằng AES-256-GCM (`includes/crypto.php`), chỉ fingerprint SHA-256 của key lưu trong bảng `settings`. **Hãy sao lưu key** — mất key thì dữ liệu đã mã hoá không đọc được.
+- **Chặn tải DB qua web (Caddy/Nginx — `.htaccess` vô dụng)**: đưa DB ra ngoài web root bằng code, không cần sửa cấu hình webserver. Copy `includes/config-local.php.example` → `includes/config-local.php` rồi sửa `$DATA_DIR_OVERRIDE` thành đường dẫn tuyệt đối PHP-writable nằm **ngoài** thư mục web (vd `/var/www/private/personal-data`). Lần chạy đầu, DB cũ ở `data/app.sqlite` được tự copy sang. Nếu đường dẫn không dùng được, app tự fallback về `data/` để site không chết. `check.php` sẽ báo FAIL nếu DB còn nằm trong web root.
+- Bảo mật: khóa tạm thời sau 5 lần sai trong 15 phút (theo IP) + giới hạn rate login (10 POST/60s/IP) + token CSRF; **2FA (TOTP)** tùy chọn qua Admin → Security (secret được mã hoá trong DB); phiên hết hạn sau 30 phút không hoạt động; cookie `Secure` + `HttpOnly` + `SameSite=Strict` (yêu cầu HTTPS)
 - Các trang chính:
   - `admin/dashboard.php` — thống kê
   - `admin/profile.php` — hồ sơ cá nhân + ảnh đại diện
@@ -92,7 +88,6 @@ cp .env.example .env
   - `admin/projects.php` — dự án
   - `admin/pricing.php` — bảng giá dịch vụ
   - `admin/faqs.php` — câu hỏi thường gặp
-  - `admin/messages.php` — tin nhắn liên hệ (phân trang + lọc/tìm kiếm)
   - `admin/analytics.php` — thống kê truy cập
   - `admin/pages.php` — nội dung Chính sách & Điều khoản (VI + EN)
   - `admin/videos.php` — video nền hero & trang login
@@ -110,12 +105,10 @@ cp .env.example .env
 ├── error.php              # Trang lỗi 404/403/500
 ├── check.php              # Kiểm tra hệ thống
 ├── sitemap.xml            # Sitemap (PHP, sinh XML)
-├── .env                   # Cấu hình nhạy cảm (đã gitignore)
-├── .env.example           # Bản mẫu cấu hình
 ├── admin/                 # Khu vực quản trị
 ├── admin-assets/admin.css
 ├── includes/              # config, schema, migrations, auth, functions (facade: helpers + legal),
-│                          # github, mail, track, lang, i18n, totp, rate-limit, legal_defaults, email-template
+│                          # github, track, lang, i18n, totp, rate-limit, legal_defaults
 ├── tools/                 # lint.php, smoke.php — kiểm tra tự động
 ├── partials/              # header, nav, hero, projects, pricing, footer...
 ├── assets/

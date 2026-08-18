@@ -72,6 +72,7 @@ if ($dbAvailable) {
 
     // Security helpers
     check('Rate limit: rateLimitCheck()', function_exists('rateLimitCheck'));
+    check('Rate limit: loginRateLimitCheck()', function_exists('loginRateLimitCheck'));
     check('TOTP: verifyTotp()', function_exists('verifyTotp'));
     check('TOTP: generateTotpSecret()', function_exists('generateTotpSecret'));
     check('Lang: t()', function_exists('t'));

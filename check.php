@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/schema.php';
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/dbkey.php';
+require_once __DIR__ . '/includes/paths.php';
 $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__);
 $base = substr(__DIR__, strlen(rtrim($docRoot, '/\\')));
 $base = str_replace('\\', '/', $base);
@@ -23,11 +25,22 @@ foreach ($exts as $ext) {
 }
 
 // Database
-$dbPath = __DIR__ . '/data/app.sqlite';
+$dbPath = DB_DATA_DIR . '/app.sqlite';
 $dbOk = file_exists($dbPath);
 $dbWritable = $dbOk ? is_writable($dbPath) : is_writable(dirname($dbPath));
 $checks['Database file'] = ['ok' => $dbOk, 'val' => $dbOk ? 'exists' : 'not found'];
 $checks['Database writable'] = ['ok' => $dbWritable, 'val' => $dbWritable ? 'yes' : 'no'];
+
+// DB must not be directly downloadable over HTTP (Caddy/Nginx ignore .htaccess).
+$docRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
+$dbNorm = str_replace('\\', '/', DB_DATA_DIR);
+$dbInWebRoot = $docRoot !== '' && str_starts_with($dbNorm, $docRoot . '/');
+$checks['DB outside web root'] = [
+    'ok' => !$dbInWebRoot,
+    'val' => $dbInWebRoot
+        ? 'downloadable via URL — copy includes/config-local.php.example to config-local.php and set DB_DATA_DIR outside the web root'
+        : 'not reachable via HTTP',
+];
 
 // DB connection
 try {
@@ -37,6 +50,18 @@ try {
     $checks['DB connection'] = ['ok' => true, 'val' => 'connected (' . count($tables) . ' tables)'];
 } catch (Exception $e) {
     $checks['DB connection'] = ['ok' => false, 'val' => $e->getMessage()];
+}
+
+// DB key (encryption)
+$checks['DB key file'] = ['ok' => dbKeyExists(), 'val' => dbKeyExists() ? 'exists' : 'missing — run admin/setup.php'];
+if (dbKeyExists()) {
+    $verifier = dbKeyVerifier(dbKey());
+    $stored = null;
+    if (isset($pdo) && $pdo) {
+        try { $stored = $pdo->query("SELECT value FROM settings WHERE key = 'db_key_verifier'")->fetchColumn(); } catch (Exception $e) {}
+    }
+    $match = $stored !== null && $stored === $verifier;
+    $checks['DB key verifier'] = ['ok' => $match, 'val' => $stored !== null ? ($match ? 'matches DB' : 'mismatch') : 'not stored yet'];
 }
 
 // Writable dirs
@@ -49,15 +74,11 @@ foreach ($dirs as $dir) {
 }
 
 // Key files
-$files = ['index.php', 'includes/config.php', 'includes/auth.php', 'includes/functions.php', 'includes/schema.php', 'includes/migrations.php', 'includes/lang.php', 'includes/totp.php', 'admin/login.php', 'admin/security.php', 'partials/header.php', '.env'];
+$files = ['index.php', 'includes/config.php', 'includes/auth.php', 'includes/functions.php', 'includes/schema.php', 'includes/migrations.php', 'includes/lang.php', 'includes/totp.php', 'admin/login.php', 'admin/security.php', 'partials/header.php'];
 foreach ($files as $f) {
     $exists = file_exists(__DIR__ . "/$f");
     $checks["File: $f"] = ['ok' => $exists, 'val' => $exists ? 'exists' : 'missing'];
 }
-
-// .env has SMTP_USER filled?
-$envUser = $_ENV['SMTP_USER'] ?? $_SERVER['SMTP_USER'] ?? getenv('SMTP_USER');
-$checks['SMTP configured'] = ['ok' => !empty($envUser), 'val' => empty($envUser) ? 'not set' : 'set'];
 
 // DB version: code (DB_VERSION from schema.php) vs server (settings.db_version)
 $dbVersionServer = null;
@@ -102,7 +123,6 @@ $permTargets = [
     'cache'            => ['mode' => '775', 'hint' => 'GitHub cache folder'],
     'media'            => ['mode' => '775', 'hint' => 'Avatar uploads'],
     'data/app.sqlite'  => ['mode' => '664', 'hint' => 'Database file'],
-    '.env'             => ['mode' => '640', 'hint' => 'Secrets file'],
 ];
 
 $permRows = [];
@@ -400,7 +420,7 @@ $failCount = $total - $okCount;
             <a class="btn btn-pri" href="<?= BASE_PATH ?>/admin/login.php"><i class="ph ph-user-circle"></i> <?= $lang === 'en' ? 'Admin' : 'Quản trị' ?></a>
             <a class="btn btn-out" href="<?= BASE_PATH ?>/index.php"><i class="ph ph-house-line"></i> <?= $lang === 'en' ? 'Back to Home' : 'Về trang chủ' ?></a>
         </div>
-        <p class="foot">Nam Trần — Personal Website</p>
+        <p class="foot">Personal Website</p>
     </div>
     <script>
     function copyCmd() {

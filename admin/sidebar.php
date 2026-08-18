@@ -26,9 +26,6 @@
             <a href="<?= BASE_PATH ?>/admin/pricing.php" class="<?= $page === 'pricing' ? 'active' : '' ?>">
                 <i class="ph ph-currency-circle-dollar"></i> <span>Pricing</span>
             </a>
-            <a href="<?= BASE_PATH ?>/admin/messages.php" class="<?= $page === 'messages' ? 'active' : '' ?>">
-                <i class="ph ph-envelope"></i> <span>Messages</span>
-            </a>
             <a href="<?= BASE_PATH ?>/admin/faqs.php" class="<?= $page === 'faqs' ? 'active' : '' ?>">
                 <i class="ph ph-question"></i> <span>FAQs</span>
             </a>
