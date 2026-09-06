@@ -1,0 +1,38 @@
+{
+  "profile": {
+    "name": "Nam Trần",
+    "title": "AI Product Orchestration",
+    "bio": "",
+    "email": "namtran5905@gmail.com",
+    "phone": "+84 965 530 439",
+    "location": "Tra Vinh, Vinh Long",
+    "avatar": "",
+    "social_github": "https://github.com/Namtran592005",
+    "social_linkedin": "",
+    "social_twitter": "",
+    "social_dribbble": "",
+    "social_facebook": "https://www.facebook.com/Namtran5905/",
+    "social_instagram": "https://www.instagram.com/namtran5905/",
+    "social_threads": "https://www.threads.com/@namtran5905",
+    "social_tiktok": "https://www.tiktok.com/@namtran5905"
+  },
+  "faqs": [
+    {
+      "q": "Mình là ai và mình làm gì?",
+      "a": "Minh là một người khá đam mê công nghệ và thiết kế, tập trung vào phát triển, thiết kế đồ họa và xây dựng các giải pháp số. Mình luôn hướng đến việc tạo ra sản phẩm đẹp mắt, tối ưu và mang lại giá trị thực tế."
+    },
+    {
+      "q": "Vì sao mình sử dụng AI?",
+      "a": "Đối với mình, AI không thay thế sự sáng tạo mà mở rộng khả năng sáng tạo. AI giúp mình khám phá nhiều hướng đi hơn, thử nghiệm nhanh hơn và dành nhiều thời gian hơn cho việc giải quyết vấn đề."
+    },
+    {
+      "q": "Mình có sở thích gì?",
+      "a": "Ngoài công việc, Mình thích đọc về công nghệ, xem phim, nghe nhạc, chụp ảnh và dành thời gian tìm hiểu những ý tưởng sáng tạo có thể áp dụng vào cuộc sống."
+    },
+    {
+      "q": "Làm thế nào để liên hệ với mình?",
+      "a": "Bạn có thể liên hệ với mình qua email, GitHub hoặc các mạng xã hội được liên kết trên website."
+    }
+  ],
+  "github_user": "namtran592005"
+}

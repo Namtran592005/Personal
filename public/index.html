@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nam Trần — Personal Website</title>
+    <meta name="description" content="Trang cá nhân của Nam Trần." />
+    <meta property="og:title" content="Nam Trần — Personal Website" />
+    <meta property="og:description" content="Trang cá nhân của Nam Trần." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="stylesheet" href="assets/icons/phosphor/style.css" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/decor.css" />
+    <link rel="stylesheet" href="assets/css/nav.css" />
+    <link rel="stylesheet" href="assets/css/hero.css" />
+    <link rel="stylesheet" href="assets/css/sections.css" />
+    <link rel="stylesheet" href="assets/css/layout.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+    <link rel="stylesheet" href="assets/css/theme.css" />
+    <style>
+        .projects-note { text-align: center; color: #86868b; padding: 24px 0; }
+        html.dark .projects-note { color: #a1a1a6; }
+        .lang-block[hidden] { display: none; }
+    </style>
+    <script src="assets/js/darkmode.js"></script>
+</head>
+<body data-page="index">
+    <nav id="nav">
+        <div class="nav-container">
+            <div class="nav-links" id="navLinks">
+                <a href="#projects" data-i18n="nav_projects">Projects</a>
+                <a href="#faq" data-i18n="nav_faq">FAQ</a>
+                <a href="#contact" data-i18n="nav_contact">Contact</a>
+                <span class="lang-switch" id="langSwitch">
+                    <a href="#" data-lang="vi" class="on">VI</a>
+                    <span class="sep">|</span>
+                    <a href="#" data-lang="en">EN</a>
+                </span>
+            </div>
+            <button class="dark-toggle" onclick="toggleDark()" aria-label="Toggle dark mode">
+                <i class="ph ph-moon"></i>
+                <i class="ph ph-sun"></i>
+            </button>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu">
+                <i class="ph ph-list-dashes"></i>
+            </button>
+        </div>
+        <div class="nav-overlay" id="navOverlay"></div>
+    </nav>
+
+    <section id="hero">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="assets/video/hero.mp4" type="video/mp4" />
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <img src="media/avt.png" alt="Nam Trần" class="hero-avatar" onerror="this.src='media/avt.png'" />
+            <p class="hero-greeting" data-i18n="hero_greeting">Hi, I'm</p>
+            <h1 class="hero-name">Nam Trần</h1>
+            <div class="hero-cta">
+                <a href="#contact" class="btn btn-primary">
+                    <span data-i18n="hero_contact_me">Liên hệ với tôi</span> <i class="ph ph-paper-plane-right"></i>
+                </a>
+                <a href="#projects" class="btn btn-outline">
+                    <span data-i18n="hero_view_projects">Xem dự án</span>
+                </a>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <span data-i18n="hero_scroll">Cuộn</span>
+            <i class="ph ph-caret-down"></i>
+        </div>
+    </section>
+
+    <section id="projects" class="section">
+        <div class="deco-rings r1" aria-hidden="true"></div>
+        <div class="deco-rings sm r2" aria-hidden="true"></div>
+        <div class="deco-rings lg r3" aria-hidden="true"></div>
+        <div class="container">
+            <div class="section-header fade-in">
+                <p class="label" data-i18n="sec_projects_label">Projects</p>
+                <h2 data-i18n="sec_projects_title">Dự án tiêu biểu</h2>
+            </div>
+            <div class="shuffle-toggle on-mobile">
+                <label class="shuffle-switch">
+                    <input type="checkbox" id="shuffleCheck" checked>
+                    <span class="shuffle-slider"></span>
+                    <span class="shuffle-label" data-i18n="shuffle_effect">Hiệu ứng xáo trộn</span>
+                </label>
+            </div>
+            <div class="projects-grid" id="projects-grid"></div>
+        </div>
+    </section>
+
+    <section id="faq" class="section section-alt">
+        <div class="deco-rings r1" aria-hidden="true"></div>
+        <div class="deco-rings sm r2" aria-hidden="true"></div>
+        <div class="deco-rings lg r3" aria-hidden="true"></div>
+        <div class="deco-q" aria-hidden="true">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                <path fill="none" stroke="#ffc94d" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" d="M38 36 C38 22 62 22 62 36 C62 47 50 48 50 58 L50 66"/>
+                <circle cx="50" cy="76" r="3.5" fill="none" stroke="#ffc94d" stroke-width="1"/>
+            </svg>
+        </div>
+        <div class="container">
+            <div class="section-header fade-in">
+                <p class="label" data-i18n="sec_faq_label">FAQ</p>
+                <h2 data-i18n="sec_faq_title">Câu hỏi thường gặp</h2>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item fade-in">
+                    <div class="faq-question">Mình là ai và mình làm gì?</div>
+                    <div class="faq-answer">Minh là một người khá đam mê công nghệ và thiết kế, tập trung vào phát triển, thiết kế đồ họa và xây dựng các giải pháp số. Mình luôn hướng đến việc tạo ra sản phẩm đẹp mắt, tối ưu và mang lại giá trị thực tế.</div>
+                </div>
+                <div class="faq-item fade-in">
+                    <div class="faq-question">Vì sao mình sử dụng AI?</div>
+                    <div class="faq-answer">Đối với mình, AI không thay thế sự sáng tạo mà mở rộng khả năng sáng tạo. AI giúp mình khám phá nhiều hướng đi hơn, thử nghiệm nhanh hơn và dành nhiều thời gian hơn cho việc giải quyết vấn đề.</div>
+                </div>
+                <div class="faq-item fade-in">
+                    <div class="faq-question">Mình có sở thích gì?</div>
+                    <div class="faq-answer">Ngoài công việc, Mình thích đọc về công nghệ, xem phim, nghe nhạc, chụp ảnh và dành thời gian tìm hiểu những ý tưởng sáng tạo có thể áp dụng vào cuộc sống.</div>
+                </div>
+                <div class="faq-item fade-in">
+                    <div class="faq-question">Làm thế nào để liên hệ với mình?</div>
+                    <div class="faq-answer">Bạn có thể liên hệ với mình qua email, GitHub hoặc các mạng xã hội được liên kết trên website.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div class="deco-rings r1" aria-hidden="true"></div>
+        <div class="deco-rings sm r2" aria-hidden="true"></div>
+        <div class="deco-rings lg r3" aria-hidden="true"></div>
+        <div class="deco-heart" aria-hidden="true">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                <path fill="none" stroke="#ff6b9d" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" d="M50 92 C36 80 8 60 8 33 C8 18 18 8 30 8 C38 8 46 13 50 20 C54 13 62 8 70 8 C82 8 92 18 92 33 C92 60 64 80 50 92 Z"/>
+                <g fill="none" stroke="#ff6b9d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"
+                   transform="translate(16 36) scale(0.36)">
+                    <path d="M10 4 C10 4 8 22 8 30 C8 35 11 38 15 36"/>
+                    <path d="M40 26 C40 33 35 38 28 38 C21 38 16 33 16 26 C16 19 21 14 28 14 C35 14 40 19 40 26 Z"/>
+                    <path d="M46 15 L54 37 L62 15"/>
+                    <path d="M67 27 L87 27 C87 19 81 14 74 14 C67 14 62 20 63 28 C64 35 70 40 77 39 C82 38 85 36 85 33"/>
+                    <path d="M102 15 L110 33 M110 33 L118 15 M110 33 C108 39 106 44 101 44 C98 44 96 42 97 39"/>
+                    <path d="M146 26 C146 33 141 38 134 38 C127 38 122 33 122 26 C122 19 127 14 134 14 C141 14 146 19 146 26 Z"/>
+                    <path d="M152 15 L152 30 C152 35 156 38 160 38 C164 38 168 35 168 30 L168 15"/>
+                </g>
+            </svg>
+        </div>
+        <div class="container">
+            <div class="section-header fade-in">
+                <p class="label" data-i18n="sec_contact_label">Contact</p>
+                <h2 data-i18n="sec_contact_title">Liên hệ</h2>
+            </div>
+            <div class="contact-grid no-form">
+                <div class="contact-info fade-in">
+                    <p class="contact-intro" data-i18n="contact_intro">Liên hệ qua các kênh bên dưới, tôi thường phản hồi trong vòng 24 giờ.</p>
+                    <div class="contact-links">
+                        <div class="contact-item">
+                            <i class="ph ph-envelope"></i>
+                            <a href="mailto:namtran5905@gmail.com">namtran5905@gmail.com</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="ph ph-phone"></i>
+                            <span>+84 965 530 439</span>
+                        </div>
+                    </div>
+                    <div class="contact-socials">
+                        <a href="https://www.facebook.com/Namtran5905/" target="_blank" rel="noopener" class="social-link">
+                            <i class="ph ph-facebook-logo"></i>
+                            <span>Facebook</span>
+                        </a>
+                        <a href="https://www.instagram.com/namtran5905/" target="_blank" rel="noopener" class="social-link">
+                            <i class="ph ph-instagram-logo"></i>
+                            <span>Instagram</span>
+                        </a>
+                        <a href="https://www.threads.com/@namtran5905" target="_blank" rel="noopener" class="social-link">
+                            <i class="ph ph-threads-logo"></i>
+                            <span>Threads</span>
+                        </a>
+                        <a href="https://www.tiktok.com/@namtran5905" target="_blank" rel="noopener" class="social-link">
+                            <i class="ph ph-tiktok-logo"></i>
+                            <span>TikTok</span>
+                        </a>
+                        <a href="https://github.com/Namtran592005" target="_blank" rel="noopener" class="social-link">
+                            <i class="ph ph-github-logo"></i>
+                            <span>GitHub</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <a class="call-fab" href="tel:+84965530439" aria-label="Gọi liên hệ" data-i18n-aria="call_fab_aria"><i class="ph ph-phone-call"></i></a>
+    <button class="back-top-fab" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><i class="ph ph-caret-up"></i></button>
+    <div id="toast" aria-live="polite"></div>
+    <footer>
+        <div class="footer-content">
+            <p>&copy; <span id="year">2026</span> Nam Trần. <span data-i18n="footer_rights">Bảo lưu mọi quyền.</span></p>
+            <div class="footer-right">
+                <a href="privacy.html" class="footer-link" data-i18n="footer_privacy">Chính Sách Quyền Riêng Tư</a>
+                <a href="terms.html" class="footer-link" data-i18n="footer_terms">Điều Khoản Sử Dụng</a>
+                <a href="sitemap.html" class="footer-link" data-i18n="footer_sitemap">Bản đồ trang web</a>
+                <a href="https://github.com/Namtran592005" target="_blank" rel="noopener" class="footer-admin">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.SITE = { basePath: '', smoothLang: false, shuffleMobile: true, beaconMax: 3600 };
+    </script>
+    <script src="assets/js/gsap.min.js"></script>
+    <script src="assets/js/Flip.min.js"></script>
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/shuffle.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+/* Decorative static patterns (Apple-style pastel accents) */
+#skills::before,
+#projects::before,
+#faq::before,
+#skills::after,
+#projects::after,
+#faq::after,
+#contact::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* unique line-art shapes (replacing the aurora washes) */
+#skills::before,
+#projects::before,
+#faq::before {
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 68%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 68%);
+}
+/* sunburst */
+#skills::before {
+  top: -130px;
+  right: -120px;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(122, 150, 255, 0.2) 0deg 1deg,
+    transparent 1deg 9deg
+  );
+}
+/* blueprint grid */
+#projects::before {
+  top: -130px;
+  right: -120px;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(168, 130, 255, 0.18) 0 1px,
+      transparent 1px 30px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(168, 130, 255, 0.18) 0 1px,
+      transparent 1px 30px
+    );
+}
+/* diagonal stripes */
+#faq::before {
+  bottom: -140px;
+  left: -120px;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 158, 128, 0.2) 0 1px,
+    transparent 1px 16px
+  );
+}
+/* line-art heart */
+.deco-heart {
+  position: absolute;
+  bottom: -140px;
+  left: -120px;
+  width: 440px;
+  height: 440px;
+  pointer-events: none;
+  z-index: 0;
+  transform: rotate(45deg);
+}
+.deco-heart svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.deco-heart svg path {
+  stroke: rgba(255, 107, 157, 0.4);
+}
+/* line-art question mark */
+.deco-q {
+  position: absolute;
+  top: 30px;
+  right: -20px;
+  width: 560px;
+  height: 560px;
+  pointer-events: none;
+  z-index: 0;
+  transform: rotate(-18deg);
+}
+@media (max-width: 768px) {
+  .deco-q {
+    top: 10px;
+    right: -40px;
+    width: 360px;
+    height: 360px;
+  }
+}
+.deco-q svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.deco-q svg path,
+.deco-q svg circle {
+  fill: none;
+  stroke: rgba(255, 201, 77, 0.5);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* thin concentric rings */
+#skills::after,
+#projects::after,
+#faq::after,
+#contact::after {
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 27px,
+    rgba(122, 150, 255, 0.16) 27px 28px
+  );
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 72%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 72%);
+}
+#skills::after {
+  top: 60px;
+  left: -150px;
+}
+#projects::after {
+  top: 60px;
+  left: -150px;
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 27px,
+    rgba(168, 130, 255, 0.16) 27px 28px
+  );
+}
+#faq::after {
+  bottom: 60px;
+  right: -150px;
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 27px,
+    rgba(255, 158, 128, 0.14) 27px 28px
+  );
+}
+#contact::after {
+  bottom: 60px;
+  right: -150px;
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 27px,
+    rgba(92, 201, 185, 0.14) 27px 28px
+  );
+}
+
+/* extra concentric rings filling empty areas */
+.deco-rings {
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 30px,
+    rgba(122, 150, 255, 0.15) 30px 31px
+  );
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 72%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 72%);
+}
+.deco-rings.sm {
+  width: 260px;
+  height: 260px;
+}
+.deco-rings.lg {
+  width: 440px;
+  height: 440px;
+}
+#projects .deco-rings {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 30px,
+    rgba(168, 130, 255, 0.15) 30px 31px
+  );
+}
+#faq .deco-rings {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 30px,
+    rgba(255, 158, 128, 0.13) 30px 31px
+  );
+}
+#contact .deco-rings {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 30px,
+    rgba(92, 201, 185, 0.13) 30px 31px
+  );
+}
+#skills .r1 {
+  top: 34%;
+  right: -150px;
+}
+#skills .r2 {
+  bottom: 10%;
+  left: -140px;
+}
+#skills .r3 {
+  top: 62%;
+  left: -110px;
+}
+#projects .r1 {
+  bottom: 12%;
+  right: -150px;
+}
+#projects .r2 {
+  top: 40%;
+  left: -140px;
+}
+#projects .r3 {
+  bottom: 45%;
+  right: -120px;
+}
+#faq .r1 {
+  top: 10%;
+  left: -140px;
+}
+#faq .r2 {
+  top: 46%;
+  right: -150px;
+}
+#faq .r3 {
+  bottom: 24%;
+  left: -120px;
+}
+#contact .r1 {
+  top: 8%;
+  right: -140px;
+}
+#contact .r2 {
+  top: 40%;
+  left: -150px;
+}
+#contact .r3 {
+  bottom: 18%;
+  left: -120px;
+}
+html.dark .deco-rings {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 30px,
+    rgba(122, 150, 255, 0.2) 30px 31px
+  );
+}
+html.dark #projects .deco-rings {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 30px,
+    rgba(168, 130, 255, 0.2) 30px 31px
+  );
+}
+html.dark #faq .deco-rings {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 30px,
+    rgba(255, 158, 128, 0.18) 30px 31px
+  );
+}
+html.dark #contact .deco-rings {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 30px,
+    rgba(92, 201, 185, 0.18) 30px 31px
+  );
+}
+
+/* dark mode: slightly brighter accents */
+html.dark #skills::before {
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(122, 150, 255, 0.26) 0deg 1deg,
+    transparent 1deg 9deg
+  );
+}
+html.dark #projects::before {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(168, 130, 255, 0.24) 0 1px,
+      transparent 1px 30px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(168, 130, 255, 0.24) 0 1px,
+      transparent 1px 30px
+    );
+}
+html.dark #faq::before {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 158, 128, 0.26) 0 1px,
+    transparent 1px 16px
+  );
+}
+html.dark .deco-heart svg path {
+  stroke: rgba(255, 138, 179, 0.55);
+}
+html.dark .deco-q svg path,
+html.dark .deco-q svg circle {
+  stroke: rgba(255, 214, 102, 0.65);
+}
+html.dark #skills::after {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 27px,
+    rgba(122, 150, 255, 0.2) 27px 28px
+  );
+}
+html.dark #projects::after {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 27px,
+    rgba(168, 130, 255, 0.2) 27px 28px
+  );
+}
+html.dark #faq::after {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 27px,
+    rgba(255, 158, 128, 0.18) 27px 28px
+  );
+}
+html.dark #contact::after {
+  background: repeating-radial-gradient(
+    circle,
+    transparent 0 27px,
+    rgba(92, 201, 185, 0.18) 27px 28px
+  );
+}
+.section-header h2::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 2px;
+  margin: 16px auto 0;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(29, 29, 31, 0.75),
+    transparent
+  );
+}
+html.dark .section-header h2::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(245, 245, 247, 0.8),
+    transparent
+  );
+}

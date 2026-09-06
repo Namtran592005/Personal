@@ -1,0 +1,101 @@
+[
+ {
+  "title": "WebSite-BanSachOnline",
+  "description": "Bài Tập Website ASP.NET",
+  "tech_stack": "ASP.NET",
+  "github_url": "https://github.com/Namtran592005/WebSite-BanSachOnline",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ },
+ {
+  "title": "WebSite-TinTuc",
+  "description": "Bài Tập Website ASP.NET",
+  "tech_stack": "TSQL",
+  "github_url": "https://github.com/Namtran592005/WebSite-TinTuc",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ },
+ {
+  "title": "NamtranVoice-TTS-RL",
+  "description": "Phần mềm TTS Local Windows",
+  "tech_stack": "",
+  "github_url": "https://github.com/Namtran592005/NamtranVoice-TTS-RL",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ },
+ {
+  "title": "AntiLostNavigator",
+  "description": "Ứng dụng hỗ trợ định hướng ngoài trời",
+  "tech_stack": "JavaScript",
+  "github_url": "https://github.com/Namtran592005/AntiLostNavigator",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ },
+ {
+  "title": "Cafe-404",
+  "description": "Website Thương mại Điện tử 404 - Dự án đồ án tốt nghiệp",
+  "tech_stack": "PHP",
+  "github_url": "https://github.com/Namtran592005/Cafe-404",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ },
+ {
+  "title": "Email-Sender-Desktop",
+  "description": "Ứng dụng desktop email HTML",
+  "tech_stack": "TypeScript",
+  "github_url": "https://github.com/Namtran592005/Email-Sender-Desktop",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ },
+ {
+  "title": "EcoScan",
+  "description": "App giúp nhận diện và phân loại Realtime",
+  "tech_stack": "TypeScript",
+  "github_url": "https://github.com/Namtran592005/EcoScan",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ },
+ {
+  "title": "Email-Sender",
+  "description": "Ứng dụng Android gửi email HTML",
+  "tech_stack": "JavaScript",
+  "github_url": "https://github.com/Namtran592005/Email-Sender",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ },
+ {
+  "title": "presentation-generator",
+  "description": "Agent tạo slide PowerPoint tự động từ tài liệu.",
+  "tech_stack": "JavaScript",
+  "github_url": "https://github.com/Namtran592005/presentation-generator",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ },
+ {
+  "title": "video-generator",
+  "description": "Agent tạo video tự động từ HTML và nội dung động.",
+  "tech_stack": "HTML",
+  "github_url": "https://github.com/Namtran592005/video-generator",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ },
+ {
+  "title": "SecureView",
+  "description": "Ứng dụng Desktop Windows giám sát và quản lý Camera IP.",
+  "tech_stack": "JavaScript",
+  "github_url": "https://github.com/Namtran592005/SecureView",
+  "live_url": "",
+  "image": "",
+  "stars": 0
+ }
+]

@@ -1,0 +1,9 @@
+# Workers Static Assets — deploy toàn bộ thư mục public/ lên Cloudflare Workers.
+# Không cần viết Worker code: `wrangler deploy` sẽ serve file tĩnh + 404.html + _headers.
+# Pretty URL tự động: /privacy.html ↔ /privacy (không dùng _redirects rewrite .html — gây loop).
+name = "personal-static"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "./public"
+not_found_handling = "404-page"
